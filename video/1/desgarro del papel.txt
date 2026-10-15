@@ -1,0 +1,258 @@
+{
+  "proyecto": {
+    "titulo": "Ruptura del papel de Google Maps",
+    "tipo": "fotograma cinematográfico de transición",
+    "funcion_narrativa": "mostrar el instante en que un pincho rompe la superficie física de Google Maps y abre el espacio desde el cual posteriormente emergerá un objeto",
+    "momento_de_la_accion": "inmediatamente después de la perforación y antes de que aparezca el objeto oculto"
+  },
+  "descripcion_general": "Primerísimo primer plano fotorrealista de una mano adulta sosteniendo un pincho rojo. La punta metálica ha atravesado una hoja de papel impresa con Google Maps y ha producido una abertura grande e irregular. El papel está rasgado, levantado y doblado alrededor del agujero. Debajo se observa una cavidad oscura y profunda, sugiriendo que algo voluminoso está a punto de emerger desde el interior y romper aún más el mapa.",
+  "formato": {
+    "orientacion": "vertical",
+    "relacion_de_aspecto": "9:16",
+    "resolucion_recomendada": {
+      "ancho_px": 1080,
+      "alto_px": 1920
+    },
+    "pantalla_completa": true,
+    "sin_bordes": true,
+    "sin_marco_de_celular": true
+  },
+  "composicion": {
+    "tipo_de_plano": "primerísimo primer plano macro",
+    "angulo_de_camara": "vista oblicua desde arriba",
+    "inclinacion_aproximada": "35 grados hacia la superficie",
+    "distribucion": {
+      "mano": "mitad superior del encuadre",
+      "pincho": "centro superior apuntando verticalmente hacia la abertura",
+      "agujero": "centro de la composición",
+      "mapa": "cubre completamente el fondo",
+      "espacio_oscuro": "visible dentro de la abertura central"
+    },
+    "centro_de_atencion": "punta metálica, bordes rotos del papel y profundidad del agujero",
+    "direccion_visual": "los dedos y el pincho conducen la mirada directamente hacia el interior de la abertura",
+    "equilibrio": "composición central con ligera asimetría producida por los bordes irregulares del papel"
+  },
+  "mano": {
+    "cantidad": 1,
+    "tipo": "mano adulta",
+    "apariencia": "masculina y natural",
+    "tono_de_piel": "moreno medio con matices cálidos",
+    "dedos_visibles": [
+      "pulgar",
+      "índice",
+      "parte del dedo medio"
+    ],
+    "agarre": "el pincho está sujeto firmemente entre el pulgar y el índice",
+    "postura": "dedos curvados y ligeramente tensionados por la presión",
+    "accion": "presiona y mueve el pincho para terminar de abrir el papel",
+    "detalles_realistas": [
+      "poros visibles",
+      "arrugas en las articulaciones",
+      "pliegues naturales",
+      "uñas cortas",
+      "vello fino",
+      "variaciones naturales del tono de piel"
+    ],
+    "apariencia_prohibida": [
+      "dedos adicionales",
+      "dedos fusionados",
+      "mano deformada",
+      "piel plástica",
+      "uñas artificiales"
+    ]
+  },
+  "pincho": {
+    "tipo": "chincheta de cabeza plástica",
+    "color": "rojo intenso",
+    "acabado": "plástico brillante con reflejo suave",
+    "forma": "cabeza redondeada y base ligeramente ensanchada",
+    "punta": {
+      "material": "metal",
+      "color": "gris acero",
+      "longitud_visible": "media",
+      "orientacion": "vertical con una inclinación mínima",
+      "posicion": "introducida dentro de la abertura del papel"
+    },
+    "accion": "perforar y desgarrar Google Maps",
+    "movimiento_sugerido": "leve desplazamiento descendente y hacia atrás",
+    "importancia_visual": "elemento que inicia la ruptura y conecta la acción de la mano con el agujero"
+  },
+  "superficie_google_maps": {
+    "representacion": "Google Maps impreso físicamente sobre una hoja de papel",
+    "cobertura": "todo el encuadre",
+    "perspectiva": "mapa visto en diagonal",
+    "material": "papel mate fino de impresión",
+    "elementos_cartograficos": [
+      "calles blancas y grises",
+      "avenidas amarillas y anaranjadas",
+      "zonas verdes",
+      "nombres de calles",
+      "nombres de comercios",
+      "símbolos de establecimientos",
+      "pequeños marcadores de ubicación"
+    ],
+    "paleta": {
+      "fondo": "gris muy claro",
+      "calles": "blanco y gris",
+      "avenidas": "amarillo suave",
+      "parques": "verde pastel",
+      "iconos": "azul, verde y gris",
+      "tipografia": "gris oscuro"
+    },
+    "nivel_de_detalle": "reconocible como Google Maps sin distraer de la rotura",
+    "desenfoque": "progresivo hacia la parte superior e inferior del encuadre",
+    "restricciones": [
+      "no mostrar un teléfono",
+      "no mostrar bordes de pantalla",
+      "no añadir interfaces flotantes",
+      "no añadir rutas brillantes artificiales"
+    ]
+  },
+  "ruptura_del_papel": {
+    "ubicacion": "zona central",
+    "forma": "abertura irregular aproximadamente triangular",
+    "tamaño": "grande y suficiente para sugerir la salida de un objeto voluminoso",
+    "estado": "papel completamente atravesado",
+    "bordes": {
+      "apariencia": "dentados, fibrosos e irregulares",
+      "color_interior": "blanco",
+      "textura": "fibras finas de celulosa visibles",
+      "orientacion": "varios fragmentos levantados hacia la cámara y otros doblados hacia el interior"
+    },
+    "fragmentos_principales": [
+      {
+        "posicion": "izquierda",
+        "estado": "levantado y curvado hacia arriba"
+      },
+      {
+        "posicion": "derecha",
+        "estado": "rasgado y doblado hacia afuera"
+      },
+      {
+        "posicion": "inferior",
+        "estado": "abierto hacia el espectador con fibras visibles"
+      }
+    ],
+    "deformaciones": [
+      "pliegues radiales",
+      "arrugas por presión",
+      "pequeñas grietas secundarias",
+      "sombras debajo de los bordes levantados"
+    ],
+    "realismo": "ruptura física convincente, con grosor de papel y fibras visibles",
+    "restriccion": "la rotura debe ser dramática pero no explosiva"
+  },
+  "interior_del_agujero": {
+    "apariencia": "cavidad oscura debajo del mapa",
+    "color_principal": "negro con matices marrón oscuro",
+    "profundidad": "aparentemente profunda",
+    "iluminacion": "muy tenue",
+    "detalle_visible": "solamente sombras y una forma indefinida debajo",
+    "funcion": "crear misterio y anticipar que algo está a punto de salir",
+    "objeto_emergente": {
+      "estado_actual": "todavía oculto",
+      "visibilidad": "ninguna o apenas una silueta indeterminada",
+      "accion_futura": "empujará el papel desde abajo, ampliará la rotura y emergerá a través de Google Maps",
+      "restriccion": "en este fotograma todavía no debe revelarse completamente qué objeto hay debajo"
+    }
+  },
+  "narrativa_visual": {
+    "concepto": "Google Maps deja de ser una pantalla plana y se transforma en una superficie física atravesable",
+    "accion_anterior": "la mano acerca el pincho y perfora un punto específico del mapa",
+    "accion_actual": "la punta rompe el papel y genera una abertura profunda",
+    "accion_siguiente": "un objeto, edificio o monumento emerge desde debajo del mapa y termina de romperlo",
+    "sensacion": [
+      "expectativa",
+      "descubrimiento",
+      "impacto",
+      "profundidad",
+      "transición hacia una escena tridimensional"
+    ]
+  },
+  "iluminacion": {
+    "estilo": "natural cinematográfica",
+    "fuente_principal": "luz suave desde la parte superior izquierda",
+    "temperatura": "cálida neutra",
+    "intensidad": "media",
+    "sombras": {
+      "debajo_de_la_mano": "suaves y realistas",
+      "debajo_del_papel": "más profundas y contrastadas",
+      "dentro_del_agujero": "oscuras para reforzar la profundidad"
+    },
+    "reflejos": [
+      "brillo tenue sobre la cabeza roja del pincho",
+      "reflejo suave en la punta metálica",
+      "iluminación delicada sobre las uñas y la piel"
+    ],
+    "contraste": "medio-alto alrededor del agujero",
+    "exposicion": "equilibrada, sin áreas quemadas"
+  },
+  "camara": {
+    "estilo": "fotografía macro publicitaria",
+    "lente_sugerida": "85 mm o 100 mm macro",
+    "apertura_sugerida": "f/2.8",
+    "profundidad_de_campo": "reducida",
+    "punto_de_enfoque": "borde frontal del papel rasgado y punta metálica",
+    "nitidez_secundaria": "dedos, cabeza del pincho y zona inmediata del mapa",
+    "desenfoque_de_fondo": "óptico, gradual y suave",
+    "movimiento": "congelado",
+    "calidad": "ultra alta resolución",
+    "nivel_de_realismo": "fotográfico"
+  },
+  "color_y_estilo": {
+    "estetica": [
+      "fotorrealista",
+      "cinematográfica",
+      "publicitaria",
+      "dramática",
+      "tecnológica"
+    ],
+    "colores_dominantes": [
+      "tonos cálidos de piel",
+      "gris claro del mapa",
+      "verde pastel",
+      "amarillo de las avenidas",
+      "negro de la abertura"
+    ],
+    "color_de_acento": "rojo brillante del pincho",
+    "saturacion": "natural",
+    "contraste_local": "alto en la rotura y moderado en el resto del mapa"
+  },
+  "limpieza_de_la_imagen": {
+    "eliminar_completamente": [
+      "triángulo blanco de reproducción del centro",
+      "sombra del triángulo de reproducción",
+      "botón circular del reproductor",
+      "icono de audio apagado de la esquina inferior derecha",
+      "círculo oscuro detrás del icono de audio",
+      "controles multimedia",
+      "barra de reproducción",
+      "cursores",
+      "texto superpuesto",
+      "marcas de agua",
+      "bordes de aplicaciones"
+    ],
+    "reconstruccion_necesaria": {
+      "zona_central": "reconstruir la punta metálica, el interior oscuro y los bordes rotos actualmente cubiertos por el triángulo",
+      "esquina_inferior_derecha": "reconstruir naturalmente las calles, textos y colores del mapa ocultos por el icono de audio"
+    },
+    "resultado": "imagen completamente limpia, sin indicios de que proviene de un video o reproductor"
+  },
+  "continuidad_para_la_siguiente_escena": {
+    "mantener": [
+      "misma mano",
+      "mismo pincho rojo",
+      "mismo mapa",
+      "misma posición del agujero",
+      "misma iluminación",
+      "mismo ángulo de cámara"
+    ],
+    "transformacion_siguiente": "el interior oscuro comienza a iluminarse y el objeto oculto empuja los fragmentos del mapa hacia arriba",
+    "objetivo": "permitir una transición fluida hacia la aparición de un elemento tridimensional desde debajo de Google Maps"
+  },
+  "prompt_negativo": [
+    "triángulo de reproducción",
+    "play button",
+    "icono de audio",
+    "muted icon",
+    "controles de

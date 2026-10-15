@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: #111827;
+  color: #f8fafc;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1f2937;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4b5563;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
+/* Vibración para mesas con llamado pendiente */
+@keyframes shake-vibrate {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  10% { transform: translate(-4px, -3px) rotate(-2deg); }
+  20% { transform: translate(4px, 2px) rotate(2deg); }
+  30% { transform: translate(-3px, 2px) rotate(-1deg); }
+  40% { transform: translate(3px, -3px) rotate(1deg); }
+  50% { transform: translate(-2px, 3px) rotate(-2deg); }
+  60% { transform: translate(4px, -2px) rotate(2deg); }
+  70% { transform: translate(-3px, -2px) rotate(-1deg); }
+  80% { transform: translate(2px, 3px) rotate(1deg); }
+  90% { transform: translate(-2px, -1px) rotate(-2deg); }
+}
+
+.animate-shake-vibrate {
+  animation: shake-vibrate 0.4s ease-in-out infinite;
+}

@@ -1,0 +1,190 @@
+{
+  "tipo_de_proyecto": "recreacion_fotografica_publicitaria",
+  "titulo": "Mano clavando un pinche en Google Maps",
+  "descripcion_general": "Primer plano cinematográfico y fotorrealista de una mano humana que sostiene un pinche de ubicación rojo entre los dedos índice y pulgar. La punta metálica del pinche atraviesa y perfora una hoja de papel impresa con la interfaz cartográfica de Google Maps. El papel se hunde, se rasga y se levanta ligeramente alrededor del punto de impacto, transmitiendo claramente la sensación física de perforación.",
+  "formato": {
+    "orientacion": "vertical",
+    "relacion_de_aspecto": "9:16",
+    "resolucion_recomendada": {
+      "ancho": 1080,
+      "alto": 1920
+    },
+    "encuadre": "pantalla_completa",
+    "sin_bordes": true
+  },
+  "composicion": {
+    "tipo_de_plano": "primerisimo_primer_plano_macro",
+    "angulo_de_camara": "vista_oblicua_desde_arriba",
+    "direccion_de_camara": "la cámara mira hacia abajo con una inclinación aproximada de 35 grados",
+    "elemento_principal": "mano sujetando un pinche rojo",
+    "posicion_de_la_mano": "mitad superior y zona central de la imagen",
+    "posicion_del_pinche": "centro inferior respecto de los dedos",
+    "posicion_del_impacto": "ligeramente por debajo del centro del encuadre",
+    "fondo": "mapa de Google Maps impreso que ocupa toda la superficie visible",
+    "distribucion_visual": "los dedos forman un arco alrededor del pinche y conducen la mirada hacia el punto exacto donde el papel es perforado"
+  },
+  "mano": {
+    "cantidad": 1,
+    "apariencia": "mano adulta masculina",
+    "tono_de_piel": "moreno medio cálido",
+    "dedos_visibles": [
+      "pulgar",
+      "indice",
+      "parte del dedo medio"
+    ],
+    "accion": "presionar firmemente el pinche contra el mapa",
+    "agarre": "pinza precisa entre el pulgar y el dedo índice",
+    "postura": "dedos ligeramente curvados con tensión natural",
+    "detalles_de_piel": [
+      "poros visibles",
+      "arrugas naturales",
+      "pliegues en las articulaciones",
+      "vello fino",
+      "uñas cortas y naturales",
+      "textura realista"
+    ],
+    "enfoque": "muy nítido en las yemas de los dedos y el punto de presión",
+    "sin_accesorios": true
+  },
+  "pinche": {
+    "tipo": "chincheta o pinche físico de ubicación",
+    "color_principal": "rojo intenso",
+    "acabado": "plástico rojo ligeramente brillante",
+    "punta": {
+      "material": "metal",
+      "apariencia": "fina, rígida y parcialmente introducida en el papel",
+      "accion": "atraviesa físicamente la superficie del mapa"
+    },
+    "posicion": "sostenido verticalmente con una leve inclinación hacia la cámara",
+    "escala": "pequeño y proporcional a los dedos",
+    "detalle_importante": "debe distinguirse del marcador gráfico rojo impreso en Google Maps"
+  },
+  "papel_y_perforacion": {
+    "material": "hoja de papel mate con impresión cartográfica",
+    "grosor": "papel fino pero claramente físico",
+    "accion": "la punta del pinche atraviesa el papel",
+    "deformacion": [
+      "hundimiento circular alrededor de la punta",
+      "pequeña rotura radial",
+      "bordes del papel levantados alrededor de la perforación",
+      "sombras diminutas dentro del orificio",
+      "pliegues finos producidos por la presión"
+    ],
+    "intensidad_de_rotura": "visible y realista, pero controlada",
+    "efecto_deseado": "dar la sensación de que Google Maps es una superficie física que está siendo perforada",
+    "sin_destruccion_excesiva": true
+  },
+  "google_maps": {
+    "tipo_de_superficie": "mapa impreso sobre papel",
+    "cobertura": "ocupa todo el fondo de la imagen",
+    "perspectiva": "superficie plana observada en diagonal",
+    "elementos_visibles": [
+      "calles blancas y grises",
+      "avenidas amarillas",
+      "parques y zonas verdes",
+      "nombres de calles",
+      "nombres de comercios",
+      "pequeños iconos de lugares",
+      "marcador rojo de ubicación"
+    ],
+    "paleta": {
+      "calles": "gris claro y blanco",
+      "avenidas": "amarillo suave y naranja",
+      "parques": "verde pastel",
+      "agua": "azul claro si aparece",
+      "texto": "gris oscuro",
+      "marcador": "rojo"
+    },
+    "legibilidad": "detalles cartográficos visibles, pero sin competir con la mano y el pinche",
+    "profundidad_de_campo": "el mapa pierde nitidez progresivamente hacia los bordes superior e inferior",
+    "sin_marco_de_celular": true,
+    "sin_dispositivo_electronico": true
+  },
+  "iluminacion": {
+    "estilo": "fotografía macro natural con acabado cinematográfico",
+    "fuente_principal": "luz suave y difusa desde la parte superior izquierda",
+    "temperatura_de_color": "cálida neutra",
+    "intensidad": "media",
+    "sombras": {
+      "tipo": "suaves pero definidas",
+      "ubicacion": "debajo de los dedos y alrededor del pinche",
+      "funcion": "acentuar el volumen de la mano y el contacto con el papel"
+    },
+    "reflejos": "brillo tenue sobre la piel, las uñas y el plástico rojo",
+    "contraste": "medio",
+    "exposicion": "equilibrada",
+    "sin_flash_directo": true
+  },
+  "camara": {
+    "estilo": "fotografía profesional de producto",
+    "lente_sugerida": "macro de 85 a 100 mm",
+    "apertura_sugerida": "f/2.8",
+    "profundidad_de_campo": "reducida",
+    "punto_de_enfoque": "punta del pinche, perforación y yemas de los dedos",
+    "desenfoque": "bokeh óptico suave en las áreas alejadas",
+    "velocidad_de_obturacion": "suficiente para congelar completamente el movimiento",
+    "nivel_de_detalle": "alto",
+    "realismo": "fotográfico"
+  },
+  "color_y_estetica": {
+    "estilo_visual": [
+      "fotorrealista",
+      "cinematográfico",
+      "publicitario",
+      "tecnológico",
+      "limpio"
+    ],
+    "color_dominante": "tonos cálidos de piel sobre colores pastel del mapa",
+    "color_de_acento": "rojo intenso del pinche y del marcador de ubicación",
+    "saturacion": "natural",
+    "nitidez": "alta en el sujeto principal",
+    "texturas": "piel y papel claramente diferenciados"
+  },
+  "elementos_a_eliminar": [
+    "triángulo blanco de reproducción ubicado en el centro",
+    "círculo o botón asociado al reproductor",
+    "icono de audio apagado de la esquina inferior derecha",
+    "controles de video",
+    "barra de reproducción",
+    "botones flotantes",
+    "texto superpuesto",
+    "marcas de agua",
+    "cursores",
+    "interfaces ajenas a Google Maps",
+    "marcos de teléfono"
+  ],
+  "resultado_final": {
+    "descripcion": "Imagen vertical limpia y fotorrealista en la que solamente aparecen la mano, el pinche rojo, la perforación física y el mapa impreso de Google Maps. No debe quedar ningún rastro de la interfaz del reproductor original.",
+    "prioridad_visual": [
+      "perforación del papel",
+      "pinche rojo",
+      "contacto de los dedos",
+      "mapa de Google Maps"
+    ]
+  },
+  "prompt_negativo": [
+    "triángulo de reproducción",
+    "play button",
+    "icono de volumen",
+    "audio silenciado",
+    "controles multimedia",
+    "interfaz de video",
+    "marco de smartphone",
+    "mano deformada",
+    "dedos adicionales",
+    "dedos fusionados",
+    "uñas artificiales",
+    "piel plástica",
+    "pinche flotando",
+    "punta metálica desconectada",
+    "papel sin perforación",
+    "rotura exagerada",
+    "mapa ilegible",
+    "texto deformado",
+    "baja resolución",
+    "ilustración",
+    "estilo caricatura",
+    "desenfoque en el punto de impacto",
+    "marca de agua"
+  ]
+}

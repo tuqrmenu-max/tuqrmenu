@@ -1,0 +1,421 @@
+{
+  "proyecto": {
+    "titulo": "El Arco de Córdoba emerge desde Google Maps",
+    "tipo": "escena publicitaria cinematográfica con integración 3D fotorrealista",
+    "secuencia": "continuación de la perforación y ruptura del mapa",
+    "escena_representada": "aparición, salto y aterrizaje del Arco de Córdoba",
+    "objetivo_visual": "mostrar que una ubicación real cobra vida y emerge físicamente desde Google Maps"
+  },
+  "descripcion_general": "Una hoja impresa con la apariencia de Google Maps ocupa toda la imagen y funciona como un suelo físico. En el centro existe un gran hueco irregular, generado previamente por un pincho rojo. Desde el interior de ese hueco emerge una reproducción arquitectónica fotorrealista del Arco de Córdoba. La estructura atraviesa el mapa con un salto vertical corto, expulsa fragmentos de papel y finalmente cae y queda apoyada de manera firme sobre el suelo. Los bordes rotos del mapa se doblan alrededor de su base, integrando el monumento con la superficie.",
+  "referencia_visual": {
+    "usar_de_la_imagen_original": [
+      "perspectiva macro del mapa",
+      "hueco central con profundidad",
+      "papel rasgado alrededor de la abertura",
+      "fragmentos suspendidos en el aire",
+      "estructura arquitectónica emergiendo desde el centro",
+      "profundidad de campo reducida",
+      "composición vertical y central"
+    ],
+    "reemplazar": {
+      "elemento_original": "tienda Lavish Collection",
+      "nuevo_elemento": "Arco de Córdoba, Argentina"
+    },
+    "eliminar_completamente": [
+      "edificio comercial",
+      "vidrieras",
+      "maniquíes",
+      "carteles Lavish",
+      "marquesinas comerciales",
+      "productos de tienda",
+      "triángulo central de reproducción",
+      "botón circular de reproducción",
+      "icono de audio apagado",
+      "círculo oscuro del control de audio"
+    ]
+  },
+  "formato": {
+    "orientacion": "vertical",
+    "relacion_de_aspecto": "9:16",
+    "resolucion_recomendada": {
+      "ancho": 1080,
+      "alto": 1920,
+      "unidad": "píxeles"
+    },
+    "encuadre": "pantalla completa",
+    "sin_bordes": true,
+    "sin_marco_de_celular": true,
+    "sin_interfaz_de_reproductor": true
+  },
+  "composicion": {
+    "tipo_de_plano": "primer plano macro con elemento arquitectónico completo",
+    "angulo_de_camara": "vista elevada y oblicua desde el frente",
+    "inclinacion_aproximada": "entre 25 y 35 grados hacia abajo",
+    "elemento_principal": "Arco de Córdoba",
+    "posicion_del_arco": "centro exacto de la composición",
+    "posicion_del_hueco": "debajo y alrededor de la base del monumento",
+    "mapa": "ocupa la totalidad del fondo",
+    "linea_del_horizonte": "no visible",
+    "direccion_visual": "los bordes rotos, las calles y los fragmentos dirigen la mirada hacia el monumento",
+    "escala_visual": "el arco ocupa aproximadamente entre el 45 y el 55 por ciento de la altura total",
+    "equilibrio": "composición simétrica y monumental"
+  },
+  "arco_de_cordoba": {
+    "identidad": "monumento Arco de Córdoba, entrada histórica de la ciudad de Córdoba, Argentina",
+    "representacion": "reproducción arquitectónica tridimensional fotorrealista",
+    "vista": "frontal con una leve perspectiva elevada",
+    "estructura": {
+      "elementos_principales": [
+        "dos torres laterales simétricas",
+        "gran arco central",
+        "volumen superior que une visualmente las torres",
+        "basamento sólido",
+        "detalles arquitectónicos originales"
+      ],
+      "material": "piedra y hormigón con textura realista",
+      "color": "gris piedra cálido y beige suave",
+      "acabado": "mate, ligeramente envejecido y bien conservado",
+      "simetria": "alta",
+      "proporciones": "fieles al monumento real"
+    },
+    "limpieza_visual": {
+      "conservar": [
+        "estructura principal del arco",
+        "torres",
+        "abertura central",
+        "molduras arquitectónicas",
+        "base estructural"
+      ],
+      "quitar": [
+        "carteles publicitarios",
+        "letreros comerciales",
+        "farolas o lámparas agregadas",
+        "cables",
+        "vehículos",
+        "personas",
+        "puestos",
+        "objetos urbanos innecesarios"
+      ]
+    },
+    "estado": "estructura completa, limpia y sin daños",
+    "orientacion": "perpendicular a la cámara",
+    "base": "apoyada firmemente sobre el mapa después de la caída",
+    "integracion": "los bordes del papel rasgado rodean parcialmente la base sin tapar la arquitectura"
+  },
+  "accion": {
+    "evento_principal": "el Arco de Córdoba sale desde debajo del papel de Google Maps",
+    "origen": "hueco generado previamente por el pincho",
+    "tipo_de_movimiento": "salto vertical corto seguido de una caída firme",
+    "direccion": "de abajo hacia arriba y luego hacia abajo",
+    "intensidad": "enérgica pero controlada",
+    "sensacion_de_peso": "estructura muy pesada y sólida",
+    "resultado": "el monumento queda inmóvil, vertical y perfectamente asentado"
+  },
+  "fases_de_animacion": [
+    {
+      "fase": 1,
+      "nombre": "presión desde abajo",
+      "descripcion": "El papel de Google Maps se eleva alrededor del hueco. Las grietas se amplían y los bordes comienzan a separarse.",
+      "posicion_del_arco": "todavía oculto, con la parte superior apenas visible",
+      "fragmentos": "pequeñas fibras y trozos de papel comienzan a levantarse"
+    },
+    {
+      "fase": 2,
+      "nombre": "emergencia",
+      "descripcion": "La parte superior y las torres del Arco de Córdoba atraviesan la abertura y empujan el papel hacia afuera.",
+      "posicion_del_arco": "aproximadamente a mitad de camino fuera del hueco",
+      "fragmentos": "trozos medianos de papel salen despedidos hacia arriba y los costados"
+    },
+    {
+      "fase": 3,
+      "nombre": "salto",
+      "descripcion": "El monumento queda completamente fuera del hueco y se eleva unos centímetros sobre la superficie del mapa.",
+      "posicion_del_arco": "suspendido brevemente en el aire",
+      "efecto": "sombra separada debajo de la base para evidenciar el salto"
+    },
+    {
+      "fase": 4,
+      "nombre": "caída",
+      "descripcion": "El arco desciende verticalmente con peso y golpea la superficie.",
+      "posicion_del_arco": "en contacto inicial con el mapa",
+      "efectos": [
+        "ligera vibración del papel",
+        "pequeña nube de polvo",
+        "fragmentos que rebotan",
+        "bordes del hueco que se acomodan alrededor de la base"
+      ]
+    },
+    {
+      "fase": 5,
+      "nombre": "posición final",
+      "descripcion": "El Arco de Córdoba queda completamente fijo, recto y estable sobre el mapa.",
+      "posicion_del_arco": "centrado y apoyado en el suelo",
+      "movimiento": "ninguno",
+      "resultado_visual": "monumento integrado físicamente con la ubicación cartográfica"
+    }
+  ],
+  "pose_final": {
+    "momento": "instante inmediatamente posterior al aterrizaje",
+    "arco": "completamente visible y estable",
+    "base": "en contacto firme con la superficie",
+    "inclinacion": "cero, perfectamente vertical",
+    "sombra": "sombra de contacto oscura y definida debajo de la base",
+    "papel": "rasgado y doblado alrededor del monumento",
+    "fragmentos": "algunos todavía descendiendo y otros apoyados sobre el mapa",
+    "sensacion": "el monumento pesa, pertenece al lugar y ya no puede moverse"
+  },
+  "google_maps": {
+    "representacion": "mapa digital de Google Maps convertido en una gran hoja de papel física",
+    "cobertura": "fondo completo",
+    "perspectiva": "superficie horizontal vista en diagonal",
+    "contenido": [
+      "calles blancas y grises",
+      "avenidas amarillas y naranjas",
+      "parques verdes",
+      "nombres de calles",
+      "pequeños iconos de lugares",
+      "marcadores cartográficos",
+      "cuadrícula urbana"
+    ],
+    "ubicacion_destacada": "zona correspondiente al Arco de Córdoba",
+    "paleta": {
+      "calles": "blanco y gris claro",
+      "avenidas": "amarillo suave",
+      "rutas_principales": "naranja tenue",
+      "parques": "verde pastel",
+      "texto": "gris oscuro",
+      "agua": "azul claro"
+    },
+    "acabado": "papel mate impreso",
+    "textura": "fibras finas visibles en los bordes rotos",
+    "legibilidad": "reconocible como Google Maps sin robar protagonismo al monumento",
+    "sin_marco_de_dispositivo": true
+  },
+  "hueco": {
+    "ubicacion": "centro del mapa, directamente debajo del monumento",
+    "forma": "irregular y aproximadamente rectangular u ovalada",
+    "tamaño": "suficiente para permitir el paso completo del Arco de Córdoba",
+    "interior": "oscuro y profundo",
+    "color": "negro con matices marrones",
+    "bordes": {
+      "apariencia": "dentados, rasgados y fibrosos",
+      "orientacion": "doblados hacia arriba y hacia afuera",
+      "grosor": "fino y realista",
+      "color_interior": "blanco por las fibras expuestas"
+    },
+    "profundidad": "aparentemente considerable",
+    "contacto_con_el_arco": "el hueco rodea la base y permanece parcialmente visible",
+    "restriccion": "no convertir el hueco en un rectángulo perfecto ni en una abertura geométrica limpia"
+  },
+  "fragmentos_y_particulas": {
+    "material": "trozos del papel de Google Maps",
+    "cantidad": "moderada",
+    "tamaños": [
+      "partículas pequeñas",
+      "fragmentos medianos",
+      "dos o tres trozos grandes"
+    ],
+    "distribucion": "alrededor y por encima del monumento",
+    "movimiento": [
+      "ascendente durante la aparición",
+      "rotación en el aire",
+      "caída alrededor de la base"
+    ],
+    "detalles": [
+      "algunos fragmentos conservan partes impresas del mapa",
+      "bordes blancos y fibrosos",
+      "desenfoque de movimiento muy leve",
+      "sombras individuales sobre la superficie"
+    ],
+    "restricciones": [
+      "sin fragmentos de piedra",
+      "sin vidrio",
+      "sin metal",
+      "sin explosión excesiva",
+      "sin cubrir la fachada del arco"
+    ]
+  },
+  "fisica_del_aterrizaje": {
+    "peso_percibido": "alto",
+    "impacto": "firme y seco",
+    "deformacion_del_mapa": "hundimiento muy leve debajo de la base",
+    "vibracion": "onda corta que recorre el papel",
+    "rebote_del_arco": "mínimo o inexistente",
+    "polvo": "cantidad muy pequeña y realista",
+    "estabilidad_final": "total",
+    "contacto": "sin flotación ni espacios visibles entre la base y el suelo"
+  },
+  "iluminacion": {
+    "estilo": "cinematográfica, natural y profesional",
+    "fuente_principal": {
+      "direccion": "superior izquierda",
+      "tipo": "luz grande, suave y difusa",
+      "temperatura": "cálida neutra",
+      "intensidad": "media-alta"
+    },
+    "luz_de_relleno": {
+      "direccion": "frontal derecha",
+      "intensidad": "baja",
+      "funcion": "recuperar los detalles de las zonas en sombra"
+    },
+    "contraluz": {
+      "intensidad": "muy suave",
+      "funcion": "separar la silueta del arco respecto del mapa"
+    },
+    "sombras": {
+      "sombra_principal": "proyectada hacia la zona inferior derecha",
+      "sombra_de_contacto": "oscura y concentrada debajo de la base",
+      "interior_del_hueco": "negro profundo",
+      "debajo_de_los_fragmentos": "pequeñas sombras suaves"
+    },
+    "contraste": "medio-alto en el centro",
+    "exposicion": "equilibrada",
+    "reflejos": "muy discretos sobre los relieves arquitectónicos",
+    "sin_flash_directo": true
+  },
+  "camara": {
+    "tipo": "cámara cinematográfica virtual con estética macro",
+    "lente_sugerida": "50 a 70 milímetros",
+    "apertura_sugerida": "f/2.8 a f/4",
+    "enfoque": "fachada y abertura central del Arco de Córdoba",
+    "profundidad_de_campo": "reducida",
+    "primer_plano": "mapa ligeramente desenfocado",
+    "plano_medio": "arco completamente nítido",
+    "fondo": "mapa progresivamente desenfocado",
+    "movimiento_de_camara": "pequeño retroceso durante la aparición y estabilización al aterrizar",
+    "vibracion_de_impacto": "sacudida breve y sutil al tocar el suelo",
+    "distorsion": "mínima",
+    "calidad": "ultra alta definición"
+  },
+  "estetica": {
+    "estilos": [
+      "fotorrealismo",
+      "publicidad premium",
+      "miniatura arquitectónica",
+      "realismo mágico",
+      "efecto emergente tridimensional",
+      "composición cinematográfica"
+    ],
+    "paleta_principal": [
+      "gris piedra",
+      "beige cálido",
+      "verde pastel",
+      "amarillo suave",
+      "blanco",
+      "negro profundo"
+    ],
+    "saturacion": "natural",
+    "contraste": "controlado",
+    "texturas_prioritarias": [
+      "piedra del monumento",
+      "papel impreso",
+      "fibras rasgadas",
+      "polvo fino",
+      "superficie cartográfica"
+    ],
+    "nivel_de_realismo": "ultrarrealista"
+  },
+  "elementos_a_eliminar": [
+    "triángulo blanco central de reproducción",
+    "fondo translúcido del botón de reproducción",
+    "icono de audio apagado",
+    "círculo oscuro del icono de audio",
+    "controles multimedia",
+    "barra de reproducción",
+    "marcas de agua",
+    "textos superpuestos",
+    "interfaz de aplicación",
+    "tienda Lavish Collection",
+    "carteles Lavish",
+    "maniquíes",
+    "vidrieras comerciales",
+    "marco de teléfono"
+  ],
+  "reconstruccion_de_zonas_ocultas": {
+    "centro_de_la_imagen": {
+      "problema": "el triángulo de reproducción cubre la parte central del edificio original",
+      "solucion": "reconstruir la abertura central, la fachada, los relieves y la base del Arco de Córdoba con continuidad geométrica y de iluminación"
+    },
+    "esquina_inferior_derecha": {
+      "problema": "el icono de audio cubre una sección del mapa",
+      "solucion": "reconstruir las calles, los colores, los nombres y la textura del papel manteniendo la perspectiva"
+    },
+    "acabado": "sin halos, manchas, desenfoques artificiales ni repeticiones visibles"
+  },
+  "restricciones": {
+    "mantener": [
+      "mapa como superficie física",
+      "hueco central",
+      "papel rasgado",
+      "fragmentos suspendidos",
+      "perspectiva elevada",
+      "profundidad de campo cinematográfica"
+    ],
+    "no_incluir": [
+      "mano",
+      "pincho",
+      "tienda comercial",
+      "personas",
+      "automóviles",
+      "farolas",
+      "carteles publicitarios",
+      "edificios adicionales",
+      "vegetación que tape el monumento",
+      "fuego",
+      "humo abundante",
+      "explosión",
+      "daños en el Arco de Córdoba",
+      "estructura flotando en la posición final"
+    ]
+  },
+  "prompt_negativo": [
+    "play button",
+    "white triangle",
+    "muted audio icon",
+    "video controls",
+    "Lavish Collection store",
+    "fashion store",
+    "shop windows",
+    "mannequins",
+    "commercial signs",
+    "human hand",
+    "pushpin",
+    "floating monument",
+    "crooked arch",
+    "asymmetrical towers",
+    "damaged monument",
+    "broken architecture",
+    "extra buildings",
+    "street lamps",
+    "cars",
+    "people",
+    "fire",
+    "large explosion",
+    "excessive smoke",
+    "perfect geometric hole",
+    "flat paper",
+    "plastic texture",
+    "cartoon",
+    "illustration",
+    "low resolution",
+    "distorted map",
+    "unreadable architecture",
+    "blurred main subject",
+    "watermark",
+    "smartphone frame"
+  ],
+  "resultado_final": {
+    "descripcion": "El Arco de Córdoba aparece completamente fuera del hueco, después de haber realizado un salto corto desde debajo del papel de Google Maps. La estructura cae con peso y queda apoyada de forma firme, recta y estable sobre el mapa. Los bordes rasgados rodean su base y varios fragmentos de papel continúan descendiendo. La imagen queda limpia, sin controles de reproducción ni iconos de audio.",
+    "prioridades_visuales": [
+      "reconocimiento inmediato del Arco de Córdoba",
+      "sensación de que el monumento salió desde debajo del mapa",
+      "salto y aterrizaje con peso realista",
+      "contacto firme entre la base y el suelo",
+      "ruptura tridimensional del papel",
+      "integración natural con Google Maps"
+    ],
+    "estado_final": "Arco de Córdoba completamente fijo sobre el suelo",
+    "interfaz_limpia": true,
+    "sin_iconos_superpuestos": true
+  }
+}

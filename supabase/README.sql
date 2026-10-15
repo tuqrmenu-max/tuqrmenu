@@ -1,0 +1,23 @@
+-- =====================================================
+-- INDICE SQL - Supabase
+-- =====================================================
+-- Orden de ejecucion (primera vez):
+--
+-- 1. enable_rls.sql              Activa RLS en todas las tablas
+-- 2. seguridad_rls_fix.sql       Politicas RLS seguras + RPC functions
+-- 3. promociones_fix_completo.sql Agrega columnas faltantes a promociones
+-- 4. promociones_canje.sql       Columnas codigo/usada/activa en promociones_cliente
+-- 5. asignar_promos_nuevos.sql   Funcion para asignar promos a nuevos suscriptos
+-- 6. suscripciones_form.sql      Policy INSERT para formulario "Hacete Socio"
+-- 7. socios_solicitud.sql        Tabla legada (opcional, ya no se usa)
+--
+-- 8. tickets_caja_mozo_delivery.sql  Rol delivery, columnas items/delivery/propina/mozo/repartidor
+--                                  en tickets_caja, RPC qr_equipo_operativo y filtros en qr_caja_resumen_v2
+--                                  (requiere 2, tickets_caja_y_codigos.sql y optimizar_trafico_v2.sql)
+--
+-- Archivos individuales (ejecutar solo si necesitas algo especifico):
+--
+-- - promociones_fix_completo.sql:  tipo, asignacion, categoria, producto_id, fecha_envio
+-- - promociones_canje.sql:         codigo, usada, activa, fecha_uso + unique index
+-- - asignar_promos_nuevos.sql:     columna para_nuevos + funcion RPC
+-- =====================================================
