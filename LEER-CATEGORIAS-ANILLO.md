@@ -1,7 +1,10 @@
 # Categorías: Fijo o Anillo
 
 ## Dónde se elige
-Diseño → editor de categorías → bloque **🎡 Forma de las categorías**: dos checks, **Fijo** (como estaba, con las posiciones que se arman en el Builder) y **Anillo** (se marca uno u otro). Por defecto queda en Fijo, así que ningún cliente cambia hasta que lo active.
+1. **Diseño del menú** (la pantalla de Diseño): bloque **🎡 Forma de las categorías**, con dos checks: **Fijo** y **Anillo**. Se marca uno u otro y se toca **🚀 Exportar menú** para aplicarlo.
+2. **Builder** (botón 🎨 Builder → pestaña Categorías): el mismo selector. Ambos guardan lo mismo.
+
+Por defecto queda en Fijo, así que ningún cliente cambia hasta que lo active.
 
 ## Qué ve el cliente con Anillo (mesa 0, 00 y mesas 1 en adelante)
 - Las categorías en un anillo 3D: se desliza con el dedo o el mouse y al soltar se acomoda en la más cercana.
@@ -18,4 +21,4 @@ Diseño → editor de categorías → bloque **🎡 Forma de las categorías**: 
 Después de elegir Anillo hay que guardar/publicar el diseño para regenerar el menú del cliente (los menús ya publicados no cambian solos). La vista previa del Builder muestra el anillo de forma estática.
 
 ## Archivos
-`src/components/Builder/useBuilderState.js` (ajuste + anillo del menú), `CategoriesEditor.jsx` (checks), `PhonePreview.jsx` (vista previa), `tests/categorias-anillo.test.mjs`.
+`src/components/Builder/useBuilderState.js` (ajuste + anillo del menú), `CategoriesEditor.jsx` y `DisenoMenu.jsx` (checks), `PhonePreview.jsx` (vista previa), `tests/categorias-anillo.test.mjs`.

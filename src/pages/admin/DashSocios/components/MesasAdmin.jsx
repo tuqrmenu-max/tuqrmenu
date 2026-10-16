@@ -29,6 +29,9 @@ export default function MesasAdmin({ clienteId }) {
   const [pedidosDelivery, setPedidosDelivery] = useState([])
   // Mesa 00: clientes que no se quedan en el local (no es una mesa física, no tiene cuadradito).
   const [pedidosMesa00, setPedidosMesa00] = useState([])
+  // Triángulo de ocultar / ver de Mesa 00 (bloque del link y lista de pedidos).
+  const [mesa00LinkAbierto, setMesa00LinkAbierto] = useState(true)
+  const [mesa00ListaAbierta, setMesa00ListaAbierta] = useState(true)
   const [cantidadMesasInput, setCantidadMesasInput] = useState('')
   const [showChat, setShowChat] = useState(false)
   const [avisoChatColor, setAvisoChatColor] = useState(null)
@@ -1449,24 +1452,36 @@ export default function MesasAdmin({ clienteId }) {
 
       {/* Link / QR de Mesa 00 (para llevar): mismo menú que Mesa 0 pero sin WhatsApp */}
       {puedeDescargarQR && getMesaUrl(MESA_00) && (
-        <div className="bg-dark-800 rounded-xl px-4 py-3 mb-6 flex flex-wrap items-center gap-3 border border-dark-700">
-          <div className="flex-1 min-w-[200px]">
-            <p className="text-white font-bold text-sm">🥡 Mesa 00 · Para llevar</p>
-            <p className="text-dark-400 text-xs">Mismo menú que Mesa 0, pero el pedido no va por WhatsApp: llega a Mesas y se cobra desde acá.</p>
-            <p className="text-cyan-300 font-mono text-[11px] break-all mt-1">{getMesaUrl(MESA_00)}</p>
-          </div>
+        <div className="bg-dark-800 rounded-xl px-4 py-3 mb-6 border border-dark-700">
           <button
-            onClick={copiarLinkMesa00}
-            className="bg-dark-700 hover:bg-dark-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition"
+            type="button"
+            onClick={() => setMesa00LinkAbierto(v => !v)}
+            aria-expanded={mesa00LinkAbierto}
+            className="w-full flex items-center justify-between text-left"
           >
-            🔗 Copiar link
+            <span className="text-white font-bold text-sm">🥡 Mesa 00 · Para llevar</span>
+            <span className="text-dark-400 text-sm">{mesa00LinkAbierto ? '▲' : '▼'}</span>
           </button>
-          <button
-            onClick={() => downloadQR(MESA_00)}
-            className="bg-cyan-600 hover:bg-cyan-500 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition"
-          >
-            📥 QR
-          </button>
+          {mesa00LinkAbierto && (
+            <div className="flex flex-wrap items-center gap-3 mt-2">
+              <div className="flex-1 min-w-[200px]">
+                <p className="text-dark-400 text-xs">Mismo menú que Mesa 0, pero el pedido no va por WhatsApp: llega a Mesas y se cobra desde acá.</p>
+                <p className="text-cyan-300 font-mono text-[11px] break-all mt-1">{getMesaUrl(MESA_00)}</p>
+              </div>
+              <button
+                onClick={copiarLinkMesa00}
+                className="bg-dark-700 hover:bg-dark-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition"
+              >
+                🔗 Copiar link
+              </button>
+              <button
+                onClick={() => downloadQR(MESA_00)}
+                className="bg-cyan-600 hover:bg-cyan-500 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition"
+              >
+                📥 QR
+              </button>
+            </div>
+          )}
         </div>
       )}
 
@@ -1590,10 +1605,20 @@ export default function MesasAdmin({ clienteId }) {
       {/* Mesa 00: clientes que no se quedan en el local. No es una mesa física: no tiene cuadradito. */}
       {pedidosMesa00.length > 0 && (
         <div className="mb-6">
-          <h2 className="text-white font-bold text-lg mb-3 flex items-center gap-2">🥡 Mesa 00 · Para llevar <span className="text-dark-400 text-sm font-normal">({pedidosMesa00.length})</span></h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {pedidosMesa00.map(renderPedidoCard)}
-          </div>
+          <button
+            type="button"
+            onClick={() => setMesa00ListaAbierta(v => !v)}
+            aria-expanded={mesa00ListaAbierta}
+            className="w-full flex items-center justify-between text-left mb-3"
+          >
+            <span className="text-white font-bold text-lg flex items-center gap-2">🥡 Mesa 00 · Para llevar <span className="text-dark-400 text-sm font-normal">({pedidosMesa00.length})</span></span>
+            <span className="text-dark-400 text-sm">{mesa00ListaAbierta ? '▲' : '▼'}</span>
+          </button>
+          {mesa00ListaAbierta && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {pedidosMesa00.map(renderPedidoCard)}
+            </div>
+          )}
         </div>
       )}
 

@@ -14,6 +14,8 @@ export default function DisenoMenu({ clienteId }) {
   const [loading, setLoading] = useState(true)
   const [headerControls, setHeaderControls] = useState(null)
   const [logoBar, setLogoBar] = useState('')
+  // Forma de las categorías en el menú del cliente: 'fijo' (como siempre) o 'anillo' (3D).
+  const [categoriesLayout, setCategoriesLayout] = useState('fijo')
   const [uploadingLogoBar, setUploadingLogoBar] = useState(false)
   const [ocultarBuilder, setOcultarBuilder] = useState(false)
   const [contacto, setContacto] = useState({ whatsapp: '', instagram: '', direccion: '', horario: '', alias: '', delivery: '' })
@@ -30,7 +32,7 @@ export default function DisenoMenu({ clienteId }) {
     // Cada carga es independiente: si una falla (columna faltante, red, etc.)
     // la pantalla igual se abre con valores por defecto.
     const cargaConfig = loadBuilderConfig(clienteId)
-      .then(config => { if (active) { setHeaderControls(config?.headerControls || {}); setLogoBar(config?.logoBar || '') } })
+      .then(config => { if (active) { setHeaderControls(config?.headerControls || {}); setLogoBar(config?.logoBar || ''); setCategoriesLayout(config?.categoriesLayout === 'anillo' ? 'anillo' : 'fijo') } })
       .catch(err => {
         console.error('[DisenoMenu] loadBuilderConfig', err)
         if (active) setHeaderControls({})
@@ -142,6 +144,7 @@ export default function DisenoMenu({ clienteId }) {
       if (config) builder.loadBuilderConfig(config)
       if (headerControls) builder.setField('headerControls', headerControls)
       builder.setField('logoBar', logoBar || '')
+      builder.setField('categoriesLayout', categoriesLayout === 'anillo' ? 'anillo' : 'fijo')
       builder.setField('rows', builderProducts.rows || [])
       builder.setField('productImages', builderProducts.productImages || {})
       builder.setField('categoryImages', builderProducts.categoryImages || {})
@@ -209,6 +212,34 @@ export default function DisenoMenu({ clienteId }) {
               >
                 {savingProject ? '⏳ Guardando...' : '🚀 Exportar menú'}
               </button>
+            </div>
+          </div>
+
+          {/* Forma de las categorías que ve el cliente (mesa 0, 00 y mesas 1+) */}
+          <div className="mt-4 border-t border-dark-700 pt-4">
+            <h3 className="font-bold text-white">🎡 Forma de las categorías</h3>
+            <p className="text-sm text-dark-300 my-2">Elegí cómo ve el cliente las categorías en el menú. Después tocá “🚀 Exportar menú” para que se aplique.</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-xl">
+              {[
+                { id: 'fijo', label: 'Fijo', desc: 'Cada categoría en la posición que le diste en el Builder' },
+                { id: 'anillo', label: 'Anillo', desc: 'Anillo 3D: se desliza y se entra a la categoría del centro' }
+              ].map(op => (
+                <label
+                  key={op.id}
+                  className={`flex items-start gap-2 p-3 rounded-lg border cursor-pointer transition ${categoriesLayout === op.id ? 'border-primary-500 bg-primary-500/10' : 'border-dark-600 hover:border-dark-500'}`}
+                >
+                  <input
+                    type="checkbox"
+                    checked={categoriesLayout === op.id}
+                    onChange={() => setCategoriesLayout(op.id)}
+                    className="mt-0.5 accent-primary-500 w-4 h-4"
+                  />
+                  <span>
+                    <span className="block text-sm font-medium text-white">{op.label}</span>
+                    <span className="block text-xs text-dark-400">{op.desc}</span>
+                  </span>
+                </label>
+              ))}
             </div>
           </div>
 
