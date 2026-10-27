@@ -167,6 +167,42 @@ export default function CategoriesEditor() {
 
   return (
     <div className="space-y-4">
+      {/* Forma de mostrar las categorías al cliente: Fijo (posiciones del Builder) o Anillo 3D */}
+      <div className="bg-dark-700/50 rounded-xl p-3 border border-dark-600">
+        <h4 className="text-sm font-semibold text-white mb-1">🎡 Forma de las categorías</h4>
+        <p className="text-[10px] text-dark-400 mb-3">Elegí cómo ve el cliente las categorías en el menú (mesa 0, 00 y mesas 1 en adelante).</p>
+        <div className="grid grid-cols-2 gap-2">
+          {[
+            { id: 'fijo', label: 'Fijo', desc: 'Cada categoría en la posición que le diste' },
+            { id: 'anillo', label: 'Anillo', desc: 'Anillo 3D: se desliza y se entra a la del centro' }
+          ].map(op => {
+            const activo = (state.categoriesLayout === 'anillo' ? 'anillo' : 'fijo') === op.id
+            return (
+              <label
+                key={op.id}
+                className={`flex items-start gap-2 p-2.5 rounded-lg border cursor-pointer transition ${activo ? 'border-primary-500 bg-primary-500/10' : 'border-dark-600 hover:border-dark-500'}`}
+              >
+                <input
+                  type="checkbox"
+                  checked={activo}
+                  onChange={() => state.setField('categoriesLayout', op.id)}
+                  className="mt-0.5 accent-primary-500 w-4 h-4"
+                />
+                <span>
+                  <span className="block text-sm font-medium text-white">{op.label}</span>
+                  <span className="block text-[10px] text-dark-400">{op.desc}</span>
+                </span>
+              </label>
+            )
+          })}
+        </div>
+        {state.categoriesLayout === 'anillo' && (
+          <p className="text-[10px] text-dark-400 mt-2">
+            En modo Anillo se usan las imágenes y categorías cargadas (con fondo transparente se ven mejor). Las posiciones de cada categoría solo se usan en modo Fijo. Para verlo en un menú ya publicado, guardá/publicá de nuevo el diseño.
+          </p>
+        )}
+      </div>
+
       {/* Iconos superiores - Posición */}
       <div className="bg-dark-700/50 rounded-xl p-3 border border-dark-600">
         <h4 className="text-sm font-semibold text-white mb-2">📍 Posición iconos superiores</h4>

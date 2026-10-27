@@ -36,6 +36,8 @@ export const useBuilderState = create((set, get) => ({
   logoBar: '',
   blur: 55,
   categoriesBlur: 55,
+  // Cómo se muestran las categorías al cliente: 'fijo' (posiciones del Builder) o 'anillo' (3D, se desliza).
+  categoriesLayout: 'fijo',
   productsBlur: 55,
   cartBlur: 55,
   welcomeText: '',
@@ -296,6 +298,7 @@ export const useBuilderState = create((set, get) => ({
       cartBg: s.cartBg,
       blur: s.blur,
       categoriesBlur: s.categoriesBlur,
+      categoriesLayout: s.categoriesLayout,
       productsBlur: s.productsBlur,
       cartBlur: s.cartBlur,
       welcomeColor: s.welcomeColor,
@@ -333,7 +336,7 @@ export const useBuilderState = create((set, get) => ({
     if (!config) return
     const patch = {}
     const fields = [
-      'categoriesBg', 'productsBg', 'cartBg', 'blur', 'categoriesBlur', 'productsBlur', 'cartBlur',
+      'categoriesBg', 'productsBg', 'cartBg', 'blur', 'categoriesBlur', 'categoriesLayout', 'productsBlur', 'cartBlur',
       'welcomeColor', 'welcomeBg', 'welcomeBgNone', 'welcomeSize',
       'buttonText', 'buttonBg', 'buttonBorder', 'buttonColor', 'buttonFontSize', 'buttonPadding', 'buttonWidth',
       'logoTransform', 'welcomeTransform', 'buttonTransform',
@@ -428,6 +431,7 @@ export const useBuilderState = create((set, get) => ({
       logoBar: state.logoBar,
       blur: state.blur,
       categoriesBlur: state.categoriesBlur,
+      categoriesLayout: state.categoriesLayout === 'anillo' ? 'anillo' : 'fijo',
       productsBlur: state.productsBlur,
       cartBlur: state.cartBlur,
       welcomeText: state.welcomeText,
@@ -510,6 +514,22 @@ body{background:#0b0d10;color:#eef1f3;font-family:Inter,Segoe UI,Arial,sans-seri
 .catImg{width:96px;height:96px;overflow:hidden;display:grid;place-items:center;margin:0 auto 4px}
 .catImg img{width:100%;height:100%;object-fit:cover}
 .cat b{color:#fff;font-size:11px;display:block;max-width:96px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.categories.ringMode{height:calc(100% - 94px);overflow:hidden;padding:0;touch-action:none;overscroll-behavior:none}
+.ringStage{position:absolute;inset:0;touch-action:none;cursor:grab;-webkit-user-select:none;user-select:none}
+.ringStage:active{cursor:grabbing}
+.ringTrack{position:absolute;left:50%;border:1.5px dashed rgba(255,255,255,.3);border-radius:50%;pointer-events:none}
+.ringHalo{position:absolute;left:50%;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.2),transparent);pointer-events:none}
+.ringIt{position:absolute;left:50%;border:0;background:none;padding:0;will-change:transform,opacity;-webkit-tap-highlight-color:transparent;outline:none;cursor:inherit}
+.ringIt img{width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;filter:drop-shadow(0 14px 16px rgba(0,0,0,.6))}
+.ringIt.on img{filter:drop-shadow(0 18px 20px rgba(0,0,0,.6)) drop-shadow(0 0 26px rgba(255,255,255,.28))}
+.ringEmoji{display:grid;place-items:center;width:100%;height:100%;font-size:90px;pointer-events:none}
+.ringLabel{position:absolute;left:0;right:0;bottom:18px;text-align:center;pointer-events:none;padding:0 16px}
+.ringName{color:#fff;font-size:26px;font-weight:800;line-height:1.15;text-shadow:0 3px 14px rgba(0,0,0,.9)}
+.ringCount{color:rgba(255,255,255,.8);font-size:12px;margin-top:3px;text-shadow:0 2px 8px rgba(0,0,0,.9)}
+.ringHint{color:rgba(255,255,255,.7);font-size:12px;margin-top:10px;transition:opacity .4s;text-shadow:0 2px 8px rgba(0,0,0,.9)}
+.ringDots{display:flex;gap:6px;justify-content:center;margin-top:10px}
+.ringDots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.35);transition:all .25s}
+.ringDots i.on{width:22px;border-radius:4px;background:#fff}
 .productsTop{position:sticky;top:0;z-index:8;min-height:94px;padding:6px 10px;background:#000;display:grid;grid-template-columns:minmax(44px,1fr) auto;grid-template-rows:28px 54px;align-items:center;gap:0 clamp(3px,1.4vw,8px);overflow:hidden}
 .productsTop .productBack,.productsTop .topActionBtn,.productsTop .bellBtnTop,.productsTop .floatingCart,.productsTop .exitTopBtn{position:relative!important;left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;transform:none!important;transform-origin:center!important}
 .productsTop .title{grid-column:1/-1;grid-row:1;width:100%;padding:0;margin:0;font-size:clamp(12px,3.7vw,15px);line-height:1.15;text-shadow:0 3px 10px rgba(0,0,0,.85);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -741,7 +761,7 @@ function applyCartaHeaderControls(){
   });
 }
 window.addEventListener('resize',()=>requestAnimationFrame(applyCartaHeaderControls));
-function setView(name){state.screen=name;['cover','cats','products','cart'].forEach(id=>$(id).classList.remove('active'));({cover:'cover',categories:'cats',products:'products',cart:'cart'}[name]&&$(({cover:'cover',categories:'cats',products:'products',cart:'cart'}[name])).classList.add('active'));renderBg();if(name==='categories')renderTopIcons();applyCompactTopTransforms();applySafeTopTransforms();requestAnimationFrame(applyCartaHeaderControls);const mb=$('mesaBadge');if(mb)mb.style.display='none'}
+function setView(name){state.screen=name;['cover','cats','products','cart'].forEach(id=>$(id).classList.remove('active'));({cover:'cover',categories:'cats',products:'products',cart:'cart'}[name]&&$(({cover:'cover',categories:'cats',products:'products',cart:'cart'}[name])).classList.add('active'));renderBg();if(name==='categories'){renderTopIcons();if(window.__ringMeasure)requestAnimationFrame(window.__ringMeasure)}applyCompactTopTransforms();applySafeTopTransforms();requestAnimationFrame(applyCartaHeaderControls);const mb=$('mesaBadge');if(mb)mb.style.display='none'}
 function renderBg(){const bg=state.screen==='cover'?DATA.coverBg:(state.screen==='categories'?(DATA.categoriesBg||DATA.coverBg):(state.screen==='products'?(DATA.productsBg||DATA.categoriesBg||DATA.coverBg):(DATA.cartBg||DATA.productsBg||DATA.categoriesBg||DATA.coverBg)));const blurVal=state.screen==='cover'?DATA.blur:(state.screen==='categories'?(DATA.categoriesBlur||DATA.blur):(state.screen==='products'?(DATA.productsBlur||DATA.blur):(DATA.cartBlur||DATA.blur)));$('bg').style.backgroundImage=bg?'url('+bg+')':'linear-gradient(160deg,#1b2027,#0b0d10)';$('bg').style.filter='blur('+(blurVal/100)*18+'px)';$('shade').style.background=state.screen==='cover'?'rgba(0,0,0,.1)':'rgba(0,0,0,.45)'}
 function renderCover(){renderBg();const w=$('welcome');w.textContent=DATA.welcomeText;w.style.color=DATA.welcomeColor;w.style.background=(DATA.welcomeText&&!DATA.welcomeBgNone)?DATA.welcomeBg+'99':'transparent';w.style.fontSize=DATA.welcomeSize+'px';w.classList.toggle('hidden',!DATA.welcomeText);const t=DATA.welcomeTransform||{x:300,y:120,scale:1,rotation:0};w.style.left=(t.x/1080*100)+'%';w.style.top=(t.y/1920*100)+'%';w.style.transform='rotate('+(t.rotation||0)+'deg) scale('+(t.scale||1)+')';const logo=$('logo');logo.src=DATA.logo;logo.classList.toggle('hidden',!DATA.logo);const lt=DATA.logoTransform||{x:280,y:670,scale:1,rotation:0};logo.style.left=(lt.x/1080*100)+'%';logo.style.top=(lt.y/1920*100)+'%';logo.style.transform='rotate('+(lt.rotation||0)+'deg) scale('+(lt.scale||1)+')';const b=$('menuBtn');b.textContent=DATA.buttonText||'VER MENÚ';b.style.background=hexAlpha(DATA.buttonBg||'#008080',0.3);b.style.borderColor=DATA.buttonBorder;b.style.color=DATA.buttonColor;b.style.padding=(DATA.buttonPadding||15)+'px';b.style.fontSize=(DATA.buttonFontSize||14)+'px';b.style.width=(DATA.buttonWidth||82)+'%';const bt=DATA.buttonTransform||{x:100,y:1680,scale:1,rotation:0};b.style.left=(bt.x/1080*100)+'%';b.style.top=(bt.y/1920*100)+'%';b.style.transform='rotate('+(bt.rotation||0)+'deg) scale('+(bt.scale||1)+')';renderTopIcons()}
 function renderLogoButtonContent(el){if(!el)return;const barLogo=DATA.logoBar||DATA.logo;if(barLogo){el.innerHTML='<img src="'+barLogo+'" style="width:32px;height:32px;object-fit:cover;border-radius:6px" alt="">'}else{el.textContent='ℹ️'}}
@@ -754,7 +774,83 @@ function renderTopIcons(){const tt=DATA.topTransforms||{};const iconMap={promo:{
 const mesaEl=$('mesaBadge');if(mesaEl){const mt=tt.mesa;if(mt){mesaEl.style.left=(mt.x/1080*100)+'%';mesaEl.style.top=(mt.y/1920*100)+'%';mesaEl.style.transform='rotate('+(mt.rotation||0)+'deg) scale('+(mt.scale||1)+')';mesaEl.style.transformOrigin='top left'}}const exitEl=$('exitMenuCats');if(exitEl){const bt=tt.exit;if(bt){exitEl.style.position='absolute';exitEl.style.left=(bt.x/1080*100)+'%';exitEl.style.top=(bt.y/1920*100)+'%';exitEl.style.transform='rotate('+(bt.rotation||0)+'deg) scale('+(bt.scale||1)+')';exitEl.style.transformOrigin='top left'}}const topLogo=$('topLogo');if(topLogo){renderLogoButtonContent(topLogo);const tlt=tt.logo;if(tlt){topLogo.style.position='absolute';topLogo.style.left=(tlt.x/1080*100)+'%';topLogo.style.top=(tlt.y/1920*100)+'%';topLogo.style.transform='rotate('+(tlt.rotation||0)+'deg) scale('+(tlt.scale||1)+')';topLogo.style.transformOrigin='top left'}}const frameEl=$('catsTopFrame');if(frameEl){const ft=tt.frame||{x:8,y:20,scale:1,rotation:0};frameEl.style.left=(ft.x/1080*100)+'%';frameEl.style.top=ft.y+'px';frameEl.style.width=(((1080-2*ft.x)*ft.scale)/1080*100)+'%';frameEl.style.height=(72*ft.scale)+'px';frameEl.style.borderRadius=(14*ft.scale)+'px';frameEl.style.border=DATA.topBarFrameBorderTransparent?'none':'1px solid '+(DATA.topBarFrameBorderColor||'rgba(156,163,175,0.55)');frameEl.style.background=DATA.topBarFrameBgTransparent?'transparent':(DATA.topBarFrameBgColor||'transparent');frameEl.style.transform='rotate('+(ft.rotation||0)+'deg)';frameEl.style.transformOrigin='top left'}
 applyPromoDots();
 }
-function renderCategories(){$('catList').innerHTML='';categories().forEach(([c,count],idx)=>{const img=findCategoryImage(c);const t=(DATA.categoryTransforms||{})[slug(c)||'sin-categoria']||{x:60+(idx%3)*350,y:350+Math.floor(idx/3)*420,scale:1,rotation:0};const div=document.createElement('div');div.className='cat';div.style.left=(t.x/1080*100)+'%';div.style.top=(t.y/1920*100)+'%';div.style.transform='rotate('+(t.rotation||0)+'deg) scale('+(t.scale||1)+')';div.innerHTML='<div class="catImg">'+(img?'<img loading="lazy" decoding="async" src="'+img+'">':'🍽️')+'</div><b>'+c+'</b>';div.onclick=()=>{state.selectedCategory=c;renderProducts();setView('products')};$('catList').appendChild(div)})}
+let __ringKill=null;
+function renderCategoriesRing(){
+const list=$('catList');
+if(__ringKill){__ringKill();__ringKill=null}
+list.innerHTML='';list.classList.add('ringMode');
+const cats=categories(),N=cats.length;
+const cyc=N>=5,STEP=cyc?360/N:34,RAD=Math.PI/180;
+const rMod=(a,n)=>((a%n)+n)%n;
+const stage=document.createElement('div');stage.className='ringStage';
+const track=document.createElement('div');track.className='ringTrack';
+const halo=document.createElement('div');halo.className='ringHalo';
+stage.appendChild(track);stage.appendChild(halo);
+const items=cats.map(e=>{const c=e[0],img=findCategoryImage(c),b=document.createElement('button');b.type='button';b.className='ringIt';b.setAttribute('aria-label',c);b.innerHTML=img?'<img draggable="false" decoding="async" alt="" src="'+img+'">':'<span class="ringEmoji">🍽️</span>';stage.appendChild(b);return b});
+const label=document.createElement('div');label.className='ringLabel';
+label.innerHTML='<div class="ringName"></div><div class="ringCount"></div><div class="ringHint">Deslizá para girar · tocá la del centro para entrar</div><div class="ringDots"></div>';
+stage.appendChild(label);list.appendChild(stage);
+const nameEl=label.querySelector('.ringName'),countEl=label.querySelector('.ringCount'),hintEl=label.querySelector('.ringHint'),dotsEl=label.querySelector('.ringDots');
+const dots=N<=12?cats.map(()=>{const d=document.createElement('i');dotsEl.appendChild(d);return d}):[];
+let W=0,H=0,R=0,S=0,tilt=0,cy=0,rot=0,target=0,vel=0,drag=false,lastX=0,lastT=0,moved=0,downIdx=null,raf=0,last=0,cur=-1;
+const maxRot=(N-1)*STEP;
+const clampT=v=>cyc?v:Math.max(0,Math.min(maxRot,v));
+function centerIdx(){const k=Math.round(rot/STEP);return cyc?rMod(k,N):Math.max(0,Math.min(N-1,k))}
+function measure(){
+const r=stage.getBoundingClientRect();if(r.width<10||r.height<10)return;
+W=r.width;H=r.height;S=Math.max(96,Math.min(W*.48,H*.32,260));R=Math.min(W*.43,220);tilt=Math.min(R*.34,H*.15);cy=H*.41;
+items.forEach(b=>{b.style.width=b.style.height=S+'px';b.style.marginLeft=b.style.marginTop=(-S/2)+'px';b.style.top=cy+'px'});
+const th=tilt+S*.25;track.style.width=(2*R+S*.3)+'px';track.style.height=th+'px';track.style.marginLeft=(-(R+S*.15))+'px';track.style.marginTop=(-th/2)+'px';track.style.top=(cy+S*.5-tilt*.65)+'px';
+halo.style.width=halo.style.height=(S*1.7)+'px';halo.style.marginLeft=halo.style.marginTop=(-S*.85)+'px';halo.style.top=cy+'px';
+render();
+}
+function render(){
+if(!W)return;
+for(let i=0;i<N;i++){
+const a=(i*STEP-rot)*RAD,t=(Math.cos(a)+1)/2,x=Math.sin(a)*R,y=tilt*(t-.65),sc=.48+.52*Math.pow(t,1.25);
+const b=items[i];b.style.transform='translate3d('+x.toFixed(1)+'px,'+y.toFixed(1)+'px,0) scale('+sc.toFixed(3)+')';b.style.opacity=(.28+.72*Math.pow(t,1.4)).toFixed(3);b.style.zIndex=Math.round(t*100);
+}
+const c=centerIdx();
+if(c!==cur){
+if(cur>=0){items[cur].classList.remove('on');if(dots[cur])dots[cur].classList.remove('on')}
+cur=c;items[c].classList.add('on');if(dots[c])dots[c].classList.add('on');
+nameEl.textContent=cats[c][0];countEl.textContent=N>12?(c+1)+' / '+N:(cats[c][1]+(cats[c][1]===1?' producto':' productos'));
+}
+}
+function tick(now){
+const dt=Math.min(40,now-last)/16.67;last=now;
+if(!drag){const d=target-rot;if(Math.abs(d)<.02){rot=target;render();raf=0;return}rot+=d*(1-Math.pow(.88,dt))}
+render();raf=requestAnimationFrame(tick);
+}
+function kick(){if(!raf){last=performance.now();raf=requestAnimationFrame(tick)}}
+function quiet(){hintEl.style.opacity='0'}
+function goTo(i){state.selectedCategory=cats[i][0];renderProducts();setView('products')}
+stage.addEventListener('pointerdown',e=>{drag=true;lastX=e.clientX;lastT=e.timeStamp;vel=0;moved=0;const el=e.target.closest&&e.target.closest('.ringIt');downIdx=el?items.indexOf(el):null;try{stage.setPointerCapture(e.pointerId)}catch(_){}kick()});
+stage.addEventListener('pointermove',e=>{
+if(!drag)return;
+const dx=e.clientX-lastX,dt=Math.max(1,e.timeStamp-lastT);lastX=e.clientX;lastT=e.timeStamp;moved+=Math.abs(dx);
+const deg=dx/R/RAD;rot-=deg;if(!cyc)rot=Math.max(-STEP*.35,Math.min(maxRot+STEP*.35,rot));
+vel=.75*vel+.25*(-deg/dt);if(moved>6)quiet();
+});
+const end=()=>{
+if(!drag)return;drag=false;
+if(moved<6&&downIdx!==null){
+const half=Math.floor(N/2),d=cyc?rMod(downIdx-cur+half,N)-half:downIdx-cur;
+if(d===0){goTo(downIdx);return}
+target=clampT(Math.round(rot/STEP)*STEP+d*STEP);quiet();kick();return;
+}
+const proj=Math.max(-2*STEP,Math.min(2*STEP,vel*180));
+target=clampT(Math.round((rot+proj)/STEP)*STEP);kick();
+};
+stage.addEventListener('pointerup',end);stage.addEventListener('pointercancel',end);
+let lastWheel=0;
+stage.addEventListener('wheel',e=>{e.preventDefault();const n=Date.now();if(n-lastWheel<180)return;lastWheel=n;const v=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;target=clampT(Math.round(target/STEP)*STEP+(v>0?STEP:-STEP));quiet();kick()},{passive:false});
+window.addEventListener('resize',measure);
+window.__ringMeasure=measure;
+__ringKill=()=>{window.removeEventListener('resize',measure);if(raf)cancelAnimationFrame(raf);window.__ringMeasure=null};
+measure();
+}
+function renderCategories(){$('catList').classList.remove('ringMode');if(__ringKill){__ringKill();__ringKill=null}if(DATA.categoriesLayout==='anillo'&&categories().length>0){renderCategoriesRing();return}$('catList').innerHTML='';categories().forEach(([c,count],idx)=>{const img=findCategoryImage(c);const t=(DATA.categoryTransforms||{})[slug(c)||'sin-categoria']||{x:60+(idx%3)*350,y:350+Math.floor(idx/3)*420,scale:1,rotation:0};const div=document.createElement('div');div.className='cat';div.style.left=(t.x/1080*100)+'%';div.style.top=(t.y/1920*100)+'%';div.style.transform='rotate('+(t.rotation||0)+'deg) scale('+(t.scale||1)+')';div.innerHTML='<div class="catImg">'+(img?'<img loading="lazy" decoding="async" src="'+img+'">':'🍽️')+'</div><b>'+c+'</b>';div.onclick=()=>{state.selectedCategory=c;renderProducts();setView('products')};$('catList').appendChild(div)})}
 function applyCompactTopTransforms(){const tt=DATA.topTransforms||{};const groups={back:['backCover','backCats','backProducts'],logo:['logoInfoCategories','logoInfoProducts','logoInfoCart'],promo:['promoCategories','promoProducts','cartPromo'],bell:['callMozoCats','callMozoTop','callMozoCart'],exit:['exitMenuCats','exitTop','exitCart']};Object.entries(groups).forEach(([key,ids])=>{const t=tt[key];if(!t)return;ids.forEach(id=>{const el=$(id);if(!el)return;el.style.position='absolute';el.style.left=(Number(t.x||0)/1080*100)+'%';el.style.top=Number(t.y||0)+'px';el.style.transformOrigin='top left';el.style.transform='rotate('+(t.rotation||0)+'deg) scale('+(t.scale||1)+')'})});const mt=tt.mesa;const mesa=$('mesaBadge');if(mt&&mesa){mesa.style.left=(Number(mt.x||0)/1080*100)+'%';mesa.style.top=(Number(mt.y||0)/1920*100)+'%';mesa.style.transformOrigin='top left';mesa.style.transform='rotate('+(mt.rotation||0)+'deg) scale('+(mt.scale||1)+')'}}
 function renderProducts(){$('prodTitle').textContent=state.selectedCategory||'Productos';$('prodList').innerHTML='';DATA.rows.forEach((r,i)=>{if((r.categoria||'Sin categoría')!==state.selectedCategory)return;const img=findProductImage(r,i);const q=state.draftQty[i]||0;const inCart=Number(state.cart[i]||0)>0;const card=document.createElement('div');card.className='product-card';const desc=(r.detalle||'').trim();card.innerHTML=(img?'<img loading="lazy" decoding="async" src="'+img+'">':'<div class="prod-placeholder">🍽️</div>')+'<div class="prod-info"><h4>'+escapeHtml(r.producto)+'</h4>'+(desc?'<p class="prod-desc">'+escapeHtml(desc)+'</p>':'')+'<div class="price">'+money(price(r.precio))+'</div></div>'+'<div class="qty"><button data-minus="'+i+'">−</button><span>'+q+'</span><button data-plus="'+i+'">+</button><button class="check '+(inCart?'active':'')+'" data-check="'+i+'" title="Agregar al carrito"><span>'+(inCart?'✓':'')+'</span></button></div>';$('prodList').appendChild(card)});$('prodList').querySelectorAll('[data-plus]').forEach(b=>b.onclick=()=>{const i=String(b.dataset.plus);state.draftQty[i]=(state.draftQty[i]||0)+1;renderProducts()});$('prodList').querySelectorAll('[data-minus]').forEach(b=>b.onclick=()=>{const i=String(b.dataset.minus);if(state.draftQty[i]>0)state.draftQty[i]--;renderProducts()});$('prodList').querySelectorAll('[data-check]').forEach(b=>b.onclick=()=>{const i=String(b.dataset.check);const q=state.draftQty[i]||1;if(state.cart[i]){delete state.cart[i];delete state.draftQty[i]}else{state.cart[i]=q}renderProducts();renderCartBadge();renderCart()});renderCartBadge()}
 function cartItems(){return Object.entries(state.cart).filter(([,q])=>q>0).map(([i,q])=>({...DATA.rows[i],idx:i,qty:q}))}

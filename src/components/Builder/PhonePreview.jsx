@@ -270,7 +270,39 @@ export default function PhonePreview() {
                   <button style={{ background: 'transparent', border: 0, color: '#fff', padding: '10px 16px', borderRadius: 12, fontSize: 13, fontWeight: 600, cursor: 'pointer', filter: 'drop-shadow(0 5px 12px rgba(0,0,0,.8))' }}>✕ Salir</button>
                 </div>
               </div>
-              {/* Category grid */}
+              {/* Category grid / Anillo */}
+              {state.categoriesLayout === 'anillo' && categories.length > 0 ? (
+                <div style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
+                  {(() => {
+                    const N = categories.length
+                    const cyc = N >= 5
+                    const STEP = cyc ? 360 / N : 34
+                    const R = 120, S = 150, tilt = 40
+                    return categories.map(([cat], i) => {
+                      const a = (i * STEP) * Math.PI / 180
+                      const t = (Math.cos(a) + 1) / 2
+                      const x = Math.sin(a) * R
+                      const y = tilt * (t - 0.65)
+                      const sc = 0.48 + 0.52 * Math.pow(t, 1.25)
+                      const img = state.findCategoryImage(cat)
+                      return (
+                        <div
+                          key={cat}
+                          style={{ position: 'absolute', left: '50%', top: '38%', width: S, height: S, marginLeft: -S / 2, marginTop: -S / 2, transform: `translate3d(${x}px, ${y}px, 0) scale(${sc})`, opacity: 0.28 + 0.72 * Math.pow(t, 1.4), zIndex: Math.round(t * 100) }}
+                        >
+                          {img
+                            ? <img style={{ width: '100%', height: '100%', objectFit: 'contain', filter: 'drop-shadow(0 12px 14px rgba(0,0,0,.6))' }} src={img} alt="" />
+                            : <span style={{ fontSize: 72, display: 'grid', placeItems: 'center', height: '100%' }}>🍽️</span>}
+                        </div>
+                      )
+                    })
+                  })()}
+                  <div style={{ position: 'absolute', left: 0, right: 0, bottom: 14, textAlign: 'center', padding: '0 12px' }}>
+                    <div style={{ color: '#fff', fontSize: 20, fontWeight: 800, textShadow: '0 3px 12px rgba(0,0,0,.9)' }}>{categories[0][0]}</div>
+                    <div style={{ color: 'rgba(255,255,255,.7)', fontSize: 10, marginTop: 6 }}>Anillo: el cliente desliza para girar y toca la del centro para entrar</div>
+                  </div>
+                </div>
+              ) : (
               <div style={{ flex: 1, overflow: 'auto', padding: '0 14px 20px', position: 'relative', overscrollBehavior: 'contain', touchAction: 'pan-y', WebkitOverflowScrolling: 'touch' }}>
                 {categories.map(([cat, count], idx) => {
                   const img = state.findCategoryImage(cat)
@@ -296,6 +328,7 @@ export default function PhonePreview() {
                   )
                 })}
               </div>
+              )}
             </div>
           )}
 

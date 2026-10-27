@@ -29,6 +29,9 @@ export default function MesasAdmin({ clienteId }) {
   const [pedidosDelivery, setPedidosDelivery] = useState([])
   // Mesa 00: clientes que no se quedan en el local (no es una mesa física, no tiene cuadradito).
   const [pedidosMesa00, setPedidosMesa00] = useState([])
+  // Triángulo de ocultar / ver de Mesa 00 (bloque del link y lista de pedidos).
+  const [mesa00LinkAbierto, setMesa00LinkAbierto] = useState(true)
+  const [mesa00ListaAbierta, setMesa00ListaAbierta] = useState(true)
   const [cantidadMesasInput, setCantidadMesasInput] = useState('')
   const [showChat, setShowChat] = useState(false)
   const [avisoChatColor, setAvisoChatColor] = useState(null)
@@ -299,7 +302,7 @@ export default function MesasAdmin({ clienteId }) {
   const fetchCliente = async () => {
     const { data, error } = await supabase
       .from('clientes')
-      .select('id, user_id, menu_url, nombre_restaurante, ocultar_eliminar_mesa, permisos_mesas_acciones, delivery, enable_mesa00, enable_mesa0, enable_mesa1')
+      .select('id, user_id, menu_url, nombre_restaurante, ocultar_eliminar_mesa, permisos_mesas_acciones, delivery')
       .eq('id', clienteId)
       .single()
     if (error) console.error('Error fetching cliente:', error)
@@ -320,22 +323,6 @@ export default function MesasAdmin({ clienteId }) {
       setCliente(prev => ({ ...prev, ocultar_eliminar_mesa: !value }))
     } else {
       toast.success(value ? 'Botón "Eliminar mesa" suspendido para este socio' : 'Botón "Eliminar mesa" habilitado para este socio')
-    }
-  }
-
-  const toggleMesaFeature = async (feature, label) => {
-    const value = cliente?.[feature] !== false
-    const newValue = !value
-    setCliente(prev => ({ ...prev, [feature]: newValue }))
-    const { error } = await supabase
-      .from('clientes')
-      .update({ [feature]: newValue })
-      .eq('id', clienteId)
-    if (error) {
-      toast.error(`Error al actualizar ${label}: ${error.message}`)
-      setCliente(prev => ({ ...prev, [feature]: value }))
-    } else {
-      toast.success(`${label} ${newValue ? 'habilitado' : 'deshabilitado'} para este socio`)
     }
   }
 
@@ -1458,58 +1445,43 @@ export default function MesasAdmin({ clienteId }) {
               onChange={toggleOcultarEliminarMesa}
               className="accent-primary-500"
             />
-            Suspender botón "Eliminar mesa" para este socio
-          </label>
-          <label className="flex items-center gap-2 text-sm text-white cursor-pointer">
-            <input
-              type="checkbox"
-              checked={cliente?.enable_mesa00 !== false}
-              onChange={() => toggleMesaFeature('enable_mesa00', 'Mesa 00')}
-              className="accent-primary-500"
-            />
-            Habilitar Mesa 00
-          </label>
-          <label className="flex items-center gap-2 text-sm text-white cursor-pointer">
-            <input
-              type="checkbox"
-              checked={cliente?.enable_mesa0 !== false}
-              onChange={() => toggleMesaFeature('enable_mesa0', 'Mesa 0')}
-              className="accent-primary-500"
-            />
-            Habilitar Mesa 0
-          </label>
-          <label className="flex items-center gap-2 text-sm text-white cursor-pointer">
-            <input
-              type="checkbox"
-              checked={cliente?.enable_mesa1 !== false}
-              onChange={() => toggleMesaFeature('enable_mesa1', 'Mesas 1+')}
-              className="accent-primary-500"
-            />
-            Habilitar Mesas 1+
+            Suspender botón "Eliminar mesa" para este socio (no se ve en su panel)
           </label>
         </div>
       )}
 
       {/* Link / QR de Mesa 00 (para llevar): mismo menú que Mesa 0 pero sin WhatsApp */}
       {puedeDescargarQR && getMesaUrl(MESA_00) && (
-        <div className="bg-dark-800 rounded-xl px-4 py-3 mb-6 flex flex-wrap items-center gap-3 border border-dark-700">
-          <div className="flex-1 min-w-[200px]">
-            <p className="text-white font-bold text-sm">🥡 Mesa 00 · Para llevar</p>
-            <p className="text-dark-400 text-xs">Mismo menú que Mesa 0, pero el pedido no va por WhatsApp: llega a Mesas y se cobra desde acá.</p>
-            <p className="text-cyan-300 font-mono text-[11px] break-all mt-1">{getMesaUrl(MESA_00)}</p>
-          </div>
+        <div className="bg-dark-800 rounded-xl px-4 py-3 mb-6 border border-dark-700">
           <button
-            onClick={copiarLinkMesa00}
-            className="bg-dark-700 hover:bg-dark-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition"
+            type="button"
+            onClick={() => setMesa00LinkAbierto(v => !v)}
+            aria-expanded={mesa00LinkAbierto}
+            className="w-full flex items-center justify-between text-left"
           >
-            🔗 Copiar link
+            <span className="text-white font-bold text-sm">🥡 Mesa 00 · Para llevar</span>
+            <span className="text-dark-400 text-sm">{mesa00LinkAbierto ? '▲' : '▼'}</span>
           </button>
-          <button
-            onClick={() => downloadQR(MESA_00)}
-            className="bg-cyan-600 hover:bg-cyan-500 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition"
-          >
-            📥 QR
-          </button>
+          {mesa00LinkAbierto && (
+            <div className="flex flex-wrap items-center gap-3 mt-2">
+              <div className="flex-1 min-w-[200px]">
+                <p className="text-dark-400 text-xs">Mismo menú que Mesa 0, pero el pedido no va por WhatsApp: llega a Mesas y se cobra desde acá.</p>
+                <p className="text-cyan-300 font-mono text-[11px] break-all mt-1">{getMesaUrl(MESA_00)}</p>
+              </div>
+              <button
+                onClick={copiarLinkMesa00}
+                className="bg-dark-700 hover:bg-dark-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition"
+              >
+                🔗 Copiar link
+              </button>
+              <button
+                onClick={() => downloadQR(MESA_00)}
+                className="bg-cyan-600 hover:bg-cyan-500 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition"
+              >
+                📥 QR
+              </button>
+            </div>
+          )}
         </div>
       )}
 
@@ -1621,7 +1593,7 @@ export default function MesasAdmin({ clienteId }) {
       <ChatEquipo clienteId={clienteId} open={showChat} onClose={() => setShowChat(false)} />
 
       {/* Delivery / Retiro (Mesa 0) */}
-      {(cliente?.enable_mesa0 !== false) && pedidosDelivery.length > 0 && (
+      {pedidosDelivery.length > 0 && (
         <div className="mb-6">
           <h2 className="text-white font-bold text-lg mb-3 flex items-center gap-2">🛵 Delivery / Retiro <span className="text-dark-400 text-sm font-normal">({pedidosDelivery.length})</span></h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -1631,12 +1603,22 @@ export default function MesasAdmin({ clienteId }) {
       )}
 
       {/* Mesa 00: clientes que no se quedan en el local. No es una mesa física: no tiene cuadradito. */}
-      {(cliente?.enable_mesa00 !== false) && pedidosMesa00.length > 0 && (
+      {pedidosMesa00.length > 0 && (
         <div className="mb-6">
-          <h2 className="text-white font-bold text-lg mb-3 flex items-center gap-2">🥡 Mesa 00 · Para llevar <span className="text-dark-400 text-sm font-normal">({pedidosMesa00.length})</span></h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {pedidosMesa00.map(renderPedidoCard)}
-          </div>
+          <button
+            type="button"
+            onClick={() => setMesa00ListaAbierta(v => !v)}
+            aria-expanded={mesa00ListaAbierta}
+            className="w-full flex items-center justify-between text-left mb-3"
+          >
+            <span className="text-white font-bold text-lg flex items-center gap-2">🥡 Mesa 00 · Para llevar <span className="text-dark-400 text-sm font-normal">({pedidosMesa00.length})</span></span>
+            <span className="text-dark-400 text-sm">{mesa00ListaAbierta ? '▲' : '▼'}</span>
+          </button>
+          {mesa00ListaAbierta && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {pedidosMesa00.map(renderPedidoCard)}
+            </div>
+          )}
         </div>
       )}
 
