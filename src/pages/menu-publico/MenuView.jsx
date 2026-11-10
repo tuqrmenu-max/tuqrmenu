@@ -49,6 +49,14 @@ export default function MenuView() {
       return
     }
 
+    // Seguridad: solo se acepta HTML alojado en el bucket "menus" de este proyecto
+    const prefijoMenus = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/menus/`
+    if (typeof data.menu_url !== 'string' || !data.menu_url.startsWith(prefijoMenus)) {
+      setError('Menú no disponible')
+      setLoading(false)
+      return
+    }
+
     try {
       const res = await fetch(data.menu_url, { cache: 'default' })
       if (!res.ok) throw new Error('No se pudo descargar el menú')
