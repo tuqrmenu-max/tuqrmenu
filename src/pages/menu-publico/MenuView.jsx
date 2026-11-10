@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { aplicarModoMesa00 } from '@/lib/mesa00Menu'
+import { menuShimScript } from '@/lib/menuShim'
 
 export default function MenuView() {
   const { token } = useParams()
@@ -30,11 +31,8 @@ export default function MenuView() {
   }, [token, mesaNumero, esMesa00])
 
   const fetchMenuData = async (generation) => {
-    const { data, error: fetchError } = await supabase
-      .from('clientes')
-      .select('qr_catalog_version,id,menu_url,nombre_restaurante,whatsapp,horario_pedidos_activo,horario_pedidos,waIcon:builder_config->waIcon,igIcon:builder_config->igIcon,mapIcon:builder_config->mapIcon,promoIcon:builder_config->promoIcon,logoBar:builder_config->logoBar,topTransforms:builder_config->topTransforms,topBarFrameBorderColor:builder_config->topBarFrameBorderColor,topBarFrameBorderTransparent:builder_config->topBarFrameBorderTransparent,topBarFrameBgColor:builder_config->topBarFrameBgColor,topBarFrameBgTransparent:builder_config->topBarFrameBgTransparent')
-      .eq('user_id', token)
-      .single()
+    // Función segura: devuelve solo los datos públicos del restaurante (no se lee la tabla clientes).
+    const { data, error: fetchError } = await supabase.rpc('qr_menu_publico', { p_token: token })
 
     if (generation !== loadGeneration.current) return
     if (fetchError || !data) {
@@ -222,6 +220,11 @@ export default function MenuView() {
       }
 
       if (esMesa00) html = aplicarModoMesa00(html)
+
+      // Compatibilidad: el menú exportado habla con la API REST de las tablas, que ya no
+      // es accesible para visitantes. Este script lo redirige a las funciones seguras.
+      const shim = menuShimScript(import.meta.env.VITE_SUPABASE_URL)
+      html = /<head[^>]*>/i.test(html) ? html.replace(/<head[^>]*>/i, m => m + shim) : shim + html
 
       if (generation !== loadGeneration.current) return
       const blob = new Blob([html], { type: 'text/html' })
