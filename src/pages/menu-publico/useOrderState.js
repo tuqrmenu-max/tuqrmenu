@@ -23,24 +23,21 @@ export function useOrderState() {
         return
       }
 
-      const { data: comensal } = await supabase
-        .from('comensales')
-        .select('id')
-        .eq('cliente_id', clienteId)
-        .eq('mesa', mesaNumero)
-        .eq('sesion_id', sesionId)
-        .maybeSingle()
+      const { data: comensal } = await supabase.rpc('qr_pedido_estado_v2', {
+        p_cliente_id: clienteId,
+        p_mesa: mesaNumero,
+        p_sesion: sesionId
+      })
 
       if (!comensal) {
         setSentItems([])
         return
       }
 
-      const { data: pedidos, error } = await supabase
-        .from('pedidos_qr')
-        .select('producto_id, cantidad, productos(nombre, precio)')
-        .eq('comensal_id', comensal.id)
-        .eq('pagado', 0)
+      const { data: pedidos, error } = await supabase.rpc('qr_items_comensal', {
+        p_comensal_id: comensal.id,
+        p_sesion: sesionId
+      })
 
       if (error) throw error
 
@@ -116,57 +113,32 @@ export function useOrderState() {
       const sesionId = localStorage.getItem(`mesa_${mesaNumero}_sesion`) || crypto.randomUUID()
       localStorage.setItem(`mesa_${mesaNumero}_sesion`, sesionId)
 
-      let comensalId = null
+      // Todo el pedido pasa por funciones seguras de la base (no hay acceso directo a las tablas).
+      const { data: comensalId, error: errorComensal } = await supabase.rpc('qr_crear_comensal', {
+        p_cliente_id: clienteId,
+        p_mesa: mesaNumero,
+        p_sesion: sesionId,
+        p_nombre: `Cliente Mesa ${mesaNumero}`,
+        p_reusar: true
+      })
+      if (errorComensal || !comensalId) throw errorComensal || new Error('No se pudo crear el comensal')
 
-      const { data: comensalExistente } = await supabase
-        .from('comensales')
-        .select('id')
-        .eq('cliente_id', clienteId)
-        .eq('mesa', mesaNumero)
-        .eq('sesion_id', sesionId)
-        .maybeSingle()
-
-      if (comensalExistente) {
-        comensalId = comensalExistente.id
-      } else {
-        const { data: nuevoComensal, error: errorComensal } = await supabase
-          .from('comensales')
-          .insert({
-            cliente_id: clienteId,
-            mesa: mesaNumero,
-            nombre: `Cliente Mesa ${mesaNumero}`,
-            sesion_id: sesionId,
-            activo: 1
-          })
-          .select('id')
-          .single()
-
-        if (errorComensal) throw errorComensal
-        comensalId = nuevoComensal.id
-      }
-
-      const pedidos = cart.map(item => ({
-        comensal_id: comensalId,
-        producto_id: item.producto_id,
-        cantidad: item.cantidad,
-        pagado: 0,
-        es_promo: 0,
-        fecha_hora: new Date().toISOString()
-      }))
-
-      const { error: errorPedidos } = await supabase
-        .from('pedidos_qr')
-        .insert(pedidos)
-
+      const { error: errorPedidos } = await supabase.rpc('qr_agregar_items', {
+        p_comensal_id: comensalId,
+        p_sesion: sesionId,
+        p_items: cart.map(item => ({
+          producto_id: item.producto_id,
+          cantidad: item.cantidad,
+          es_promo: 0
+        }))
+      })
       if (errorPedidos) throw errorPedidos
 
-      await supabase
-        .from('mesas_operacion')
-        .upsert({
-          cliente_id: clienteId,
-          numero: mesaNumero,
-          estado: 'Ocupada'
-        }, { onConflict: 'cliente_id,numero' })
+      await supabase.rpc('qr_mesa_marcar', {
+        p_cliente_id: clienteId,
+        p_mesa: mesaNumero,
+        p_estado: 'Ocupada'
+      })
 
       // Recargamos desde la base en vez de mezclar a mano en memoria, para
       // que el "ya enviado" en gris siempre refleje lo que realmente está
@@ -187,13 +159,11 @@ export function useOrderState() {
 
   const callMozo = useCallback(async (clienteId, mesaNumero) => {
     try {
-      await supabase
-        .from('mesas_operacion')
-        .upsert({
-          cliente_id: clienteId,
-          numero: mesaNumero,
-          estado: 'Pendiente'
-        }, { onConflict: 'cliente_id,numero' })
+      await supabase.rpc('qr_mesa_marcar', {
+        p_cliente_id: clienteId,
+        p_mesa: mesaNumero,
+        p_estado: 'Pendiente'
+      })
       return true
     } catch (error) {
       console.error('Error llamando mozo:', error)

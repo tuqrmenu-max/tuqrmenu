@@ -89,12 +89,11 @@ export default function OrderOverlay({ clienteId, mesaNumero, restauranteNombre,
   useEffect(() => {
     if (!mozoCalled || !clienteId || !mesaNumero) return
     const interval = setInterval(async () => {
-      const { data } = await supabase
-        .from('mesas_operacion')
-        .select('estado')
-        .eq('cliente_id', clienteId)
-        .eq('numero', parseInt(mesaNumero))
-        .single()
+      const { data: filas } = await supabase.rpc('qr_mesa_leer', {
+        p_cliente_id: clienteId,
+        p_mesa: parseInt(mesaNumero)
+      })
+      const data = Array.isArray(filas) ? filas[0] : null
       if (data && data.estado !== 'Pendiente') {
         setMozoCalled(false)
         clearInterval(interval)
@@ -106,12 +105,11 @@ export default function OrderOverlay({ clienteId, mesaNumero, restauranteNombre,
   useEffect(() => {
     if (!clienteId || !mesaNumero) return
     const checkInitial = async () => {
-      const { data } = await supabase
-        .from('mesas_operacion')
-        .select('estado')
-        .eq('cliente_id', clienteId)
-        .eq('numero', parseInt(mesaNumero))
-        .single()
+      const { data: filas } = await supabase.rpc('qr_mesa_leer', {
+        p_cliente_id: clienteId,
+        p_mesa: parseInt(mesaNumero)
+      })
+      const data = Array.isArray(filas) ? filas[0] : null
       if (data && data.estado === 'Pendiente') setMozoCalled(true)
     }
     checkInitial()
