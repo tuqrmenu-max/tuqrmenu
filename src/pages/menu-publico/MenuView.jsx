@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { aplicarModoMesa00 } from '@/lib/mesa00Menu'
-import { menuShimScript } from '@/lib/menuShim'
+import { menuShimScript, leerAlmacenMenu, aplicarMensajeAlmacen } from '@/lib/menuShim'
 
 export default function MenuView() {
   const { token } = useParams()
@@ -16,6 +16,18 @@ export default function MenuView() {
   const loadGeneration = useRef(0)
   const blobUrl = useRef(null)
   const [iframeSrc, setIframeSrc] = useState(null)
+  const iframeRef = useRef(null)
+
+  // El menu corre en un iframe en sandbox (sin acceso a esta pagina). Lo unico que
+  // recibe de aca es un puñado de claves de localStorage (sesion de mesa, propina, promos).
+  useEffect(() => {
+    const onMsg = (e) => {
+      if (!iframeRef.current || e.source !== iframeRef.current.contentWindow) return
+      aplicarMensajeAlmacen(e.data)
+    }
+    window.addEventListener('message', onMsg)
+    return () => window.removeEventListener('message', onMsg)
+  }, [])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -223,7 +235,7 @@ export default function MenuView() {
 
       // Compatibilidad: el menú exportado habla con la API REST de las tablas, que ya no
       // es accesible para visitantes. Este script lo redirige a las funciones seguras.
-      const shim = menuShimScript(import.meta.env.VITE_SUPABASE_URL)
+      const shim = menuShimScript(import.meta.env.VITE_SUPABASE_URL, leerAlmacenMenu())
       html = /<head[^>]*>/i.test(html) ? html.replace(/<head[^>]*>/i, m => m + shim) : shim + html
 
       if (generation !== loadGeneration.current) return
@@ -267,7 +279,10 @@ export default function MenuView() {
       <div className="relative w-full max-w-[430px] overflow-hidden bg-[#111] rounded-none sm:rounded-[22px] shadow-[0_20px_70px_rgba(0,0,0,.5)] min-h-[100dvh] sm:min-h-0 sm:aspect-[9/16] sm:max-h-[932px] overscroll-none">
         {iframeSrc && (
           <iframe
+            ref={iframeRef}
             src={iframeSrc}
+            sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"
+            allow="clipboard-write"
             className="absolute inset-0 w-full h-full border-0 overscroll-contain"
             style={{ minHeight: '100%', overscrollBehavior: 'contain' }}
             title="Menú"
