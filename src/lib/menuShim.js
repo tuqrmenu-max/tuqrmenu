@@ -10,7 +10,27 @@
 // IMPORTANTE: la función se serializa con toString() y se ejecuta dentro del
 // iframe, así que NO puede usar variables de afuera (todo entra por parámetro).
 
-function menuShim(SUPABASE_URL) {
+function menuShim(SUPABASE_URL, INITIAL_STORAGE) {
+  // El iframe corre en sandbox SIN allow-same-origin: su localStorage real no existe
+  // (lanza SecurityError). Se reemplaza por uno en memoria que arranca con los datos
+  // que le pasa la pagina padre y le avisa de cada cambio (postMessage) para guardarlos.
+  ;(function () {
+    var data = {}
+    for (var k0 in (INITIAL_STORAGE || {})) data[k0] = String(INITIAL_STORAGE[k0])
+    function avisar(op, k, v) {
+      try { window.parent.postMessage({ tuqrmenuStorage: true, op: op, k: k, v: v }, '*') } catch (e) {}
+    }
+    var store = {
+      getItem: function (k) { k = String(k); return Object.prototype.hasOwnProperty.call(data, k) ? data[k] : null },
+      setItem: function (k, v) { k = String(k); v = String(v); data[k] = v; avisar('set', k, v) },
+      removeItem: function (k) { k = String(k); delete data[k]; avisar('remove', k) },
+      clear: function () { data = {}; avisar('clear') },
+      key: function (i) { var ks = Object.keys(data); return i < ks.length ? ks[i] : null }
+    }
+    Object.defineProperty(store, 'length', { get: function () { return Object.keys(data).length } })
+    try { Object.defineProperty(window, 'localStorage', { value: store, configurable: true }) } catch (e) {}
+  })()
+
   var REST = SUPABASE_URL + '/rest/v1/'
   var origFetch = window.fetch.bind(window)
   var sesionDeComensal = {}
@@ -188,6 +208,32 @@ function menuShim(SUPABASE_URL) {
 }
 
 // Devuelve el <script> listo para insertar en el HTML del menú.
-export function menuShimScript(supabaseUrl) {
-  return '<script>(' + menuShim.toString() + ')(' + JSON.stringify(supabaseUrl) + ')</script>'
+// initialStorage: datos del menu (sesion de mesa, propina, promos) que viven en el
+// localStorage de la pagina padre y se pasan al iframe en sandbox.
+export function menuShimScript(supabaseUrl, initialStorage) {
+  const datos = JSON.stringify(initialStorage || {}).replace(/</g, '\\u003c')
+  return '<script>(' + menuShim.toString() + ')(' + JSON.stringify(supabaseUrl) + ',' + datos + ')</script>'
+}
+
+// Claves que el menu exportado puede leer/escribir. Cualquier otra se ignora.
+export const CLAVES_MENU = /^(mesa_\d+_(sesion|propina)|pedidoMesa0Seq_[\w-]+|promo(Count|Seen|Susc)_[\w-]*)$/
+
+export function leerAlmacenMenu() {
+  const out = {}
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i)
+      if (CLAVES_MENU.test(k)) out[k] = localStorage.getItem(k)
+    }
+  } catch (e) { /* sin almacenamiento */ }
+  return out
+}
+
+// Aplica un mensaje del iframe al localStorage de la pagina (validado).
+export function aplicarMensajeAlmacen(msg) {
+  try {
+    if (!msg || msg.tuqrmenuStorage !== true || typeof msg.k !== 'string' || !CLAVES_MENU.test(msg.k)) return
+    if (msg.op === 'set' && typeof msg.v === 'string' && msg.v.length <= 4000) localStorage.setItem(msg.k, msg.v)
+    else if (msg.op === 'remove') localStorage.removeItem(msg.k)
+  } catch (e) { /* sin almacenamiento */ }
 }
