@@ -27,8 +27,8 @@ function menuUnificar() {
       // encabezado de categorías: barra negra con info y promos; sin título, flecha, carrito ni "Salir"
       '#cats .productsTop{grid-template-rows:0 54px}',
       '#cats .title,#backCover,#categoriesCart,#exitMenuCats{display:none!important}',
-      // sin "N productos" bajo el nombre de la categoría
-      '.ringCount{display:none!important}'
+      // sin "N productos" ni puntos indicadores bajo el nombre de la categoría
+      '.ringCount,.ringDots{display:none!important}'
     ].join('\n')
     var st = document.createElement('style')
     st.setAttribute('data-pantalla-unica', '1')
