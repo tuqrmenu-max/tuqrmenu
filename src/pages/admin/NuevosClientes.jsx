@@ -242,7 +242,7 @@ export default function NuevosClientes() {
                       <button
                         onClick={() => {
                           setSolicitudAprobar(solicitud)
-                          setNuevoEmail(`${solicitud.nombre_restaurante?.toLowerCase().replace(/\s+/g, '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '').slice(0, 20) || 'restaurante'}@socio.qrmenu.com`)
+                          setNuevoEmail(`${solicitud.nombre_restaurante?.toLowerCase().replace(/\s+/g, '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '').slice(0, 20) || 'restaurante'}@socio.tuqrmenu.app`)
                           setNuevoPassword('')
                         }}
                         className="flex-1 py-3 bg-accent-500 hover:bg-accent-600 text-white rounded-xl transition font-medium"
