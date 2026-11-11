@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useI18n } from '@/lib/i18n'
-import { supabase, createIsolatedClient } from '@/lib/supabase'
+import { supabase, crearUsuarioAuth, eliminarUsuarioAuth } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 
 const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim()
@@ -57,7 +57,7 @@ export default function Socios() {
       toast.loading('Eliminando...', { id: 'eliminar' })
 
       if (socio.user_id) {
-        const { error: authError } = await supabase.auth.admin.deleteUser(socio.user_id)
+        const { error: authError } = await eliminarUsuarioAuth(socio.user_id)
         if (authError) console.warn('No se pudo borrar auth user:', authError.message)
       }
 
@@ -95,9 +95,9 @@ export default function Socios() {
       return
     }
     // Misma validación que "Aprobar y Crear Cliente" (Nuevos Clientes):
-    // contraseña obligatoria de al menos 6 caracteres.
-    if (!nuevoSocio.password.trim() || nuevoSocio.password.trim().length < 6) {
-      toast.error('La contraseña debe tener al menos 6 caracteres')
+    // contraseña obligatoria de al menos 8 caracteres.
+    if (!nuevoSocio.password.trim() || nuevoSocio.password.trim().length < 8) {
+      toast.error('La contraseña debe tener al menos 8 caracteres')
       return
     }
     const password = nuevoSocio.password.trim()
@@ -108,17 +108,12 @@ export default function Socios() {
 
       // Mismo patrón que "Nuevos Clientes" al aprobar una solicitud:
       // 1) usuario de auth, 2) fila en clientes, 3) Mesa 0 por defecto.
-      // Cliente aislado: si usáramos el `supabase` normal, este signUp()
-      // reemplazaría la sesión del superadmin logueado por la del socio
-      // recién creado (por eso, aunque la cuenta se creaba bien, después
-      // fallaba todo lo que dependía de estar logueado como superadmin).
-      const isolated = createIsolatedClient()
-      const { data: authData, error: authError } = await isolated.auth.signUp({
+      // La cuenta se crea en el servidor (no reemplaza la sesión del superadmin).
+      const { data: authData, error: authError } = await crearUsuarioAuth({
+        tipo: 'cliente',
         email: nuevoSocio.email.trim(),
         password,
-        options: {
-          data: { rol: 'cliente', nombre: nuevoSocio.nombre_restaurante }
-        }
+        nombre: nuevoSocio.nombre_restaurante
       })
       if (authError) throw new Error(`Error al crear usuario: ${authError.message}`)
 

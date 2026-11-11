@@ -37,3 +37,28 @@ export const isConfigured = () => {
          !supabaseUrl.includes('TU-PROYECTO') && 
          !supabaseAnonKey.includes('TU-ANON-KEY')
 }
+
+// Alta/baja de cuentas de acceso: se hace en el servidor (Edge Function
+// "crear-usuario"), que valida quien lo pide. Devuelve { data:{user:{id}}, error }
+// con la misma forma que auth.signUp() para no tocar el resto del codigo.
+async function llamarCrearUsuario(payload) {
+  const { data, error } = await supabase.functions.invoke('crear-usuario', { body: payload })
+  if (error) {
+    let msg = error.message
+    try { const j = await error.context.json(); if (j?.error) msg = j.error } catch (e) { /* sin detalle */ }
+    return { data: null, error: { message: msg } }
+  }
+  if (data?.error) return { data: null, error: { message: data.error } }
+  return { data, error: null }
+}
+
+export async function crearUsuarioAuth(payload) {
+  const { data, error } = await llamarCrearUsuario({ accion: 'crear', ...payload })
+  if (error) return { data: null, error }
+  return { data: { user: { id: data.user_id } }, error: null }
+}
+
+export async function eliminarUsuarioAuth(userId) {
+  const { error } = await llamarCrearUsuario({ accion: 'eliminar', user_id: userId })
+  return { error }
+}

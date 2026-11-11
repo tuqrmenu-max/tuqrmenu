@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { supabase, createIsolatedClient } from '@/lib/supabase'
+import { supabase, crearUsuarioAuth } from '@/lib/supabase'
 import { useAuth } from '@/hooks/useAuth'
 import { mapaColoresEmpleados } from '@/lib/coloresEmpleados'
 import toast from 'react-hot-toast'
@@ -162,8 +162,8 @@ export default function UsuariosStaff({ clienteId }) {
 
   const handleCreate = async (e) => {
     e.preventDefault()
-    if (!form.nombre.trim() || !form.usuario.trim() || form.password.length < 6) {
-      toast.error('Completá nombre, usuario y una contraseña de al menos 6 caracteres')
+    if (!form.nombre.trim() || !form.usuario.trim() || form.password.length < 8) {
+      toast.error('Completá nombre, usuario y una contraseña de al menos 8 caracteres')
       return
     }
     setCreating(true)
@@ -182,9 +182,10 @@ export default function UsuariosStaff({ clienteId }) {
       const dominio = DOMINIO_POR_ROL[form.rol] || 'staff.qrmenu.com'
       const syntheticEmail = `${usuario}@${dominio}`
 
-      // Cliente aislado: crea la cuenta sin pisar la sesion del dueño logueado.
-      const isolated = createIsolatedClient()
-      const { data: authData, error: authError } = await isolated.auth.signUp({
+      // La cuenta se crea en el servidor (no pisa la sesion del dueño logueado).
+      const { data: authData, error: authError } = await crearUsuarioAuth({
+        tipo: 'staff',
+        cliente_id: clienteId,
         email: syntheticEmail,
         password: form.password
       })
@@ -1122,7 +1123,7 @@ export default function UsuariosStaff({ clienteId }) {
               </select>
               <input type="text" placeholder="Nombre completo" value={form.nombre} onChange={e => setForm({ ...form, nombre: e.target.value })} className="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-xl text-white" required />
               <input type="text" placeholder="Usuario (para loguearse, sin espacios)" value={form.usuario} onChange={e => setForm({ ...form, usuario: e.target.value.toLowerCase().replace(/[^a-z0-9._-]/g, '') })} className="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-xl text-white" required />
-              <input type="password" placeholder="Contraseña (mínimo 6 caracteres)" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} className="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-xl text-white" required minLength={6} />
+              <input type="password" placeholder="Contraseña (mínimo 8 caracteres)" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} className="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-xl text-white" required minLength={6} />
               <p className="text-dark-400 text-xs">Se va a loguear en /login con este "Usuario" y esta contraseña.</p>
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-3 bg-dark-700 text-white rounded-xl">Cancelar</button>
