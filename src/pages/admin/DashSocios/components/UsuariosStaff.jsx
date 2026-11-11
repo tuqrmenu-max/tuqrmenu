@@ -14,10 +14,10 @@ const ROLES = [
 // Dominio interno de Supabase Auth según el rol del empleado.
 // El staff nunca ve este email: se loguea con "usuario" (ver resolver_login_usuario en useAuth.js).
 const DOMINIO_POR_ROL = {
-  mozo: 'mozo.qrmenu.com',
-  cocina: 'cocina.qrmenu.com',
-  cajero: 'caja.qrmenu.com',
-  delivery: 'delivery.qrmenu.com'
+  mozo: 'mozo.tuqrmenu.app',
+  cocina: 'cocina.tuqrmenu.app',
+  cajero: 'caja.tuqrmenu.app',
+  delivery: 'delivery.tuqrmenu.app'
 }
 
 const DIAS = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
@@ -176,10 +176,10 @@ export default function UsuariosStaff({ clienteId }) {
       }
       // Email interno: nunca lo ve el staff, solo lo usamos para Supabase Auth.
       // Se loguean con su "usuario" (ver resolver_login_usuario en useAuth.js).
-      // Formato: usuario@caja.qrmenu.com / @mozo.qrmenu.com / @cocina.qrmenu.com según el rol.
+      // Formato: usuario@caja.tuqrmenu.app / @mozo.tuqrmenu.app / @cocina.tuqrmenu.app según el rol.
       // "usuario" ya es único en toda la plataforma (índice único en cliente_usuarios),
       // así que el email queda único sin necesitar el id del cliente.
-      const dominio = DOMINIO_POR_ROL[form.rol] || 'staff.qrmenu.com'
+      const dominio = DOMINIO_POR_ROL[form.rol] || 'staff.tuqrmenu.app'
       const syntheticEmail = `${usuario}@${dominio}`
 
       // La cuenta se crea en el servidor (no pisa la sesion del dueño logueado).

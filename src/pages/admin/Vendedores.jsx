@@ -33,7 +33,7 @@ export default function Vendedores() {
     setLoading(true)
     
     try {
-      const email = `${form.emailPrefix}@ventas.qrmenu.com`
+      const email = `${form.emailPrefix}@ventas.tuqrmenu.app`
       
       // Crear usuario en auth (en el servidor; no reemplaza la sesión del superadmin)
       const { data: authData, error: authError } = await crearUsuarioAuth({
@@ -204,7 +204,7 @@ export default function Vendedores() {
                     required
                   />
                   <span className="px-4 py-3 bg-dark-600 border border-dark-500 border-l-0 rounded-r-xl text-dark-300">
-                    @ventas.qrmenu.com
+                    @ventas.tuqrmenu.app
                   </span>
                 </div>
               </div>
