@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useI18n } from '@/lib/i18n'
 import { useAuth } from '@/hooks/useAuth'
-import { supabase, createIsolatedClient } from '@/lib/supabase'
+import { supabase, crearUsuarioAuth } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 
 export default function Usuarios() {
@@ -26,13 +26,13 @@ export default function Usuarios() {
   const handleCreate = async (e) => {
     e.preventDefault()
     
-    // Cliente aislado: evita que este signUp() reemplace la sesión del
-    // dueño del restaurante logueado por la del empleado recién creado.
-    const isolated = createIsolatedClient()
-    const { data: authData, error: authError } = await isolated.auth.signUp({
+    // La cuenta se crea en el servidor (no reemplaza la sesión del dueño logueado).
+    const { data: authData, error: authError } = await crearUsuarioAuth({
+      tipo: 'staff',
+      cliente_id: profile.id,
       email: form.email,
       password: form.password,
-      options: { data: { rol: form.rol } }
+      rol: form.rol
     })
     if (authError) return toast.error(authError.message)
     

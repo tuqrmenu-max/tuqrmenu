@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useI18n } from '@/lib/i18n'
-import { supabase, createIsolatedClient } from '@/lib/supabase'
+import { supabase, crearUsuarioAuth, eliminarUsuarioAuth } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 
 export default function NuevosClientes() {
@@ -31,15 +31,12 @@ export default function NuevosClientes() {
     try {
       toast.loading('Creando cliente...', { id: 'aprobar' })
       
-      // Cliente aislado: evita que este signUp() reemplace la sesión del
-      // superadmin logueado por la del cliente recién aprobado.
-      const isolated = createIsolatedClient()
-      const { data: authData, error: authError } = await isolated.auth.signUp({
+      // La cuenta se crea en el servidor (no reemplaza la sesión del superadmin).
+      const { data: authData, error: authError } = await crearUsuarioAuth({
+        tipo: 'cliente',
         email,
         password,
-        options: {
-          data: { rol: 'cliente', nombre: solicitud.nombre_restaurante }
-        }
+        nombre: solicitud.nombre_restaurante
       })
       
       if (authError) throw new Error(`Error al crear usuario: ${authError.message}`)
@@ -108,7 +105,7 @@ export default function NuevosClientes() {
       toast.loading('Eliminando...', { id: 'eliminar' })
 
       if (solicitud.user_id) {
-        const { error: authError } = await supabase.auth.admin.deleteUser(solicitud.user_id)
+        const { error: authError } = await eliminarUsuarioAuth(solicitud.user_id)
         if (authError) console.warn('No se pudo borrar auth user:', authError.message)
       }
 
@@ -367,8 +364,8 @@ export default function NuevosClientes() {
                     toast.error('Completá email y contraseña')
                     return
                   }
-                  if (nuevoPassword.length < 6) {
-                    toast.error('La contraseña debe tener al menos 6 caracteres')
+                  if (nuevoPassword.length < 8) {
+                    toast.error('La contraseña debe tener al menos 8 caracteres')
                     return
                   }
                   aprobarSolicitud(solicitudAprobar, nuevoEmail, nuevoPassword)

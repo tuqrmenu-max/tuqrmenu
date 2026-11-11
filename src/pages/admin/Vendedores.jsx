@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useI18n } from '@/lib/i18n'
-import { supabase, createIsolatedClient } from '@/lib/supabase'
+import { supabase, crearUsuarioAuth } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 
 export default function Vendedores() {
@@ -35,16 +35,12 @@ export default function Vendedores() {
     try {
       const email = `${form.emailPrefix}@ventas.qrmenu.com`
       
-      // Crear usuario en auth
-      // Cliente aislado: evita que este signUp() reemplace la sesión del
-      // superadmin logueado por la del vendedor recién creado.
-      const isolated = createIsolatedClient()
-      const { data: authData, error: authError } = await isolated.auth.signUp({
+      // Crear usuario en auth (en el servidor; no reemplaza la sesión del superadmin)
+      const { data: authData, error: authError } = await crearUsuarioAuth({
+        tipo: 'vendedor',
         email,
         password: form.password,
-        options: {
-          data: { rol: 'vendedor', nombre: form.nombre }
-        }
+        nombre: form.nombre
       })
       
       if (authError) throw authError
@@ -221,7 +217,7 @@ export default function Vendedores() {
                   onChange={(e) => setForm({...form, password: e.target.value})}
                   className="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-primary-500"
                   required
-                  minLength={6}
+                  minLength={8}
                 />
               </div>
               
