@@ -49,6 +49,9 @@ function menuProductos() {
       // categorías una al lado de otra (efecto anillo: la del medio grande, las de los costados más chicas)
       '#catStrip{position:relative;display:flex;gap:6px;height:96px;overflow-x:auto;overflow-y:hidden;padding:8px calc(50% - 38px) 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;touch-action:pan-x;overscroll-behavior-x:contain;background:linear-gradient(#000,rgba(0,0,0,.55))}',
       '#catStrip::-webkit-scrollbar{display:none}',
+      '#catStrip{cursor:grab;user-select:none;-webkit-user-select:none}',
+      '#catStrip.arrastrando{cursor:grabbing;scroll-snap-type:none}',
+      '#catStrip .cs-item{cursor:inherit}',
       '.cs-item{flex:none;width:76px;padding:0;border:0;background:none;color:#cbd5e1;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;scroll-snap-align:center;transition:transform .12s,opacity .12s}',
       '.cs-img{width:60px;height:60px;border-radius:14px;overflow:hidden;border:2px solid rgba(255,255,255,.22);background:#1f2937;display:grid;place-items:center;font-size:24px}',
       '.cs-img img{width:100%;height:100%;object-fit:cover;display:block}',
@@ -87,6 +90,40 @@ function menuProductos() {
       if (tick) return
       tick = requestAnimationFrame(function () { tick = null; efecto() })
     }, { passive: true })
+
+    // deslizar con el mouse (PC/tablet): arrastrar hacia ambos lados y rueda del mouse
+    var arr = null
+    var movido = false
+    strip.addEventListener('mousedown', function (e) {
+      if (e.button !== 0) return
+      arr = { x: e.clientX, left: strip.scrollLeft }
+      movido = false
+    })
+    window.addEventListener('mousemove', function (e) {
+      if (!arr) return
+      var dx = e.clientX - arr.x
+      if (!movido && Math.abs(dx) < 5) return
+      if (!movido) { movido = true; strip.classList.add('arrastrando') }
+      strip.scrollLeft = arr.left - dx
+      e.preventDefault()
+    })
+    window.addEventListener('mouseup', function () {
+      if (!arr) return
+      arr = null
+      strip.classList.remove('arrastrando')
+      if (movido) setTimeout(function () { movido = false }, 0)
+    })
+    // si se arrastró, no cuenta como toque en una categoría
+    strip.addEventListener('click', function (e) {
+      if (movido) { e.stopPropagation(); e.preventDefault() }
+    }, true)
+    strip.addEventListener('dragstart', function (e) { e.preventDefault() })
+    strip.addEventListener('wheel', function (e) {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        strip.scrollLeft += e.deltaY
+        e.preventDefault()
+      }
+    }, { passive: false })
 
     function construirTira() {
       strip.innerHTML = ''
