@@ -42,10 +42,11 @@ function menuProductos() {
       '.pc-bar button{width:100%;height:56px;border:0;border-radius:16px;background:#016FC1;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 18px;font-weight:800;font-size:16px;cursor:pointer}',
       '.pc-bar small{display:block;font-weight:700;font-size:12.5px;opacity:.8;text-align:left}',
       // barra negra fina (una sola fila: flecha + íconos); el nombre de la categoría ya se ve abajo
-      '#products .productsTop{min-height:60px;padding:6px 10px;grid-template-rows:48px}',
+      '#products .productsTop{min-height:30px;padding:1px 10px;grid-template-rows:28px}',
+      '#products .productsTop #backCats,#products .productsTop .topActions{zoom:.7}',
       '#products .productsTop .title{display:none!important}',
       '#products #exitTop{display:none!important}',
-      '#products .products{height:calc(100vh - 156px)}',
+      '#products .products{height:calc(100vh - 126px)}',
       // categorías una al lado de otra (efecto anillo: la del medio grande, las de los costados más chicas)
       '#catStrip{position:relative;display:flex;gap:6px;height:96px;overflow-x:auto;overflow-y:hidden;padding:8px calc(50% - 38px) 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;touch-action:pan-x;overscroll-behavior-x:contain;background:linear-gradient(#000,rgba(0,0,0,.55))}',
       '#catStrip::-webkit-scrollbar{display:none}',
