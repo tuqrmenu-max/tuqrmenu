@@ -32,6 +32,9 @@ export const useBuilderState = create((set, get) => ({
   categoriesBg: '',
   productsBg: '',
   cartBg: '',
+  categoriesBgColor: '',
+  productsBgColor: '',
+  cartBgColor: '',
   logo: '',
   logoBar: '',
   blur: 55,
@@ -296,6 +299,9 @@ export const useBuilderState = create((set, get) => ({
       categoriesBg: s.categoriesBg,
       productsBg: s.productsBg,
       cartBg: s.cartBg,
+      categoriesBgColor: s.categoriesBgColor,
+      productsBgColor: s.productsBgColor,
+      cartBgColor: s.cartBgColor,
       blur: s.blur,
       categoriesBlur: s.categoriesBlur,
       categoriesLayout: s.categoriesLayout,
@@ -336,7 +342,7 @@ export const useBuilderState = create((set, get) => ({
     if (!config) return
     const patch = {}
     const fields = [
-      'categoriesBg', 'productsBg', 'cartBg', 'blur', 'categoriesBlur', 'categoriesLayout', 'productsBlur', 'cartBlur',
+      'categoriesBg', 'productsBg', 'cartBg', 'categoriesBgColor', 'productsBgColor', 'cartBgColor', 'blur', 'categoriesBlur', 'categoriesLayout', 'productsBlur', 'cartBlur',
       'welcomeColor', 'welcomeBg', 'welcomeBgNone', 'welcomeSize',
       'buttonText', 'buttonBg', 'buttonBorder', 'buttonColor', 'buttonFontSize', 'buttonPadding', 'buttonWidth',
       'logoTransform', 'welcomeTransform', 'buttonTransform',
@@ -427,6 +433,9 @@ export const useBuilderState = create((set, get) => ({
       categoriesBg: state.categoriesBg,
       productsBg: state.productsBg,
       cartBg: state.cartBg,
+      categoriesBgColor: state.categoriesBgColor,
+      productsBgColor: state.productsBgColor,
+      cartBgColor: state.cartBgColor,
       logo: state.logo,
       logoBar: state.logoBar,
       blur: state.blur,
@@ -762,7 +771,7 @@ function applyCartaHeaderControls(){
 }
 window.addEventListener('resize',()=>requestAnimationFrame(applyCartaHeaderControls));
 function setView(name){state.screen=name;['cover','cats','products','cart'].forEach(id=>$(id).classList.remove('active'));({cover:'cover',categories:'cats',products:'products',cart:'cart'}[name]&&$(({cover:'cover',categories:'cats',products:'products',cart:'cart'}[name])).classList.add('active'));renderBg();if(name==='categories'){renderTopIcons();if(window.__ringMeasure)requestAnimationFrame(window.__ringMeasure)}applyCompactTopTransforms();applySafeTopTransforms();requestAnimationFrame(applyCartaHeaderControls);const mb=$('mesaBadge');if(mb)mb.style.display='none'}
-function renderBg(){const bg=state.screen==='cover'?DATA.coverBg:(state.screen==='categories'?(DATA.categoriesBg||DATA.coverBg):(state.screen==='products'?(DATA.productsBg||DATA.categoriesBg||DATA.coverBg):(DATA.cartBg||DATA.productsBg||DATA.categoriesBg||DATA.coverBg)));const blurVal=state.screen==='cover'?DATA.blur:(state.screen==='categories'?(DATA.categoriesBlur||DATA.blur):(state.screen==='products'?(DATA.productsBlur||DATA.blur):(DATA.cartBlur||DATA.blur)));$('bg').style.backgroundImage=bg?'url('+bg+')':'linear-gradient(160deg,#1b2027,#0b0d10)';$('bg').style.filter='blur('+(blurVal/100)*18+'px)';$('shade').style.background=state.screen==='cover'?'rgba(0,0,0,.1)':'rgba(0,0,0,.45)'}
+function renderBg(){const bg=state.screen==='cover'?DATA.coverBg:(state.screen==='categories'?(DATA.categoriesBg||DATA.coverBg):(state.screen==='products'?(DATA.productsBg||DATA.categoriesBg||DATA.coverBg):(DATA.cartBg||DATA.productsBg||DATA.categoriesBg||DATA.coverBg)));const blurVal=state.screen==='cover'?DATA.blur:(state.screen==='categories'?(DATA.categoriesBlur||DATA.blur):(state.screen==='products'?(DATA.productsBlur||DATA.blur):(DATA.cartBlur||DATA.blur)));const ownColor=state.screen==='categories'?DATA.categoriesBgColor:(state.screen==='products'?DATA.productsBgColor:(state.screen==='cart'?DATA.cartBgColor:''));$('bg').style.backgroundColor=ownColor||'';$('bg').style.backgroundImage=ownColor?'none':(bg?'url('+bg+')':'linear-gradient(160deg,#1b2027,#0b0d10)');$('bg').style.filter=ownColor?'none':'blur('+(blurVal/100)*18+'px)';$('shade').style.background=ownColor?'transparent':(state.screen==='cover'?'rgba(0,0,0,.1)':'rgba(0,0,0,.45)')}
 function renderCover(){renderBg();const w=$('welcome');w.textContent=DATA.welcomeText;w.style.color=DATA.welcomeColor;w.style.background=(DATA.welcomeText&&!DATA.welcomeBgNone)?DATA.welcomeBg+'99':'transparent';w.style.fontSize=DATA.welcomeSize+'px';w.classList.toggle('hidden',!DATA.welcomeText);const t=DATA.welcomeTransform||{x:300,y:120,scale:1,rotation:0};w.style.left=(t.x/1080*100)+'%';w.style.top=(t.y/1920*100)+'%';w.style.transform='rotate('+(t.rotation||0)+'deg) scale('+(t.scale||1)+')';const logo=$('logo');logo.src=DATA.logo;logo.classList.toggle('hidden',!DATA.logo);const lt=DATA.logoTransform||{x:280,y:670,scale:1,rotation:0};logo.style.left=(lt.x/1080*100)+'%';logo.style.top=(lt.y/1920*100)+'%';logo.style.transform='rotate('+(lt.rotation||0)+'deg) scale('+(lt.scale||1)+')';const b=$('menuBtn');b.textContent=DATA.buttonText||'VER MENÚ';b.style.background=hexAlpha(DATA.buttonBg||'#008080',0.3);b.style.borderColor=DATA.buttonBorder;b.style.color=DATA.buttonColor;b.style.padding=(DATA.buttonPadding||15)+'px';b.style.fontSize=(DATA.buttonFontSize||14)+'px';b.style.width=(DATA.buttonWidth||82)+'%';const bt=DATA.buttonTransform||{x:100,y:1680,scale:1,rotation:0};b.style.left=(bt.x/1080*100)+'%';b.style.top=(bt.y/1920*100)+'%';b.style.transform='rotate('+(bt.rotation||0)+'deg) scale('+(bt.scale||1)+')';renderTopIcons()}
 function renderLogoButtonContent(el){if(!el)return;const barLogo=DATA.logoBar||DATA.logo;if(barLogo){el.innerHTML='<img src="'+barLogo+'" style="width:32px;height:32px;object-fit:cover;border-radius:6px" alt="">'}else{el.textContent='ℹ️'}}
 const promoSeenKey='promoSeen_'+(DATA.socioId||'');

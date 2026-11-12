@@ -58,11 +58,17 @@ export default function PhonePreview() {
         ? (state.productsBlur || state.blur)
         : (state.cartBlur || state.blur)
 
-  const bgStyle = bgImage
+  const ownBgColor = state.screen === 'categories' ? state.categoriesBgColor
+    : state.screen === 'products' ? state.productsBgColor
+    : state.screen === 'cart' ? state.cartBgColor : ''
+
+  const bgStyle = ownBgColor
+    ? { background: ownBgColor }
+    : bgImage
     ? { backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', filter: `blur(${(blurVal / 100) * 18}px)` }
     : { background: 'linear-gradient(160deg, #1b2027, #0b0d10)' }
 
-  const shadeBg = state.screen === 'cover' ? 'rgba(0,0,0,.1)' : 'rgba(0,0,0,.45)'
+  const shadeBg = ownBgColor ? 'transparent' : (state.screen === 'cover' ? 'rgba(0,0,0,.1)' : 'rgba(0,0,0,.45)')
 
   // El lienzo se muestra a su tamaño real (1080x1920, formato 9:16), sin
   // achicar. Son las mismas coordenadas que usa el HTML final, así que
