@@ -47,6 +47,35 @@ function TransformControls({ label, transformField, maxW = 1080, maxH = 1920 }) 
   )
 }
 
+function BgColorControl({ field }) {
+  const state = useBuilderState()
+  const value = state[field] || ''
+  return (
+    <div className="mt-2">
+      <label className="text-[10px] text-dark-400 block mb-1">Color de fondo (reemplaza la imagen)</label>
+      <div className="flex items-center gap-2">
+        <input
+          type="color"
+          value={value || '#000000'}
+          onChange={e => state.setField(field, e.target.value)}
+          className="w-10 h-8 p-0 bg-transparent border border-dark-500 rounded cursor-pointer"
+          aria-label="Elegir color de fondo"
+        />
+        <span className="text-[10px] text-dark-300 flex-1">{value ? value.toUpperCase() : 'Sin color (usa la imagen)'}</span>
+        {value && (
+          <button
+            type="button"
+            onClick={() => state.setField(field, '')}
+            className="text-[10px] px-2 py-1 bg-dark-600 text-dark-300 rounded hover:bg-dark-500"
+          >
+            Quitar color
+          </button>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export default function CategoriesEditor() {
   const state = useBuilderState()
   const { t } = useI18n()
@@ -233,6 +262,7 @@ export default function CategoriesEditor() {
             onChange={e => state.setField('categoriesBlur', Number(e.target.value))}
             className="w-full h-1.5 accent-primary-500"
           />
+          <BgColorControl field="categoriesBgColor" />
         </div>
         <div>
           <label className="text-sm text-dark-400 mb-1 block">{t('fondProductos')}</label>
@@ -253,6 +283,7 @@ export default function CategoriesEditor() {
             onChange={e => state.setField('productsBlur', Number(e.target.value))}
             className="w-full h-1.5 accent-primary-500"
           />
+          <BgColorControl field="productsBgColor" />
         </div>
       </div>
 
@@ -275,6 +306,7 @@ export default function CategoriesEditor() {
           onChange={e => state.setField('cartBlur', Number(e.target.value))}
           className="w-full h-1.5 accent-primary-500"
         />
+        <BgColorControl field="cartBgColor" />
       </div>
 
       {/* Excel */}
