@@ -30,7 +30,7 @@ function menuUnificar() {
       '#cats .categories.ringMode{height:calc(100% - 60px)!important}',
       '#cats .title,#backCover,#categoriesCart,#exitMenuCats{display:none!important}',
       // sin "N productos" ni puntos indicadores bajo el nombre de la categoría
-      '.ringCount,.ringDots{display:none!important}'
+      '.ringCount,.ringDots,.ringTrack{display:none!important}'
     ].join('\n')
     var st = document.createElement('style')
     st.setAttribute('data-pantalla-unica', '1')

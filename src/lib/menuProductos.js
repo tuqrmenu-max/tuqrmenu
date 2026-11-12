@@ -117,6 +117,8 @@ function menuProductos() {
     strip.addEventListener('click', function (e) {
       if (movido) { e.stopPropagation(); e.preventDefault() }
     }, true)
+    // en celular: el menú bloquea todo touchmove fuera de las listas verticales; la tira debe quedar libre para deslizar de lado
+    strip.addEventListener('touchmove', function (e) { e.stopPropagation() }, { passive: true })
     strip.addEventListener('dragstart', function (e) { e.preventDefault() })
     strip.addEventListener('wheel', function (e) {
       if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
