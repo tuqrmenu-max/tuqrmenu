@@ -25,7 +25,9 @@ function menuUnificar() {
       '#cats>#welcome{left:50%!important;top:13.5%!important;transform:translateX(-50%)!important;width:max-content;max-width:92%;white-space:normal;text-align:center;z-index:9;pointer-events:none}',
       '#cats>#logo{left:50%!important;top:21.5%!important;width:auto!important;height:15%;max-width:62%;max-height:none!important;transform:translateX(-50%)!important;z-index:9;pointer-events:none}',
       // encabezado de categorías: barra negra con info y promos; sin título, flecha, carrito ni "Salir"
-      '#cats .productsTop{grid-template-rows:0 54px}',
+      // barra negra fina (60 px en vez de 94)
+      '#cats .productsTop{min-height:60px;grid-template-rows:0 48px}',
+      '#cats .categories.ringMode{height:calc(100% - 60px)!important}',
       '#cats .title,#backCover,#categoriesCart,#exitMenuCats{display:none!important}',
       // sin "N productos" ni puntos indicadores bajo el nombre de la categoría
       '.ringCount,.ringDots{display:none!important}'
