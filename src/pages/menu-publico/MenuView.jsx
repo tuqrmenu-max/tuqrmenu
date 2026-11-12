@@ -4,6 +4,7 @@ import { useParams, useSearchParams } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { aplicarModoMesa00 } from '@/lib/mesa00Menu'
 import { unirPortadaCategorias } from '@/lib/menuUnificar'
+import { mejorarPantallaProductos } from '@/lib/menuProductos'
 import { menuShimScript, leerAlmacenMenu, aplicarMensajeAlmacen } from '@/lib/menuShim'
 
 export default function MenuView() {
@@ -236,6 +237,8 @@ export default function MenuView() {
 
       // Portada + categorías en una sola pantalla, y botón "atrás" que recorre las pantallas
       html = unirPortadaCategorias(html)
+      // Pantalla de productos: un solo control por producto y barra "Ver pedido"
+      html = mejorarPantallaProductos(html)
 
       // Compatibilidad: el menú exportado habla con la API REST de las tablas, que ya no
       // es accesible para visitantes. Este script lo redirige a las funciones seguras.
