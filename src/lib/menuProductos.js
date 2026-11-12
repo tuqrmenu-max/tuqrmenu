@@ -1,6 +1,7 @@
 // Pantalla de productos del menú exportado, más clara de usar:
 //  - un solo control por producto: botón "+" y, recién cuando hay unidades, "− cantidad +"
 //    (antes: − 0 + y un casillero de confirmación; ahora "+" suma directo al pedido)
+//  - fotos a todo el alto de la tarjeta, pegadas al borde, con esquinas redondeadas
 //  - nombres y precios más grandes, botones de 44 px, fila resaltada si está en el pedido
 //  - colores: azul del logo (#039CCF claro, #016FC1 relleno)
 //  - barra fija abajo "Ver pedido · N productos · total"
@@ -23,10 +24,10 @@ function menuProductos() {
 
     var css = [
       '#prodList{display:flex;flex-direction:column}',
-      '#prodList .product-card{flex:none;align-items:center;gap:12px;min-height:80px;padding:8px 10px 8px 8px;border-radius:14px;background:rgba(18,26,34,.88);border:1.5px solid #1c2733}',
+      '#prodList .product-card{flex:none;align-items:center;gap:12px;min-height:88px;padding:0 10px 0 0;overflow:hidden;border-radius:14px;background:rgba(18,26,34,.88);border:1.5px solid #1c2733}',
       '#prodList .product-card.sel{border-color:#039CCF;background:rgba(5,30,46,.92)}',
-      '#prodList .product-card img,#prodList .product-card .prod-placeholder{width:84px;height:64px;align-self:center;border-radius:10px;flex:none}',
-      '#prodList .product-card .prod-info{padding:0}',
+      '#prodList .product-card img,#prodList .product-card .prod-placeholder{width:108px;height:auto;min-height:85px;align-self:stretch;object-fit:cover;border-radius:0 14px 14px 0;flex:none}',
+      '#prodList .product-card .prod-info{padding:8px 0}',
       '#prodList .product-card h4{font-size:15.5px;font-weight:600;line-height:1.2}',
       '#prodList .product-card .prod-desc{font-size:12px;color:#a8b0bb}',
       '#prodList .product-card .price{font-size:16px;margin-top:4px}',
