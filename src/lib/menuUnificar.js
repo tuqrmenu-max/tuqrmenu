@@ -21,13 +21,14 @@ function menuUnificar() {
 
     var css = [
       // logo y bienvenida: arriba y centrados, sobre el anillo (sin tapar toques)
-      '#cats>#logo{left:50%!important;top:9%!important;width:auto!important;height:15%;max-width:62%;max-height:none!important;transform:translateX(-50%)!important;z-index:9;pointer-events:none}',
-      '#cats>#welcome{left:50%!important;top:27.5%!important;transform:translateX(-50%)!important;width:max-content;max-width:92%;white-space:normal;text-align:center;z-index:9;pointer-events:none}',
-      // encabezado de categorías: sin título, sin flecha, sin carrito, sin "Salir"
-      '#cats .productsTop{background:linear-gradient(#000,rgba(0,0,0,.7) 55%,rgba(0,0,0,0))!important;grid-template-rows:0 54px}',
+      // (de arriba hacia abajo: barra negra, bienvenida, logo, anillo)
+      '#cats>#welcome{left:50%!important;top:13.5%!important;transform:translateX(-50%)!important;width:max-content;max-width:92%;white-space:normal;text-align:center;z-index:9;pointer-events:none}',
+      '#cats>#logo{left:50%!important;top:21.5%!important;width:auto!important;height:15%;max-width:62%;max-height:none!important;transform:translateX(-50%)!important;z-index:9;pointer-events:none}',
+      // encabezado de categorías: barra negra con info y promos; sin título, flecha, carrito ni "Salir"
+      '#cats .productsTop{grid-template-rows:0 54px}',
       '#cats .title,#backCover,#categoriesCart,#exitMenuCats{display:none!important}',
-      // sin "N productos" bajo el nombre de la categoría
-      '.ringCount{display:none!important}'
+      // sin "N productos" ni puntos indicadores bajo el nombre de la categoría
+      '.ringCount,.ringDots{display:none!important}'
     ].join('\n')
     var st = document.createElement('style')
     st.setAttribute('data-pantalla-unica', '1')
