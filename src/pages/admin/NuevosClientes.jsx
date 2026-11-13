@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useI18n } from '@/lib/i18n'
 import { supabase, crearUsuarioAuth, eliminarUsuarioAuth } from '@/lib/supabase'
+import { emailAdminSugerido } from '@/lib/slugLocal'
 import toast from 'react-hot-toast'
 
 export default function NuevosClientes() {
@@ -242,7 +243,7 @@ export default function NuevosClientes() {
                       <button
                         onClick={() => {
                           setSolicitudAprobar(solicitud)
-                          setNuevoEmail(`${solicitud.nombre_restaurante?.toLowerCase().replace(/\s+/g, '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '').slice(0, 20) || 'restaurante'}@socio.tuqrmenu.app`)
+                          setNuevoEmail(emailAdminSugerido(solicitud.nombre_restaurante))
                           setNuevoPassword('')
                         }}
                         className="flex-1 py-3 bg-accent-500 hover:bg-accent-600 text-white rounded-xl transition font-medium"

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { supabase, crearUsuarioAuth } from '@/lib/supabase'
 import { useAuth } from '@/hooks/useAuth'
 import { mapaColoresEmpleados } from '@/lib/coloresEmpleados'
+import { emailStaff, DOMINIO_STAFF } from '@/lib/slugLocal'
 import toast from 'react-hot-toast'
 
 const ROLES = [
@@ -11,14 +12,8 @@ const ROLES = [
   { id: 'delivery', label: 'Delivery', emoji: '🛵' }
 ]
 
-// Dominio interno de Supabase Auth según el rol del empleado.
-// El staff nunca ve este email: se loguea con "usuario" (ver resolver_login_usuario en useAuth.js).
-const DOMINIO_POR_ROL = {
-  mozo: 'mozo.tuqrmenu.app',
-  cocina: 'cocina.tuqrmenu.app',
-  cajero: 'caja.tuqrmenu.app',
-  delivery: 'delivery.tuqrmenu.app'
-}
+// El email interno de Supabase Auth del personal nuevo es usuario@<local>.staff.tuqrmenu.app
+// (ver emailStaff en lib/slugLocal.js). El personal nunca lo ve: se loguea con "usuario@local".
 
 const DIAS = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
 
@@ -93,9 +88,19 @@ export default function UsuariosStaff({ clienteId }) {
   // (se activa haciendo click en su nombre en la leyenda). null = ver todos.
   const [viewingEmpId, setViewingEmpId] = useState(null)
 
+  const [localSlug, setLocalSlug] = useState('')
+
   useEffect(() => {
-    if (clienteId) { fetchUsuarios(); fetchPermisos() }
+    if (clienteId) { fetchUsuarios(); fetchPermisos(); fetchSlug() }
   }, [clienteId])
+
+  const fetchSlug = async () => {
+    const { data } = await supabase.from('clientes').select('slug').eq('id', clienteId).maybeSingle()
+    setLocalSlug(data?.slug || '')
+  }
+
+  // Cómo entra a /login: las cuentas nuevas con usuario@local, las anteriores solo con el usuario.
+  const loginDe = (u) => (u.email?.endsWith('.' + DOMINIO_STAFF) && localSlug) ? `${u.usuario}@${localSlug}` : (u.usuario || '—')
 
   const fetchPermisos = async () => {
     const { data } = await supabase.from('clientes').select('permisos_roles, permisos_mesas_acciones').eq('id', clienteId).single()
@@ -175,12 +180,14 @@ export default function UsuariosStaff({ clienteId }) {
         return
       }
       // Email interno: nunca lo ve el staff, solo lo usamos para Supabase Auth.
-      // Se loguean con su "usuario" (ver resolver_login_usuario en useAuth.js).
-      // Formato: usuario@caja.tuqrmenu.app / @mozo.tuqrmenu.app / @cocina.tuqrmenu.app según el rol.
-      // "usuario" ya es único en toda la plataforma (índice único en cliente_usuarios),
-      // así que el email queda único sin necesitar el id del cliente.
-      const dominio = DOMINIO_POR_ROL[form.rol] || 'staff.tuqrmenu.app'
-      const syntheticEmail = `${usuario}@${dominio}`
+      // Formato: usuario@<local>.staff.tuqrmenu.app. El "usuario" es único dentro
+      // de cada local, y el personal entra con "usuario@local" (ver useAuth.js).
+      if (!localSlug) {
+        toast.error('Este local todavía no tiene identificador. Recargá la página e intentá de nuevo.')
+        setCreating(false)
+        return
+      }
+      const syntheticEmail = emailStaff(usuario, localSlug)
 
       // La cuenta se crea en el servidor (no pisa la sesion del dueño logueado).
       const { data: authData, error: authError } = await crearUsuarioAuth({
@@ -803,7 +810,7 @@ export default function UsuariosStaff({ clienteId }) {
               {usuarios.map(u => (
                 <tr key={u.id} className="border-b border-dark-700 last:border-0">
                   <td className="px-4 py-3 text-white">{u.nombre}</td>
-                  <td className="px-4 py-3 text-dark-300 font-mono">{u.usuario || '—'}</td>
+                  <td className="px-4 py-3 text-dark-300 font-mono">{loginDe(u)}</td>
                   <td className="px-4 py-3 text-dark-300">{rolInfo(u.rol).emoji} {rolInfo(u.rol).label}</td>
                   <td className="px-4 py-3">
                     <button
@@ -1124,7 +1131,7 @@ export default function UsuariosStaff({ clienteId }) {
               <input type="text" placeholder="Nombre completo" value={form.nombre} onChange={e => setForm({ ...form, nombre: e.target.value })} className="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-xl text-white" required />
               <input type="text" placeholder="Usuario (para loguearse, sin espacios)" value={form.usuario} onChange={e => setForm({ ...form, usuario: e.target.value.toLowerCase().replace(/[^a-z0-9._-]/g, '') })} className="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-xl text-white" required />
               <input type="password" placeholder="Contraseña (mínimo 8 caracteres)" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} className="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-xl text-white" required minLength={6} />
-              <p className="text-dark-400 text-xs">Se va a loguear en /login con este "Usuario" y esta contraseña.</p>
+              <p className="text-dark-400 text-xs">Se va a loguear en /login con <span className="font-mono text-dark-200">{(form.usuario || 'usuario')}@{localSlug || 'local'}</span> y esta contraseña.</p>
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-3 bg-dark-700 text-white rounded-xl">Cancelar</button>
                 <button type="submit" disabled={creating} className="flex-1 py-3 bg-primary-500 disabled:opacity-50 text-white rounded-xl">{creating ? 'Creando...' : 'Crear'}</button>
