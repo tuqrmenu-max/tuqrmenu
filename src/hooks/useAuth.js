@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/lib/store'
 import { registrarEntradaHorarioConReintento } from '@/lib/horarioPresencia'
+import { emailDesdeUsuarioLocal } from '@/lib/slugLocal'
 import toast from 'react-hot-toast'
 
 let authStarted = false
@@ -69,9 +70,13 @@ export function useAuth() {
   const login = async (emailOrUsuario, password) => {
     let email = (emailOrUsuario || '').trim()
 
-    // Si no parece un email, puede ser el "usuario" de un mozo/cajero/cocina
-    // creado desde el panel del dueño: resolvemos a su email interno primero.
-    if (email && !email.includes('@')) {
+    // Personal de un local: "usuario@local" (sin punto después de la arroba).
+    // Se arma el email interno directamente, sin consultar la base.
+    const emailLocal = emailDesdeUsuarioLocal(email)
+    if (emailLocal) {
+      email = emailLocal
+    } else if (email && !email.includes('@')) {
+      // Cuentas anteriores: solo el "usuario" (sin @local). Se resuelve a su email interno.
       const { data: resolved } = await supabase.rpc('resolver_login_usuario', { p_usuario: email })
       if (resolved) email = resolved
     }

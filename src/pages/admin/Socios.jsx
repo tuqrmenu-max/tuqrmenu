@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useI18n } from '@/lib/i18n'
 import { supabase, crearUsuarioAuth, eliminarUsuarioAuth } from '@/lib/supabase'
+import { emailAdminSugerido } from '@/lib/slugLocal'
 import toast from 'react-hot-toast'
 
 const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim()
@@ -277,8 +278,8 @@ export default function Socios() {
                       // Cliente" en Nuevos Clientes, para que sea igual en los
                       // dos lugares. Solo autocompleta si el email todavía no
                       // fue tocado a mano.
-                      const emailSugerido = `${nombre.toLowerCase().replace(/\s+/g, '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '').slice(0, 20) || 'restaurante'}@socio.tuqrmenu.app`
-                      const emailActualEsSugerido = !prev.email || prev.email.endsWith('@socio.tuqrmenu.app')
+                      const emailSugerido = emailAdminSugerido(nombre)
+                      const emailActualEsSugerido = !prev.email || prev.email === emailAdminSugerido(prev.nombre_restaurante) || prev.email.endsWith('@socio.tuqrmenu.app')
                       return {
                         ...prev,
                         nombre_restaurante: nombre,
@@ -295,7 +296,7 @@ export default function Socios() {
                 <input
                   type="email" value={nuevoSocio.email}
                   onChange={e => setNuevoSocio(prev => ({ ...prev, email: e.target.value }))}
-                  placeholder="restaurante@socio.tuqrmenu.app"
+                  placeholder="admin@restaurante.tuqrmenu.app"
                   className="w-full bg-dark-900 border border-dark-600 rounded-lg px-3 py-2 text-white text-sm"
                 />
               </div>
