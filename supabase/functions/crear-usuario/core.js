@@ -5,6 +5,25 @@
 const ROLES_STAFF = ['mozo', 'cajero', 'cocina', 'socio']
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
+// Email interno del personal de un local: usuario@<slug>.staff.tuqrmenu.app.
+// Dominios anteriores (sin slug), que siguen aceptándose mientras haya
+// pantallas que todavía los generan. Se puede quitar cuando ya no hagan falta.
+const DOMINIOS_STAFF_ANTERIORES = [
+  'mozo.tuqrmenu.app', 'caja.tuqrmenu.app', 'cocina.tuqrmenu.app',
+  'delivery.tuqrmenu.app', 'staff.tuqrmenu.app',
+]
+const USUARIO_STAFF_RE = /^[a-z0-9._-]{1,60}$/
+
+// El email del personal tiene que ser el que corresponde al local de quien lo
+// crea (no se puede crear personal con el identificador de otro local, ni con
+// un email cualquiera).
+function emailStaffValido(email, slug) {
+  const [local, dominio] = email.split('@')
+  if (!USUARIO_STAFF_RE.test(local || '')) return false
+  if (slug && dominio === `${slug}.staff.tuqrmenu.app`) return true
+  return DOMINIOS_STAFF_ANTERIORES.includes(dominio)
+}
+
 const resp = (status, body) => ({ status, body })
 
 async function esSuperadmin(admin, uid) {
@@ -42,10 +61,10 @@ export async function procesar(body, callerId, admin) {
   } else if (tipo === 'staff') {
     const clienteId = String(body?.cliente_id || '')
     if (!/^[0-9a-f-]{36}$/i.test(clienteId)) return resp(400, { error: 'cliente_id invalido' })
-    if (!superadmin) {
-      const { data: c } = await admin.from('clientes').select('id').eq('id', clienteId).eq('user_id', callerId).maybeSingle()
-      if (!c) return resp(403, { error: 'No autorizado' })
-    }
+    const { data: c } = await admin.from('clientes').select('id,slug,user_id').eq('id', clienteId).maybeSingle()
+    if (!c) return resp(superadmin ? 400 : 403, { error: superadmin ? 'cliente_id invalido' : 'No autorizado' })
+    if (!superadmin && c.user_id !== callerId) return resp(403, { error: 'No autorizado' })
+    if (!emailStaffValido(email, c.slug)) return resp(400, { error: 'Email de personal invalido para este local' })
     metadata = {}
     if (body?.rol != null) {
       if (!ROLES_STAFF.includes(body.rol)) return resp(400, { error: 'Rol invalido' })
