@@ -216,7 +216,7 @@ export function menuShimScript(supabaseUrl, initialStorage) {
 }
 
 // Claves que el menu exportado puede leer/escribir. Cualquier otra se ignora.
-export const CLAVES_MENU = /^(mesa_\d+_(sesion|propina)|pedidoMesa0Seq_[\w-]+|promo(Count|Seen|Susc)_[\w-]*)$/
+export const CLAVES_MENU = /^(mesa_\d+_(sesion|propina)|pedidoMesa0Seq_[\w-]+|promo(Count|Seen|Susc)_[\w-]*|menuLang)$/
 
 export function leerAlmacenMenu() {
   const out = {}

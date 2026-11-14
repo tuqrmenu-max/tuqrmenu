@@ -6,6 +6,8 @@ import { aplicarModoMesa00 } from '@/lib/mesa00Menu'
 import { unirPortadaCategorias } from '@/lib/menuUnificar'
 import { mejorarPantallaProductos } from '@/lib/menuProductos'
 import { menuShimScript, leerAlmacenMenu, aplicarMensajeAlmacen } from '@/lib/menuShim'
+import { aplicarIdiomasMenu } from '@/lib/menuIdiomas'
+import { normalizarIdiomas } from '@/lib/idiomas'
 
 export default function MenuView() {
   const { token } = useParams()
@@ -68,6 +70,10 @@ export default function MenuView() {
       setLoading(false)
       return
     }
+
+    // Idiomas que el super admin habilitó para este local (si falla, el menú queda solo en español).
+    const idiomasPromise = supabase.rpc('qr_idiomas_menu', { p_cliente_id: data.id })
+      .then(({ data: lista, error: e }) => (e ? ['es'] : normalizarIdiomas(lista)), () => ['es'])
 
     try {
       const res = await fetch(data.menu_url, { cache: 'default' })
@@ -239,6 +245,8 @@ export default function MenuView() {
       html = unirPortadaCategorias(html)
       // Pantalla de productos: un solo control por producto y barra "Ver pedido"
       html = mejorarPantallaProductos(html)
+      // Ícono de idiomas junto al logo y traducción de los textos fijos
+      html = aplicarIdiomasMenu(html, await idiomasPromise)
 
       // Compatibilidad: el menú exportado habla con la API REST de las tablas, que ya no
       // es accesible para visitantes. Este script lo redirige a las funciones seguras.
