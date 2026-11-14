@@ -1,9 +1,10 @@
 import { useAuth } from '@/hooks/useAuth'
-import { useI18n } from '@/lib/i18n'
+import LanguageSelector from '@/components/LanguageSelector'
+import { useIdiomasApp } from '@/hooks/useIdiomasApp'
 
 export default function Header() {
   const { profile, rol } = useAuth()
-  const { t, lang, toggleLang } = useI18n()
+  const idiomasPermitidos = useIdiomasApp()
 
   const getRolLabel = () => {
     switch (rol) {
@@ -29,14 +30,8 @@ export default function Header() {
       </div>
       
       <div className="flex items-center gap-4">
-        {/* Toggle Idioma */}
-        <button
-          onClick={toggleLang}
-          className="px-3 py-1.5 bg-dark-700 rounded-lg text-sm hover:bg-dark-600 transition flex items-center gap-2"
-        >
-          <span>{lang === 'es' ? '🇪🇸' : '🇺🇸'}</span>
-          <span className="text-dark-300">{lang.toUpperCase()}</span>
-        </button>
+        {/* Selector de idioma: solo los idiomas habilitados para este socio */}
+        <LanguageSelector permitidos={idiomasPermitidos} />
         
         {/* Avatar */}
         <div className="w-10 h-10 rounded-full bg-primary-500/20 flex items-center justify-center">

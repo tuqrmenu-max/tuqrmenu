@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { useI18n } from '@/lib/i18n'
+import LanguageSelector from '@/components/LanguageSelector'
 import toast from 'react-hot-toast'
 
 export default function Login() {
@@ -10,7 +11,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false)
   const { login, getRedirectPath } = useAuth()
   const navigate = useNavigate()
-  const { t, lang, toggleLang } = useI18n()
+  const { t } = useI18n()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -29,13 +30,8 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-dark-900 px-4">
-      {/* Botón idioma */}
-      <button
-        onClick={toggleLang}
-        className="fixed top-4 right-4 px-3 py-1 bg-dark-700 rounded text-sm hover:bg-dark-600 transition"
-      >
-        {lang === 'es' ? '🇪🇸 ES' : '🇺🇸 EN'}
-      </button>
+      {/* Idioma: antes de entrar todavía no se sabe el socio, se ofrecen todos */}
+      <LanguageSelector className="fixed top-4 right-4 z-10" />
       
       <div className="w-full max-w-md">
         {/* Logo */}
