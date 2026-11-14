@@ -1,226 +1,57 @@
 import { create } from 'zustand'
+import es from './traducciones/es'
+import { CODIGOS_IDIOMAS } from './idiomas'
 
-const translations = {
-  es: {
-    // Login
-    login: 'Iniciar Sesión',
-    email: 'Correo Electrónico',
-    password: 'Contraseña',
-    loginButton: 'Entrar',
-    noAccount: '¿No tienes cuenta?',
-    register: 'Registrarse',
-    
-    // Navigation
-    dashboard: 'Panel',
-    vendedores: 'Vendedores',
-    nuevosClientes: 'Nuevos Clientes',
-    nuevosMensajes: 'Nuevos Mensajes',
-    dashSocios: 'Dash Socios',
-    socios: 'Socios',
-    crearSocios: 'Crear Socios',
-    buscarSocio: 'Buscar socio...',
-    abrirBuilder: 'Abrir Builder',
-    builder: 'Builder',
-    portada: 'Portada',
-    categorias: 'Categorías',
-    productos: 'Productos',
-    fondoPortada: 'Fondo de portada',
-    logoPng: 'Logo PNG',
-    desenfoque: 'Desenfoque',
-    textoBienvenida: 'Texto bienvenida',
-    colorTexto: 'Color texto',
-    fondoTexto: 'Fondo texto',
-    sinFondo: 'Sin fondo',
-    tamLetra: 'Tamaño letra',
-    textoBoton: 'Texto botón',
-    colorBoton: 'Botón',
-    bordeBoton: 'Borde',
-    textoBotonColor: 'Texto',
-    fondCategorias: 'Fondo categorías',
-    fondProductos: 'Fondo productos',
-    fondCarrito: 'Fondo carrito',
-    subirExcel: 'Subir Excel',
-    subirImagenes: 'Subir imágenes',
-    imagenesCategorias: 'Imágenes categorías',
-    asistenteIa: 'Asistente de imágenes con IA',
-    copiarPrompts: 'Copiar todos los prompts',
-    copiarPrompt: 'Copiar prompt',
-    cargarGenerada: 'Cargar imagen generada',
-    traerCentro: 'Traer al centro',
-    whastapp: 'WhatsApp',
-    instagram: 'Instagram',
-    direccion: 'Dirección',
-    horario: 'Horario',
-    turnos: 'Turnos',
-    promocion: 'Promoción',
-    alias: 'Alias',
-    costoDelivery: 'Costo delivery',
-    exportarMenu: 'Exportar menú',
-    guardarProyecto: 'Guardar proyecto',
-    cargarProyecto: 'Cargar proyecto',
-    menuExportado: 'Menú exportado',
-    urlMenu: 'URL del menú',
-    copiarUrl: 'Copiar URL',
-    sinImagen: 'Sin imagen',
-    productosSinImagen: 'productos sin imagen',
-    todosConImagen: 'Todos los productos tienen imagen',
-    seleccionarTodo: 'Seleccionar todo',
-    asignarSeleccionadas: 'Asignar seleccionadas',
-    traerTodas: 'Traer todas dentro de la pantalla',
-    clientes: 'Clientes',
-    configuracion: 'Configuración',
-    carta: 'Carta',
-    diseno: 'Diseño',
-    mesas: 'Mesas',
-    usuarios: 'Usuarios',
-    caja: 'Caja',
-    reportes: 'Reportes',
-    promociones: 'Promociones',
-    suscriptos: 'Suscriptos',
-    ticket: 'Ticket',
-    cerrarSesion: 'Cerrar Sesión',
-    
-    // Common
-    guardar: 'Guardar',
-    cancelar: 'Cancelar',
-    eliminar: 'Eliminar',
-    editar: 'Editar',
-    crear: 'Crear',
-    buscar: 'Buscar...',
-    cargando: 'Cargando...',
-    error: 'Error',
-    exito: 'Éxito',
-    
-    // Admin
-    crearVendedor: 'Crear Vendedor',
-    nombreVendedor: 'Nombre del Vendedor',
-    emailVendedor: 'Email del Vendedor',
-    passwordVendedor: 'Contraseña',
-    
-    // Menu
-    verMenu: 'Ver Menú',
-    pedirPorWhatsApp: 'Pedir por WhatsApp',
-    llamarMozo: 'Llamar Mozo',
-    delivery: 'Delivery',
-    mesa: 'Mesa',
-  },
-  en: {
-    // Login
-    login: 'Login',
-    email: 'Email',
-    password: 'Password',
-    loginButton: 'Sign In',
-    noAccount: "Don't have an account?",
-    register: 'Register',
-    
-    // Navigation
-    dashboard: 'Dashboard',
-    vendedores: 'Sales Reps',
-    nuevosClientes: 'New Clients',
-    nuevosMensajes: 'New Messages',
-    dashSocios: 'Partners Dashboard',
-    socios: 'Partners',
-    crearSocios: 'Create Partners',
-    buscarSocio: 'Search partner...',
-    abrirBuilder: 'Open Builder',
-    builder: 'Builder',
-    portada: 'Cover',
-    categorias: 'Categories',
-    productos: 'Products',
-    fondoPortada: 'Cover background',
-    logoPng: 'Logo PNG',
-    desenfoque: 'Blur',
-    textoBienvenida: 'Welcome text',
-    colorTexto: 'Text color',
-    fondoTexto: 'Text background',
-    sinFondo: 'No background',
-    tamLetra: 'Font size',
-    textoBoton: 'Button text',
-    colorBoton: 'Button',
-    bordeBoton: 'Border',
-    textoBotonColor: 'Text',
-    fondCategorias: 'Categories background',
-    fondProductos: 'Products background',
-    fondCarrito: 'Cart background',
-    subirExcel: 'Upload Excel',
-    subirImagenes: 'Upload images',
-    imagenesCategorias: 'Category images',
-    asistenteIa: 'AI Image Assistant',
-    copiarPrompts: 'Copy all prompts',
-    copiarPrompt: 'Copy prompt',
-    cargarGenerada: 'Upload generated image',
-    traerCentro: 'Recenter',
-    whastapp: 'WhatsApp',
-    instagram: 'Instagram',
-    direccion: 'Address',
-    horario: 'Hours',
-    turnos: 'Shifts',
-    promocion: 'Promotion',
-    alias: 'Alias',
-    costoDelivery: 'Delivery cost',
-    exportarMenu: 'Export menu',
-    guardarProyecto: 'Save project',
-    cargarProyecto: 'Load project',
-    menuExportado: 'Exported menu',
-    urlMenu: 'Menu URL',
-    copiarUrl: 'Copy URL',
-    sinImagen: 'No image',
-    productosSinImagen: 'products without image',
-    todosConImagen: 'All products have images',
-    seleccionarTodo: 'Select all',
-    asignarSeleccionadas: 'Assign selected',
-    traerTodas: 'Bring all inside screen',
-    clients: 'Clients',
-    configuracion: 'Settings',
-    carta: 'Menu',
-    diseno: 'Design',
-    mesas: 'Tables',
-    usuarios: 'Users',
-    caja: 'Cash Register',
-    reportes: 'Reports',
-    promociones: 'Promotions',
-    suscriptos: 'Subscribers',
-    ticket: 'Receipt',
-    cerrarSesion: 'Sign Out',
-    
-    // Common
-    guardar: 'Save',
-    cancelar: 'Cancel',
-    eliminar: 'Delete',
-    editar: 'Edit',
-    crear: 'Create',
-    buscar: 'Search...',
-    cargando: 'Loading...',
-    error: 'Error',
-    exito: 'Success',
-    
-    // Admin
-    crearVendedor: 'Create Sales Rep',
-    nombreVendedor: 'Sales Rep Name',
-    emailVendedor: 'Sales Rep Email',
-    passwordVendedor: 'Password',
-    
-    // Menu
-    verMenu: 'View Menu',
-    pedirPorWhatsApp: 'Order via WhatsApp',
-    llamarMozo: 'Call Waiter',
-    delivery: 'Delivery',
-    mesa: 'Table',
-  }
+// El español va incluido en el bundle; los demás idiomas se descargan solo cuando se eligen.
+const cargadores = {
+  en: () => import('./traducciones/en'),
+  pt: () => import('./traducciones/pt'),
+  fr: () => import('./traducciones/fr'),
+  it: () => import('./traducciones/it'),
+  de: () => import('./traducciones/de'),
+  ru: () => import('./traducciones/ru'),
+  zh: () => import('./traducciones/zh'),
+  ja: () => import('./traducciones/ja'),
+}
+
+const CLAVE_LS = 'tuqrmenu:lang'
+
+function leerGuardado() {
+  try {
+    const v = localStorage.getItem(CLAVE_LS)
+    return v && (v === 'es' || CODIGOS_IDIOMAS.includes(v)) ? v : 'es'
+  } catch { return 'es' }
 }
 
 export const useI18n = create((set, get) => ({
   lang: 'es',
-  
-  setLang: (lang) => set({ lang }),
-  
-  t: (key) => {
-    const { lang } = get()
-    return translations[lang]?.[key] || translations.es[key] || key
+  bundles: { es },
+
+  // Cambia el idioma: primero descarga el diccionario y recién después lo aplica (sin parpadeos).
+  setLang: async (lang) => {
+    if (lang !== 'es' && !cargadores[lang]) return
+    try {
+      if (!get().bundles[lang]) {
+        const mod = await cargadores[lang]()
+        set(s => ({ bundles: { ...s.bundles, [lang]: mod.default } }))
+      }
+    } catch {
+      return // sin conexión al descargar: se queda en el idioma actual
+    }
+    set({ lang })
+    try { localStorage.setItem(CLAVE_LS, lang) } catch { /* sin almacenamiento */ }
   },
-  
-  toggleLang: () => {
-    const { lang } = get()
-    set({ lang: lang === 'es' ? 'en' : 'es' })
-  }
+
+  // Al iniciar la app: recupera el último idioma elegido en este dispositivo.
+  restaurarLang: () => {
+    const guardado = leerGuardado()
+    if (guardado !== get().lang) get().setLang(guardado)
+  },
+
+  t: (key) => {
+    const { lang, bundles } = get()
+    return bundles[lang]?.[key] || es[key] || key
+  },
 }))
+
+useI18n.getState().restaurarLang()
