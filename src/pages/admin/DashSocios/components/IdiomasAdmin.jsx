@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { IDIOMAS, normalizarIdiomas } from '@/lib/idiomas'
+import TraduccionesPendientes from './TraduccionesPendientes'
 import toast from 'react-hot-toast'
 
 function BloqueIdiomas({ titulo, descripcion, seleccion, onToggle, onTodos }) {
@@ -58,6 +59,8 @@ export default function IdiomasAdmin({ clienteId }) {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [original, setOriginal] = useState(null)
+  // Idiomas del menú ya guardados: sobre estos se calcula qué falta traducir.
+  const [menuGuardado, setMenuGuardado] = useState(['es'])
 
   useEffect(() => {
     if (!clienteId) return
@@ -75,7 +78,7 @@ export default function IdiomasAdmin({ clienteId }) {
         } else {
           const m = normalizarIdiomas(data?.idiomas_menu)
           const a = normalizarIdiomas(data?.idiomas_app)
-          setMenu(m); setApp(a)
+          setMenu(m); setApp(a); setMenuGuardado(m)
           setOriginal(JSON.stringify([m, a]))
         }
         setLoading(false)
@@ -102,6 +105,7 @@ export default function IdiomasAdmin({ clienteId }) {
       toast.error('Error al guardar: ' + error.message)
     } else {
       setOriginal(JSON.stringify([menu, app]))
+      setMenuGuardado(menu)
       toast.success('Idiomas guardados')
     }
   }
@@ -141,6 +145,8 @@ export default function IdiomasAdmin({ clienteId }) {
         </button>
         {hayCambios && <span className="text-dark-400 text-sm">Hay cambios sin guardar</span>}
       </div>
+
+      <TraduccionesPendientes clienteId={clienteId} idiomas={menuGuardado} />
     </div>
   )
 }
