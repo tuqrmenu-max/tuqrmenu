@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/hooks/useAuth'
 import toast from 'react-hot-toast'
+import PromoMediaCampos from './PromoMediaCampos'
+import { CONFIG_VACIA, normalizarConfig, guardarMediaPromo, borrarArchivosPromo } from '@/lib/promoMedia'
 import { DIAS_PROMO, hhmm, textoHorarioPromo, tieneHorario, tieneLimite, estadoPromo, validarLimitesHorario, camposLimitesHorario } from '@/lib/promoVigencia'
 
 const LIMITES_VACIOS = { usos_max: '', dias_semana: [], hora_desde: '', hora_hasta: '' }
@@ -96,6 +98,8 @@ export default function PromocionesAdmin({ clienteId }) {
     ...LIMITES_VACIOS
   })
   // Editor de "Límite y horario" de una promo ya creada
+  const [media, setMedia] = useState([])
+  const [mediaConfig, setMediaConfig] = useState(CONFIG_VACIA)
   const [editandoId, setEditandoId] = useState(null)
   const [editForm, setEditForm] = useState(LIMITES_VACIOS)
   const [guardandoLimites, setGuardandoLimites] = useState(false)
@@ -204,7 +208,8 @@ export default function PromocionesAdmin({ clienteId }) {
         asignacion: form.asignacion,
         fecha_envio: form.fecha_envio ? new Date(form.fecha_envio).toISOString() : null,
         para_nuevos: form.para_nuevos,
-        ...(hayLimites ? limites : {})
+        ...(hayLimites ? limites : {}),
+        ...(media.length ? { media_config: normalizarConfig(mediaConfig) } : {})
       })
       .select()
 
@@ -215,6 +220,11 @@ export default function PromocionesAdmin({ clienteId }) {
       return
     }
 
+    if (media.length && data?.[0]) {
+      try { await guardarMediaPromo(data[0].id, clienteId, media) }
+      catch (err2) { toast.error('La promo se creó pero no se pudieron guardar las imágenes/videos: ' + (err2.message || '') + ' (¿ejecutaste supabase/migrations/20261115_promos_multimedia.sql?)', { duration: 9000 }) }
+    }
+
     // Si asignación es "todos", asignar a todos los suscriptos
     if (form.asignacion === 'todos' && data?.[0]) {
       await asignarATodos(data[0].id)
@@ -222,6 +232,8 @@ export default function PromocionesAdmin({ clienteId }) {
 
     toast.success('Promoción creada')
     setShowForm(false)
+    setMedia([])
+    setMediaConfig(CONFIG_VACIA)
     setForm({ titulo: '', descripcion: '', tipo: '2x1_mismo', categoria: '', producto_ids: [], valor_descuento: '', asignacion: 'todos', fecha_envio: '', para_nuevos: false, _showCats: false, ...LIMITES_VACIOS })
     fetchData()
   }
@@ -484,7 +496,10 @@ export default function PromocionesAdmin({ clienteId }) {
         <h2 className="text-white font-bold text-lg">🎁 Promociones ({promociones.length})</h2>
         {!soloLectura && (
         <button
-          onClick={() => setShowForm(!showForm)}
+          onClick={() => {
+            if (showForm && media.length) { borrarArchivosPromo(media.map(m => m.path)).catch(() => {}); setMedia([]); setMediaConfig(CONFIG_VACIA) }
+            setShowForm(!showForm)
+          }}
           className="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg font-bold transition"
         >
           {showForm ? '✕ Cancelar' : '+ Nueva Promo'}
@@ -681,6 +696,12 @@ export default function PromocionesAdmin({ clienteId }) {
               <p className="text-[10px] text-dark-400 mt-1 ml-6">Cuando alguien complete el formulario "Hacete Socio" desde el menú, recibirá esta promo automáticamente</p>
             </div>
           </div>
+          <PromoMediaCampos
+            className="mt-4"
+            clienteId={clienteId}
+            items={media} onItems={setMedia}
+            config={mediaConfig} onConfig={setMediaConfig}
+          />
           <LimitesHorarioCampos
             className="mt-4"
             valor={{ usos_max: form.usos_max, dias_semana: form.dias_semana, hora_desde: form.hora_desde, hora_hasta: form.hora_hasta }}
