@@ -13,6 +13,7 @@ import TicketConfig from './components/TicketConfig'
 import UsuariosStaff from './components/UsuariosStaff'
 import HorarioUsuarios from './components/HorarioUsuarios'
 import TurnosCalendario from './components/TurnosCalendario'
+import IdiomasAdmin from './components/IdiomasAdmin'
 import { useParams, useNavigate } from 'react-router-dom'
 
 const tabs = [
@@ -26,7 +27,8 @@ const tabs = [
   { id: 'ticket', label: 'Ticket', icon: '🧾' },
   { id: 'horario', label: 'Horario', icon: '🕐' },
   { id: 'turnos', label: 'Turnos', icon: '📅' },
-  { id: 'usuarios', label: 'Usuarios', icon: '🔑' }
+  { id: 'usuarios', label: 'Usuarios', icon: '🔑' },
+  { id: 'idiomas', label: 'Idiomas', icon: '🌐' }
 ]
 
 export default function DashboardSocios() {
@@ -151,6 +153,9 @@ export default function DashboardSocios() {
         return <TurnosCalendario clienteId={clienteId} />
       case 'usuarios':
         return <UsuariosStaff clienteId={clienteId} />
+      case 'idiomas':
+        // Solo super admin: los dueños y el staff no ven esta pestaña (su sidebar no la incluye).
+        return rol === 'superadmin' ? <IdiomasAdmin clienteId={clienteId} /> : null
       default:
         return <MesasAdmin clienteId={clienteId} />
     }
