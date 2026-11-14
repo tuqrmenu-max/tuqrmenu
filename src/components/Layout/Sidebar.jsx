@@ -3,12 +3,14 @@ import { useState, useEffect } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { useI18n } from '@/lib/i18n'
 import { supabase } from '@/lib/supabase'
+import toast from 'react-hot-toast'
 
 const adminLinks = [
   { path: '/admin', label: 'dashboard', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
   { path: '/admin/vendedores', label: 'vendedores', icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z' },
   { path: '/admin/socios', label: 'crearSocios', icon: 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4' },
   { path: '/admin/nuevos-clientes', label: 'nuevosClientes', icon: 'M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z' },
+  { path: '/admin/mensajes', label: 'nuevosMensajes', icon: 'M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z' },
   { path: '/admin/dash-socios', label: 'dashSocios', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z' },
 ]
 
@@ -45,6 +47,7 @@ export default function Sidebar() {
   const { rol, logout, user } = useAuth()
   const { t } = useI18n()
   const [pendientes, setPendientes] = useState(0)
+  const [mensajesSinLeer, setMensajesSinLeer] = useState(0)
   const [staffLinks, setStaffLinks] = useState(ownerLinks.filter(l => !l.path.endsWith('/turnos')))
   // Solo afecta a pantallas angostas (celular): en desktop el sidebar
   // sigue exactamente igual que antes, siempre visible. En mobile arranca
@@ -99,6 +102,33 @@ export default function Sidebar() {
     const channel = supabase
       .channel('solicitudes_cliente_badge')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'solicitudes_cliente' }, fetchPendientes)
+      .subscribe()
+
+    return () => { supabase.removeChannel(channel) }
+  }, [rol])
+
+  // Mensajes de "Pedir una demo" sin leer, en vivo; avisa con un toast cuando entra uno nuevo.
+  useEffect(() => {
+    if (rol !== 'superadmin') return
+
+    const fetchMensajes = async () => {
+      const { count } = await supabase
+        .from('mensajes_demo')
+        .select('*', { count: 'exact', head: true })
+        .eq('leido', false)
+      setMensajesSinLeer(count || 0)
+    }
+    fetchMensajes()
+
+    const channel = supabase
+      .channel('mensajes_demo_badge')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mensajes_demo' }, (payload) => {
+        const m = payload.new || {}
+        toast(`Nueva demo pedida: ${m.nombre || ''} · ${m.whatsapp || ''}`, { icon: '💬', duration: 10000 })
+        fetchMensajes()
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'mensajes_demo' }, fetchMensajes)
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'mensajes_demo' }, fetchMensajes)
       .subscribe()
 
     return () => { supabase.removeChannel(channel) }
@@ -166,6 +196,11 @@ export default function Sidebar() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={link.icon} />
             </svg>
             <span className="font-medium flex-1">{t(link.label)}</span>
+            {link.path === '/admin/mensajes' && mensajesSinLeer > 0 && (
+              <span className="min-w-[20px] h-5 px-1.5 rounded-full bg-red-500 text-white text-xs font-bold flex items-center justify-center">
+                {mensajesSinLeer > 99 ? '99+' : mensajesSinLeer}
+              </span>
+            )}
             {link.path === '/admin/nuevos-clientes' && pendientes > 0 && (
               <span className="min-w-[20px] h-5 px-1.5 rounded-full bg-red-500 text-white text-xs font-bold flex items-center justify-center">
                 {pendientes > 99 ? '99+' : pendientes}

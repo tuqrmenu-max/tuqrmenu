@@ -9,6 +9,7 @@ import Login from '@/pages/auth/Login'
 import AdminDashboard from '@/pages/admin/Dashboard'
 import Vendedores from '@/pages/admin/Vendedores'
 import NuevosClientes from '@/pages/admin/NuevosClientes'
+import MensajesDemo from '@/pages/admin/MensajesDemo'
 import Socios from '@/pages/admin/Socios'
 import DashSocios from '@/pages/admin/DashSocios'
 import Builder from '@/pages/admin/Builder'
@@ -110,6 +111,7 @@ export default function App() {
           <Route index element={<AdminDashboard />} />
           <Route path="vendedores" element={<Vendedores />} />
           <Route path="nuevos-clientes" element={<NuevosClientes />} />
+          <Route path="mensajes" element={<MensajesDemo />} />
           <Route path="dash-socios" element={<DashSocios />} />
           <Route path="dash-socios/:tab" element={<DashSocios />} />
           <Route path="socios" element={<Socios />} />

@@ -27,6 +27,7 @@ p{margin:0}
 .skip:focus{top:calc(env(safe-area-inset-top,0px) + .75rem)}
 
 /* botones */
+[hidden]{display:none!important}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:46px;padding:.7rem 1.35rem;border-radius:999px;font:600 1rem/1 var(--ff-body);text-decoration:none;border:1px solid transparent;cursor:pointer;transition:background .2s,border-color .2s}
 .btn-primary{background:var(--teal);color:#062A31}
 .btn-primary:hover{background:#55D0DE}
@@ -398,11 +399,11 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:1rem 2rem;align-items:center;justif
     <p class="lead" style="margin-top:1.1rem">Contanos de tu local y te mostramos cómo se vería con tu carta.</p>
   </div>
   <div class="formx">
-    <label>Tu nombre<input id="fNombre" type="text" autocomplete="name" placeholder="Ej: Lucía"></label>
-    <label>Nombre del local<input id="fLocal" type="text" autocomplete="organization" placeholder="Ej: Café Central"></label>
-    <label>Cantidad de mesas<input id="fMesas" type="number" min="1" inputmode="numeric" placeholder="Ej: 12"></label>
-    <a class="btn btn-primary" id="wa" href="https://wa.me/?text=" target="_blank" rel="noopener">Pedir demo por WhatsApp</a>
-    <small>Se abre WhatsApp con el mensaje ya escrito.</small>
+    <label>Tu nombre<input id="fNombre" type="text" autocomplete="name" maxlength="80" placeholder="Ej: Lucía"></label>
+    <label>Tu número de WhatsApp<input id="fWsp" type="tel" inputmode="tel" autocomplete="tel" maxlength="24" placeholder="Ej: 351 123 4567"></label>
+    <button class="btn btn-primary" id="demoBtn" type="button">Pedir demo</button>
+    <small id="fMsg" role="status" aria-live="polite">Te escribimos por WhatsApp para mostrarte cómo se vería con tu carta.</small>
+    <a class="btn btn-ghost" id="wa" href="#" target="_blank" rel="noopener" hidden>Escribinos por WhatsApp</a>
   </div>
  </div>
 </section>
@@ -575,10 +576,25 @@ upd();
 })();
 
 /* ---------- contacto ---------- */
-function waLink(){var n=$('fNombre').value.trim(),l=$('fLocal').value.trim(),m=$('fMesas').value.trim();
-  var txt='Hola! Quiero una demo de TuQRMenu.'+(n?' Soy '+n+'.':'')+(l?' Mi local es '+l+'.':'')+(m?' Tenemos '+m+' mesas.':'');
-  $('wa').href='https://wa.me/'+WHATSAPP_NUMERO+'?text='+encodeURIComponent(txt)}
-['fNombre','fLocal','fMesas'].forEach(function(id){$(id).addEventListener('input',waLink)});waLink();
+var SUPABASE_URL='https://xroevyecdybrhpusmeja.supabase.co';
+var SUPABASE_KEY='sb_publishable_9g5wYtqmvbn3X0CigPrNnA_Wrei8sx4'; // clave publica (la misma que usa la app en el navegador)
+function setMsg(t,err){var m=$('fMsg');m.textContent=t;m.style.color=err?'#ff8a80':''}
+function waLink(n,w){
+  var txt='Hola! Quiero una demo de TuQRMenu. Soy '+n+'. Mi WhatsApp: '+w+'.';
+  var a=$('wa');a.href='https://wa.me/'+WHATSAPP_NUMERO+'?text='+encodeURIComponent(txt);a.hidden=false}
+$('demoBtn').addEventListener('click',function(){
+  var n=$('fNombre').value.trim(),w=$('fWsp').value.trim(),b=this;
+  if(!n){setMsg('Escribí tu nombre.',true);$('fNombre').focus();return}
+  if(!/^[0-9+ ()-]{6,24}$/.test(w)||w.replace(/\D/g,'').length<6){setMsg('Revisá tu número de WhatsApp (solo números, con código de área).',true);$('fWsp').focus();return}
+  b.disabled=true;setMsg('Enviando…');
+  fetch(SUPABASE_URL+'/rest/v1/rpc/enviar_demo',{method:'POST',
+    headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY},
+    body:JSON.stringify({p_nombre:n,p_whatsapp:w})})
+  .then(function(r){if(!r.ok)throw new Error('http '+r.status);
+    setMsg('¡Listo, '+n+'! Recibimos tu pedido y te escribimos por WhatsApp. Si querés, escribinos vos también:');
+    waLink(n,w);b.hidden=true})
+  .catch(function(){b.disabled=false;setMsg('No pudimos enviar tu pedido. Probá de nuevo o escribinos por WhatsApp.',true);waLink(n,w)})
+});
 })();
 </script>
 </body>
