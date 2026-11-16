@@ -31,8 +31,12 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-dark-900 px-4">
       {/* Idioma: antes de entrar todavía no se sabe el socio, se ofrecen todos */}
-      <LanguageSelector className="fixed top-4 right-4 z-10" />
-      
+      {/* El contenedor es el que va fijo arriba a la derecha: LanguageSelector ya trae su propio
+          `relative`, que pisaba al `fixed` y lo dejaba en el flujo, descentrando logo y formulario */}
+      <div className="fixed top-4 right-4 z-20">
+        <LanguageSelector />
+      </div>
+
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
