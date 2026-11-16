@@ -7,6 +7,22 @@ import { uploadMenuHtml, saveMenuUrlToCliente, saveBuilderConfig, saveBuilderFie
 import { useAuth } from '@/hooks/useAuth'
 import { useBuilderState } from '@/components/Builder/useBuilderState'
 
+// Convierte "tomate, lechuga; queso" (o una lista, uno por línea) en un array limpio y sin repetidos.
+function parseIngredientes(valor) {
+  const partes = Array.isArray(valor) ? valor : String(valor ?? '').split(/[\n,;]+/)
+  const vistos = new Set()
+  const out = []
+  for (const p of partes) {
+    const t = String(p).trim().slice(0, 60)
+    const k = t.toLowerCase()
+    if (!t || vistos.has(k)) continue
+    vistos.add(k)
+    out.push(t)
+    if (out.length >= 30) break
+  }
+  return out
+}
+
 export default function CartaAdmin({ clienteId, socio }) {
   const { rol } = useAuth()
   const [headerControls, setHeaderControls] = useState(null)
@@ -64,9 +80,14 @@ export default function CartaAdmin({ clienteId, socio }) {
   const [savingProject, setSavingProject] = useState(false)
   const [userIdParaUrl, setUserIdParaUrl] = useState(null)
   const [showAddModal, setShowAddModal] = useState(false)
-  const [newProd, setNewProd] = useState({ nombre: '', precio: '', detalle: '', categoria_id: '', nuevaCategoria: '' })
+  const [newProd, setNewProd] = useState({ nombre: '', precio: '', detalle: '', categoria_id: '', nuevaCategoria: '', ingredientes: '', personalizar: false })
   const [newProdImage, setNewProdImage] = useState(null)
   const [savingNewProd, setSavingNewProd] = useState(false)
+  // Ingredientes de un producto existente (modal 🥗) y opción "permitir personalizar"
+  const [ingProd, setIngProd] = useState(null)
+  const [ingTexto, setIngTexto] = useState('')
+  const [ingPersonalizar, setIngPersonalizar] = useState(false)
+  const [savingIng, setSavingIng] = useState(false)
   const fileInputRefs = useRef({})
   const catFileRefs = useRef({})
   // true cuando este restaurante NO puede importar Excel, descargar imágenes,
@@ -757,6 +778,50 @@ export default function CartaAdmin({ clienteId, socio }) {
     }
   }
 
+  const abrirIngredientes = (prod) => {
+    setIngProd(prod)
+    setIngTexto((prod.ingredientes || []).join('\n'))
+    setIngPersonalizar(!!prod.permitir_personalizar)
+  }
+
+  const guardarIngredientes = async () => {
+    if (!ingProd) return
+    setSavingIng(true)
+    try {
+      const lista = parseIngredientes(ingTexto)
+      const { error } = await supabase
+        .from('productos')
+        .update({ ingredientes: lista, permitir_personalizar: ingPersonalizar })
+        .eq('id', ingProd.id)
+      if (error) throw error
+      setProductos(prev => prev.map(p => (
+        p.id === ingProd.id ? { ...p, ingredientes: lista, permitir_personalizar: ingPersonalizar } : p
+      )))
+      toast.success('Ingredientes guardados')
+      setIngProd(null)
+    } catch (err) {
+      toast.error('No se pudo guardar: ' + err.message + ' (¿se aplicó la migración 20261116_ingredientes.sql?)', { duration: 8000 })
+    } finally {
+      setSavingIng(false)
+    }
+  }
+
+  // Check por categoría: todos sus productos pasan a poder personalizarse (o dejan de poder).
+  const toggleCategoriaPersonalizar = async (cat) => {
+    const valor = !cat.permitir_personalizar
+    setCategorias(prev => prev.map(c => (c.id === cat.id ? { ...c, permitir_personalizar: valor } : c)))
+    const { error } = await supabase
+      .from('categorias')
+      .update({ permitir_personalizar: valor })
+      .eq('id', cat.id)
+    if (error) {
+      setCategorias(prev => prev.map(c => (c.id === cat.id ? { ...c, permitir_personalizar: !valor } : c)))
+      toast.error('No se pudo guardar: ' + error.message + ' (¿se aplicó la migración 20261116_ingredientes.sql?)', { duration: 8000 })
+    } else {
+      toast.success(valor ? `Los productos de "${cat.nombre}" se podrán personalizar` : `Personalización desactivada en "${cat.nombre}"`)
+    }
+  }
+
   const crearProducto = async () => {
     if (!newProd.nombre.trim() || !newProd.precio) {
       toast.error('Nombre y precio son obligatorios')
@@ -798,6 +863,11 @@ export default function CartaAdmin({ clienteId, socio }) {
         precio: parseFloat(newProd.precio) || 0,
         detalle: newProd.detalle.trim() || null
       }
+      const ingNuevos = parseIngredientes(newProd.ingredientes)
+      if (ingNuevos.length > 0 || newProd.personalizar) {
+        productoPayload.ingredientes = ingNuevos
+        productoPayload.permitir_personalizar = !!newProd.personalizar
+      }
       let { data: inserted, error: insError } = await supabase
         .from('productos')
         .insert(productoPayload)
@@ -838,7 +908,7 @@ export default function CartaAdmin({ clienteId, socio }) {
 
       toast.success('Producto creado')
       setShowAddModal(false)
-      setNewProd({ nombre: '', precio: '', detalle: '', categoria_id: '', nuevaCategoria: '' })
+      setNewProd({ nombre: '', precio: '', detalle: '', categoria_id: '', nuevaCategoria: '', ingredientes: '', personalizar: false })
       setNewProdImage(null)
       const [{ data: freshProds }, { data: freshCats }] = await Promise.all([
         supabase.from('productos').select('*').eq('cliente_id', clienteId),
@@ -929,10 +999,43 @@ export default function CartaAdmin({ clienteId, socio }) {
         }
       }
 
+      // Ingredientes y "permitir personalizar". Este import borra todos los productos y los vuelve
+      // a crear, así que lo cargado a mano se conserva por nombre cuando el Excel no lo trae.
+      const colsExcel = [...new Set(jsonData.flatMap(r => Object.keys(r)))]
+      const claveIng = colsExcel.find(k => k.toLowerCase().includes('ingrediente'))
+      const clavePers = colsExcel.find(k => k.toLowerCase().includes('personaliz'))
+      const normNombre = s => String(s || '').trim().toLowerCase()
+      const previos = {}
+      let columnasIngOk = true
+      {
+        const { data: prev, error: prevErr } = await supabase
+          .from('productos')
+          .select('nombre, ingredientes, permitir_personalizar')
+          .eq('cliente_id', clienteId)
+        if (prevErr) columnasIngOk = false
+        else (prev || []).forEach(p => { previos[normNombre(p.nombre)] = p })
+      }
+      const hayPrevios = Object.values(previos).some(p => (p.ingredientes && p.ingredientes.length > 0) || p.permitir_personalizar)
+      const incluirIng = !!(claveIng || clavePers) || hayPrevios
+      if (incluirIng && !columnasIngOk) {
+        // Se corta ANTES de borrar nada: sin las columnas nuevas el insert fallaría con los productos ya borrados.
+        toast.error('Para importar ingredientes falta aplicar la migración 20261116_ingredientes.sql en la base.', { id: 'importar', duration: 10000 })
+        return
+      }
+      const esSi = v => /^(si|sí|s|x|1|true|yes|y)$/i.test(String(v ?? '').trim())
+      const datosIngredientes = (row, nombre) => {
+        const previo = previos[normNombre(nombre)] || {}
+        const deExcel = claveIng ? parseIngredientes(row[claveIng]) : []
+        return {
+          ingredientes: deExcel.length > 0 ? deExcel : (previo.ingredientes || []),
+          permitir_personalizar: clavePers ? esSi(row[clavePers]) : !!previo.permitir_personalizar
+        }
+      }
+
       // Mapear productos
       const mappedData = jsonData.map(row => {
         const catKey = Object.keys(row).find(k => k.toLowerCase().includes('categor'))
-        const prodKey = Object.keys(row).find(k => k.toLowerCase().includes('producto'))
+        const prodKey = Object.keys(row).find(k => k.toLowerCase().includes('producto') && !k.toLowerCase().includes('ingrediente'))
         const precioKey = Object.keys(row).find(k => k.toLowerCase().includes('precio'))
         const detalleKey = Object.keys(row).find(k => {
           const key = k.toLowerCase()
@@ -946,7 +1049,8 @@ export default function CartaAdmin({ clienteId, socio }) {
           categoria_id: catMap[catName],
           nombre: row[prodKey] || '',
           precio: parseFloat(row[precioKey]) || 0,
-          detalle: detalleKey ? (row[detalleKey] || null) : null
+          detalle: detalleKey ? (row[detalleKey] || null) : null,
+          ...(incluirIng ? datosIngredientes(row, row[prodKey]) : {})
         }
       })
 
@@ -1479,6 +1583,20 @@ export default function CartaAdmin({ clienteId, socio }) {
                 {cat.nombre}
               </h3>
               <span className="text-dark-400 text-sm">({catProductos.length})</span>
+              {puede('ingredientes') && (
+                <label
+                  className="ml-auto flex items-center gap-2 text-sm text-dark-300 cursor-pointer"
+                  title="Si lo activás, el cliente puede destildar ingredientes de todos los productos de esta categoría"
+                >
+                  <input
+                    type="checkbox"
+                    checked={!!cat.permitir_personalizar}
+                    onChange={() => toggleCategoriaPersonalizar(cat)}
+                    className="w-4 h-4 accent-primary-500"
+                  />
+                  Personalizar ingredientes
+                </label>
+              )}
             </div>
 
             <div className="bg-dark-800 rounded-xl border border-dark-700 overflow-hidden">
@@ -1504,7 +1622,19 @@ export default function CartaAdmin({ clienteId, socio }) {
                           className="w-4 h-4 accent-primary-500"
                         />
                       </td>
-                      <td className="p-3 text-white">{prod.nombre}</td>
+                      <td className="p-3 text-white">
+                        {prod.nombre}
+                        {(prod.ingredientes?.length > 0 || prod.permitir_personalizar || cat.permitir_personalizar) && (
+                          <div className="text-xs text-dark-400 mt-0.5">
+                            {prod.ingredientes?.length > 0 && (
+                              <span>🥗 {prod.ingredientes.length} {prod.ingredientes.length === 1 ? 'ingrediente' : 'ingredientes'}</span>
+                            )}
+                            {(prod.permitir_personalizar || cat.permitir_personalizar) && (
+                              <span className="ml-2 text-cyan-400">· personalizable</span>
+                            )}
+                          </div>
+                        )}
+                      </td>
                       <td className="p-3">
                         <div className="flex items-center gap-2">
                           {prod.imagen ? (
@@ -1574,6 +1704,15 @@ export default function CartaAdmin({ clienteId, socio }) {
                       </td>
                       <td className="p-3">
                         <div className="flex gap-2">
+                          {puede('ingredientes') && (
+                          <button
+                            onClick={() => abrirIngredientes(prod)}
+                            className="text-green-400 hover:text-green-300 text-sm"
+                            title="Ingredientes"
+                          >
+                            🥗
+                          </button>
+                          )}
                           {puede('eliminar_productos') && (
                           <button
                             onClick={() => eliminarProducto(prod.id)}
@@ -1593,6 +1732,61 @@ export default function CartaAdmin({ clienteId, socio }) {
           </div>
         )
       })}
+
+      {/* Modal ingredientes */}
+      {ingProd && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+          <div className="bg-dark-800 rounded-2xl p-6 max-w-lg w-full border border-dark-700">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-white font-bold text-xl">🥗 Ingredientes · {ingProd.nombre}</h3>
+              <button
+                onClick={() => setIngProd(null)}
+                className="text-dark-400 hover:text-white text-2xl"
+              >
+                ×
+              </button>
+            </div>
+
+            <label className="block text-dark-400 text-sm mb-1">Un ingrediente por línea (o separados por coma)</label>
+            <textarea
+              rows={8}
+              value={ingTexto}
+              onChange={e => setIngTexto(e.target.value)}
+              className="w-full bg-dark-900 border border-dark-600 rounded-lg px-3 py-2 text-white"
+              placeholder={'Pan\nCarne\nLechuga\nTomate'}
+            />
+            <p className="text-dark-500 text-xs mt-1">
+              {parseIngredientes(ingTexto).length} ingredientes (máximo 30)
+            </p>
+
+            <label className="flex items-center gap-2 text-sm text-dark-300 mt-4 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={ingPersonalizar}
+                onChange={e => setIngPersonalizar(e.target.checked)}
+                className="w-4 h-4 accent-primary-500"
+              />
+              Permitir que el cliente destilde ingredientes de este producto
+            </label>
+
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={guardarIngredientes}
+                disabled={savingIng}
+                className="flex-1 bg-green-600 hover:bg-green-500 text-white px-4 py-3 rounded-xl font-bold transition disabled:opacity-50"
+              >
+                {savingIng ? 'Guardando...' : '💾 Guardar'}
+              </button>
+              <button
+                onClick={() => setIngProd(null)}
+                className="px-4 py-3 bg-dark-700 hover:bg-dark-600 text-white rounded-xl transition"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Modal agregar producto */}
       {showAddModal && (
@@ -1641,6 +1835,26 @@ export default function CartaAdmin({ clienteId, socio }) {
                   className="w-full bg-dark-900 border border-dark-600 rounded-lg px-3 py-2 text-white"
                   placeholder="Opcional"
                 />
+              </div>
+
+              <div>
+                <label className="block text-dark-400 text-sm mb-1">Ingredientes</label>
+                <textarea
+                  rows={3}
+                  value={newProd.ingredientes}
+                  onChange={e => setNewProd({ ...newProd, ingredientes: e.target.value })}
+                  className="w-full bg-dark-900 border border-dark-600 rounded-lg px-3 py-2 text-white"
+                  placeholder="Opcional. Separados por coma o uno por línea: pan, carne, lechuga, tomate"
+                />
+                <label className="flex items-center gap-2 text-sm text-dark-300 mt-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={!!newProd.personalizar}
+                    onChange={e => setNewProd({ ...newProd, personalizar: e.target.checked })}
+                    className="w-4 h-4 accent-primary-500"
+                  />
+                  Permitir que el cliente destilde ingredientes
+                </label>
               </div>
 
               <div>
