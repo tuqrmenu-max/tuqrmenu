@@ -1,4 +1,5 @@
 import { createRevisionRefresh } from '@/lib/revisionRefresh'
+import DetallePedido from './DetallePedido'
 import { startVisiblePolling } from '@/lib/visiblePolling'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
@@ -393,7 +394,7 @@ export default function MesasAdmin({ clienteId }) {
     if (comensalIds.length > 0) {
       const { data: pedidos, error: pedidosError } = await supabase
         .from('pedidos_qr')
-        .select('comensal_id, cantidad, es_promo, productos!inner(nombre, precio)')
+        .select('comensal_id, cantidad, es_promo, sin_ingredientes, comentario, productos!inner(nombre, precio)')
         .in('comensal_id', comensalIds)
         .eq('pagado', 0)
 
@@ -410,7 +411,9 @@ export default function MesasAdmin({ clienteId }) {
           nombre: p.productos?.nombre,
           precio: p.productos?.precio || 0,
           cantidad: p.cantidad,
-          es_promo: p.es_promo
+          es_promo: p.es_promo,
+          sin: p.sin_ingredientes || [],
+          comentario: p.comentario || null
         })
       })
     }
@@ -460,7 +463,7 @@ export default function MesasAdmin({ clienteId }) {
     const comensalIds = comensalesNormalizados.map(c => c.id)
     const { data: pedidos, error: pedidosError } = await supabase
       .from('pedidos_qr')
-      .select('id, comensal_id, cantidad, pagado, es_promo, productos!inner(nombre, precio)')
+      .select('id, comensal_id, cantidad, pagado, es_promo, sin_ingredientes, comentario, productos!inner(nombre, precio)')
       .in('comensal_id', comensalIds)
       .eq('pagado', 0)
 
@@ -475,7 +478,9 @@ export default function MesasAdmin({ clienteId }) {
         precio: p.productos?.precio || 0,
         cantidad: p.cantidad,
         pagado: p.pagado,
-        es_promo: p.es_promo
+        es_promo: p.es_promo,
+        sin: p.sin_ingredientes || [],
+        comentario: p.comentario || null
       })
     })
 
@@ -502,7 +507,7 @@ export default function MesasAdmin({ clienteId }) {
 
     const { data: pedidos, error: pedidosError } = await supabase
       .from('pedidos_qr')
-      .select('id, comensal_id, cantidad, pagado, es_promo, productos!inner(nombre, precio)')
+      .select('id, comensal_id, cantidad, pagado, es_promo, sin_ingredientes, comentario, productos!inner(nombre, precio)')
       .in('comensal_id', comensales.map(c => c.id))
       .eq('pagado', 0)
 
@@ -517,7 +522,9 @@ export default function MesasAdmin({ clienteId }) {
         precio: p.productos?.precio || 0,
         cantidad: p.cantidad,
         pagado: p.pagado,
-        es_promo: p.es_promo
+        es_promo: p.es_promo,
+        sin: p.sin_ingredientes || [],
+        comentario: p.comentario || null
       })
     })
 
@@ -606,7 +613,7 @@ export default function MesasAdmin({ clienteId }) {
     const comensalIds = comensales.map(c => c.id)
     const { data: pedidos, error: pedidosError } = await supabase
       .from('pedidos_qr')
-      .select('id, comensal_id, cantidad, pagado, es_promo, comensales!inner(nombre), productos!inner(nombre, precio)')
+      .select('id, comensal_id, cantidad, pagado, es_promo, sin_ingredientes, comentario, comensales!inner(nombre), productos!inner(nombre, precio)')
       .in('comensal_id', comensalIds)
       .order('fecha_hora', { ascending: false })
 
@@ -619,6 +626,8 @@ export default function MesasAdmin({ clienteId }) {
       cantidad: p.cantidad,
       pagado: p.pagado,
       es_promo: p.es_promo,
+      sin: p.sin_ingredientes || [],
+      comentario: p.comentario || null,
       comensal: p.comensales?.nombre || 'Sin nombre'
     })) || []
 
@@ -799,7 +808,7 @@ export default function MesasAdmin({ clienteId }) {
 
     const { data: pedidos, error } = await supabase
       .from('pedidos_qr')
-      .select('id, comensal_id, cantidad, pagado, es_promo, productos!inner(nombre, precio)')
+      .select('id, comensal_id, cantidad, pagado, es_promo, sin_ingredientes, comentario, productos!inner(nombre, precio)')
       .in('comensal_id', ids)
       .eq('pagado', 0)
 
@@ -815,7 +824,9 @@ export default function MesasAdmin({ clienteId }) {
       precio: p.productos?.precio || 0,
       cantidad: p.cantidad,
       pagado: p.pagado,
-      es_promo: p.es_promo
+      es_promo: p.es_promo,
+      sin: p.sin_ingredientes || [],
+      comentario: p.comentario || null
     }))
     if (items.length === 0 && !propina) {
       toast.error('No hay pedidos para cobrar')
@@ -1341,6 +1352,7 @@ export default function MesasAdmin({ clienteId }) {
                           <span className="text-cyan-400 font-bold mr-2">{item.cantidad}x</span>
                           <span className="flex-1 min-w-0 break-words">
                             {item.nombre}
+                            <DetallePedido item={item} />
                             {ds[idx].promo && <span className="ml-1 text-purple-400 text-[10px] whitespace-nowrap">🎁 {ds[idx].etiqueta}</span>}
                           </span>
                           {!esVistaOperativa && <span className={precioCls}>{fmtMonto(ds[idx].bruto)}</span>}
@@ -1682,7 +1694,7 @@ export default function MesasAdmin({ clienteId }) {
                       return (
                       <div key={idx} className="flex justify-between text-xs text-dark-300 py-1">
                         <span className="font-bold mr-2" style={{ color }}>{item.cantidad}x</span>
-                        <span className="flex-1 truncate" style={{ color }}>{item.nombre}</span>
+                        <span className="flex-1 min-w-0"><span className="block truncate" style={{ color }}>{item.nombre}</span><DetallePedido item={item} /></span>
                         {!esVistaOperativa && <span className="ml-2 whitespace-nowrap" style={{ color }}>${monto(item).toFixed(2)}</span>}
                         {pedidoEntregadoMesa(mesa.numero, item.comensal_id) && (
                           <span className="ml-2 text-green-400 font-bold whitespace-nowrap">✓ OK</span>
@@ -1898,7 +1910,7 @@ export default function MesasAdmin({ clienteId }) {
                               />
                             </td>
                             <td className="py-2 font-bold" style={{ color }}>{item.cantidad}x</td>
-                            <td className="py-2" style={{ color }}>{item.nombre}</td>
+                            <td className="py-2" style={{ color }}>{item.nombre}<DetallePedido item={item} /></td>
                             <td className="py-2 text-dark-300 text-right">${item.precio.toFixed(2)}</td>
                             <td className="py-2 text-green-400 font-bold text-right">${monto(item).toFixed(2)}</td>
                           </tr>

@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import ChecklistEstados from './ChecklistEstados'
 import ChatEquipo from './ChatEquipo'
+import DetallePedido from './DetallePedido'
 
 // Pantalla de cocina (KDS): muestra los pedidos que caja/admin derivó a
 // "cocina" desde el panel de Delivery/Retiro (Mesa 0). El cocinero los
@@ -51,7 +52,7 @@ export default function CocinaPanel({ clienteId }) {
     const comensalIds = comensales.map(c => c.id)
     const { data: items, error: itemsError } = await supabase
       .from('pedidos_qr')
-      .select('comensal_id, cantidad, productos!inner(nombre)')
+      .select('comensal_id, cantidad, sin_ingredientes, comentario, productos!inner(nombre)')
       .in('comensal_id', comensalIds)
       .eq('pagado', 0)
 
@@ -59,7 +60,7 @@ export default function CocinaPanel({ clienteId }) {
     const itemsPorComensal = {}
     ;(items || []).forEach(i => {
       if (!itemsPorComensal[i.comensal_id]) itemsPorComensal[i.comensal_id] = []
-      itemsPorComensal[i.comensal_id].push({ nombre: i.productos?.nombre, cantidad: i.cantidad })
+      itemsPorComensal[i.comensal_id].push({ nombre: i.productos?.nombre, cantidad: i.cantidad, sin: i.sin_ingredientes || [], comentario: i.comentario || null })
     })
 
     setPedidos(comensales.map(c => ({ ...c, items: itemsPorComensal[c.id] || [] })))
@@ -138,7 +139,7 @@ export default function CocinaPanel({ clienteId }) {
                 {p.items.length > 0 ? p.items.map((item, idx) => (
                   <div key={idx} className="flex justify-between text-sm text-dark-200 py-1">
                     <span className="text-cyan-400 font-bold mr-2">{item.cantidad}x</span>
-                    <span className="flex-1">{item.nombre}</span>
+                    <span className="flex-1 min-w-0">{item.nombre}<DetallePedido item={item} /></span>
                   </div>
                 )) : <p className="text-dark-500 text-xs italic text-center">Sin items</p>}
               </div>

@@ -49,6 +49,22 @@ function menuShim(SUPABASE_URL, INITIAL_STORAGE) {
     if (v == null) return null
     return v.indexOf('eq.') === 0 ? decodeURIComponent(v.slice(3)) : v
   }
+  // "Ya enviado": un mismo producto con distintos cambios se ve en líneas separadas y con el detalle
+  // (el menú agrupa por producto_id y muestra el nombre, así que se los da distintos).
+  function conPersonalizacion(r) {
+    var sin = Array.isArray(r.sin) ? r.sin : []
+    var com = r.comentario ? String(r.comentario) : ''
+    if (!sin.length && !com) return r
+    var det = []
+    if (sin.length) det.push('sin ' + sin.join(', '))
+    if (com) det.push('"' + com + '"')
+    var prod = r.productos || {}
+    return {
+      producto_id: String(r.producto_id) + '#' + sin.join(',') + '#' + com,
+      cantidad: r.cantidad,
+      productos: { nombre: (prod.nombre || 'Producto') + ' (' + det.join(' · ') + ')', precio: prod.precio }
+    }
+  }
   function sesionMesa(mesa) {
     try { return localStorage.getItem('mesa_' + mesa + '_sesion') } catch (e) { return null }
   }
@@ -123,7 +139,7 @@ function menuShim(SUPABASE_URL, INITIAL_STORAGE) {
         sesionesLocales().forEach(function (s) { if (cand.indexOf(s) < 0) cand.push(s) })
         for (var i = 0; i < cand.length; i++) {
           var r2 = await rpc('qr_items_comensal', { p_comensal_id: comId, p_sesion: cand[i] }, init, input)
-          if (r2.ok && Array.isArray(r2.data) && r2.data.length > 0) return json(r2.data)
+          if (r2.ok && Array.isArray(r2.data) && r2.data.length > 0) return json(r2.data.map(conPersonalizacion))
         }
         return json([])
       }
@@ -155,7 +171,8 @@ function menuShim(SUPABASE_URL, INITIAL_STORAGE) {
         var porComensal = {}
         filas.forEach(function (f) {
           (porComensal[f.comensal_id] = porComensal[f.comensal_id] || []).push({
-            producto_id: f.producto_id, cantidad: f.cantidad, es_promo: f.es_promo ? 1 : 0
+            producto_id: f.producto_id, cantidad: f.cantidad, es_promo: f.es_promo ? 1 : 0,
+            sin: Array.isArray(f.sin_ingredientes) ? f.sin_ingredientes : [], comentario: f.comentario || null
           })
         })
         for (var cId in porComensal) {
