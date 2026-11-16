@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase'
 import { aplicarModoMesa00 } from '@/lib/mesa00Menu'
 import { unirPortadaCategorias } from '@/lib/menuUnificar'
 import { mejorarPantallaProductos } from '@/lib/menuProductos'
+import { personalizarIngredientes } from '@/lib/menuIngredientes'
 import { menuShimScript, leerAlmacenMenu, aplicarMensajeAlmacen } from '@/lib/menuShim'
 import { aplicarIdiomasMenu } from '@/lib/menuIdiomas'
 import { normalizarIdiomas } from '@/lib/idiomas'
@@ -208,7 +209,10 @@ export default function MenuView() {
                 producto: p.nombre || '',
                 precio: String(p.precio ?? ''),
                 detalle: p.detalle || p.descripcion || '',
-                imagen: p.imagen || ''
+                imagen: p.imagen || '',
+                // Ingredientes y si el cliente puede destildarlos (los trae qr_catalogo_v2)
+                ingredientes: Array.isArray(p.ingredientes) ? p.ingredientes : [],
+                personalizable: p.personalizable === true
               }))
 
               const productImages = { ...preservedProductImages }
@@ -245,6 +249,8 @@ export default function MenuView() {
       html = unirPortadaCategorias(html)
       // Pantalla de productos: un solo control por producto y barra "Ver pedido"
       html = mejorarPantallaProductos(html)
+      // Tocar un producto personalizable abre la ventana de ingredientes y comentarios
+      html = personalizarIngredientes(html)
       // Ícono de idiomas junto al logo y traducción de los textos fijos
       html = aplicarIdiomasMenu(html, await idiomasPromise)
 
