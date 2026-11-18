@@ -95,8 +95,8 @@ export default function OpinionesAdmin({ clienteId }) {
 
   return (
     <div>
-      <div className="bg-dark-800 rounded-xl p-4 mb-6 border border-dark-700">
-        <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="bg-dark-800 rounded-xl p-4 mb-4 md:mb-6 border border-dark-700">
+        <div className="flex flex-wrap items-center justify-between gap-3 md:gap-4">
           <h2 className="text-white font-bold text-lg">
             💬 Opiniones {pendientes.length > 0 && (
               <span className="bg-yellow-500/20 text-yellow-400 px-2 py-0.5 rounded text-xs align-middle ml-1">
@@ -104,16 +104,16 @@ export default function OpinionesAdmin({ clienteId }) {
               </span>
             )}
           </h2>
-          <div className="flex gap-2">
+          <div className="flex gap-2 w-full md:w-auto">
             <button
               onClick={() => setFiltro('pendientes')}
-              className={`px-3 py-2 rounded-lg text-sm transition ${filtro === 'pendientes' ? 'bg-primary-500 text-white' : 'bg-dark-700 text-dark-300 hover:bg-dark-600'}`}
+              className={`flex-1 md:flex-none px-3 py-2.5 md:py-2 rounded-lg text-sm transition ${filtro === 'pendientes' ? 'bg-primary-500 text-white' : 'bg-dark-700 text-dark-300 hover:bg-dark-600'}`}
             >
               Pendientes
             </button>
             <button
               onClick={() => setFiltro('todas')}
-              className={`px-3 py-2 rounded-lg text-sm transition ${filtro === 'todas' ? 'bg-primary-500 text-white' : 'bg-dark-700 text-dark-300 hover:bg-dark-600'}`}
+              className={`flex-1 md:flex-none px-3 py-2.5 md:py-2 rounded-lg text-sm transition ${filtro === 'todas' ? 'bg-primary-500 text-white' : 'bg-dark-700 text-dark-300 hover:bg-dark-600'}`}
             >
               Todas ({opiniones.length})
             </button>
@@ -125,7 +125,7 @@ export default function OpinionesAdmin({ clienteId }) {
       </div>
 
       {listaFiltrada.length === 0 ? (
-        <div className="bg-dark-800 rounded-xl p-12 border border-dark-700 text-center">
+        <div className="bg-dark-800 rounded-xl p-6 md:p-12 border border-dark-700 text-center">
           <p className="text-dark-400">
             {filtro === 'pendientes' ? 'No hay opiniones pendientes' : 'Todavía no hay opiniones'}
           </p>
@@ -137,10 +137,10 @@ export default function OpinionesAdmin({ clienteId }) {
               key={op.id}
               className="bg-dark-800 rounded-xl border border-dark-700 p-4 hover:border-primary-500/50 transition"
             >
-              <div className="flex items-start gap-4">
+              <div className="flex flex-col md:flex-row md:items-start gap-3 md:gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="text-white font-semibold">📱 {op.whatsapp || 'Sin WhatsApp'}</h3>
+                    <h3 className="text-white font-semibold break-all">📱 {op.whatsapp || 'Sin WhatsApp'}</h3>
                     {op.mesa && (
                       <span className="bg-dark-700 text-dark-300 px-2 py-0.5 rounded text-xs">Mesa {op.mesa}</span>
                     )}
@@ -160,16 +160,16 @@ export default function OpinionesAdmin({ clienteId }) {
                   )}
                 </div>
 
-                <div className="flex gap-2 shrink-0">
+                <div className="flex gap-2 shrink-0 w-full md:w-auto">
                   <button
                     onClick={() => abrirResponder(op)}
-                    className="bg-green-600/20 text-green-400 hover:bg-green-600/30 px-3 py-2 rounded-lg text-sm transition whitespace-nowrap"
+                    className="flex-1 md:flex-none bg-green-600/20 text-green-400 hover:bg-green-600/30 px-3 py-2.5 md:py-2 rounded-lg text-sm transition whitespace-nowrap"
                   >
                     Responder
                   </button>
                   <button
                     onClick={() => eliminarOpinion(op.id)}
-                    className="bg-red-500/20 text-red-400 hover:bg-red-500/30 px-3 py-2 rounded-lg text-sm transition"
+                    className="flex-1 md:flex-none bg-red-500/20 text-red-400 hover:bg-red-500/30 px-3 py-2.5 md:py-2 rounded-lg text-sm transition"
                     title="Eliminar"
                   >
                     🗑️
@@ -184,7 +184,7 @@ export default function OpinionesAdmin({ clienteId }) {
       {/* Modal responder */}
       {replyTarget && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-dark-800 rounded-2xl p-6 w-full max-w-md border border-dark-700">
+          <div className="bg-dark-800 rounded-2xl p-4 md:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto border border-dark-700">
             <h3 className="text-xl font-semibold text-white mb-1">Responder</h3>
             <p className="text-dark-400 text-sm mb-4">
               Para: <span className="text-white">{replyTarget.whatsapp}</span>
@@ -199,7 +199,7 @@ export default function OpinionesAdmin({ clienteId }) {
               value={respuesta}
               onChange={e => setRespuesta(e.target.value)}
               placeholder="Escribí tu respuesta..."
-              className="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-xl text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 resize-none"
+              className="w-full px-4 py-3 text-base bg-dark-700 border border-dark-600 rounded-xl text-white placeholder-dark-400 focus:outline-none focus:border-primary-500 resize-none"
             />
             <p className="text-dark-500 text-xs mt-1 mb-3">
               Se guarda la respuesta acá y se abre WhatsApp para enviarla a este número.
@@ -208,14 +208,14 @@ export default function OpinionesAdmin({ clienteId }) {
               <button
                 onClick={cerrarResponder}
                 disabled={sending}
-                className="flex-1 bg-dark-700 hover:bg-dark-600 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
+                className="flex-1 bg-dark-700 hover:bg-dark-600 disabled:opacity-50 text-white px-4 py-2.5 md:py-2 rounded-lg text-sm font-medium transition"
               >
                 Cancelar
               </button>
               <button
                 onClick={enviarRespuesta}
                 disabled={sending}
-                className="flex-1 bg-primary-500 hover:bg-primary-600 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
+                className="flex-1 bg-primary-500 hover:bg-primary-600 disabled:opacity-50 text-white px-4 py-2.5 md:py-2 rounded-lg text-sm font-medium transition"
               >
                 {sending ? 'Enviando...' : '📱 Enviar por WhatsApp'}
               </button>

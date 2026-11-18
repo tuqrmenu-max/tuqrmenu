@@ -40,7 +40,7 @@ function LimitesHorarioCampos({ valor, onChange, className = '' }) {
                   <button
                     key={d.id} type="button" aria-pressed={on}
                     onClick={() => toggleDia(d.id)}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition ${on ? 'bg-primary-600/30 border-primary-500 text-primary-300' : 'bg-dark-900 border-dark-600 text-dark-300 hover:border-primary-500/50'}`}
+                    className={`px-3 py-2.5 md:py-1.5 rounded-lg text-sm font-medium border transition ${on ? 'bg-primary-600/30 border-primary-500 text-primary-300' : 'bg-dark-900 border-dark-600 text-dark-300 hover:border-primary-500/50'}`}
                   >{d.label}</button>
                 )
               })}
@@ -49,13 +49,13 @@ function LimitesHorarioCampos({ valor, onChange, className = '' }) {
             <p className="text-[10px] text-dark-400 mt-1">Sin ninguno marcado vale todos los días.</p>
           </div>
           <div className="flex flex-wrap items-end gap-3">
-            <div>
+            <div className="flex-1 min-w-[130px] md:flex-none">
               <label className="block text-dark-400 text-sm mb-1">Desde</label>
-              <input type="time" value={valor.hora_desde} onChange={e => set({ hora_desde: e.target.value })} className="bg-dark-900 border border-dark-600 rounded-lg px-3 py-2 text-white" />
+              <input type="time" value={valor.hora_desde} onChange={e => set({ hora_desde: e.target.value })} className="w-full md:w-auto bg-dark-900 border border-dark-600 rounded-lg px-3 py-2 text-white" />
             </div>
-            <div>
+            <div className="flex-1 min-w-[130px] md:flex-none">
               <label className="block text-dark-400 text-sm mb-1">Hasta</label>
-              <input type="time" value={valor.hora_hasta} onChange={e => set({ hora_hasta: e.target.value })} className="bg-dark-900 border border-dark-600 rounded-lg px-3 py-2 text-white" />
+              <input type="time" value={valor.hora_hasta} onChange={e => set({ hora_hasta: e.target.value })} className="w-full md:w-auto bg-dark-900 border border-dark-600 rounded-lg px-3 py-2 text-white" />
             </div>
             {(valor.hora_desde || valor.hora_hasta) && <button type="button" onClick={() => set({ hora_desde: '', hora_hasta: '' })} className="text-xs text-dark-300 hover:text-white underline pb-2">Todo el día</button>}
           </div>
@@ -492,7 +492,7 @@ export default function PromocionesAdmin({ clienteId }) {
   return (
     <div>
       {/* Header */}
-      <div className="bg-dark-800 rounded-xl p-4 mb-6 flex items-center justify-between border border-dark-700">
+      <div className="bg-dark-800 rounded-xl p-4 mb-4 md:mb-6 flex items-center justify-between gap-3 border border-dark-700">
         <h2 className="text-white font-bold text-lg">🎁 Promociones ({promociones.length})</h2>
         {!soloLectura && (
         <button
@@ -500,7 +500,7 @@ export default function PromocionesAdmin({ clienteId }) {
             if (showForm && media.length) { borrarArchivosPromo(media.map(m => m.path)).catch(() => {}); setMedia([]); setMediaConfig(CONFIG_VACIA) }
             setShowForm(!showForm)
           }}
-          className="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg font-bold transition"
+          className="bg-green-600 hover:bg-green-500 text-white px-4 py-2.5 md:py-2 rounded-lg font-bold transition whitespace-nowrap"
         >
           {showForm ? '✕ Cancelar' : '+ Nueva Promo'}
         </button>
@@ -509,7 +509,7 @@ export default function PromocionesAdmin({ clienteId }) {
 
       {/* Formulario */}
       {!soloLectura && showForm && (
-        <form onSubmit={crearPromo} className="bg-dark-800 rounded-xl p-6 mb-6 border border-dark-700">
+        <form onSubmit={crearPromo} className="bg-dark-800 rounded-xl p-4 md:p-6 mb-4 md:mb-6 border border-dark-700">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-dark-400 text-sm mb-1">Título *</label>
@@ -583,8 +583,8 @@ export default function PromocionesAdmin({ clienteId }) {
             {(form.tipo === '2x1_mismo' || form.tipo === 'descuento') && (
               <div className="md:col-span-2">
                 <label className="block text-dark-400 text-sm mb-1">Producto{form.tipo === 'descuento' ? '/s con descuento' : ''} *</label>
-                <div className="flex gap-3">
-                  <div className="flex-1">
+                <div className="flex flex-col md:flex-row gap-3">
+                  <div className="md:flex-1">
                     <button type="button" onClick={() => setForm({ ...form, _showCats: !form._showCats })}
                       className="w-full flex items-center justify-between bg-dark-900 border border-dark-600 rounded-lg px-3 py-2 text-white text-sm hover:border-primary-500/50 transition">
                       <span>{form.categoria || 'Categorías'}</span>
@@ -596,7 +596,7 @@ export default function PromocionesAdmin({ clienteId }) {
                           const count = productos.filter(p => p.categoria_id === cat.id).length
                           const selected = form.categoria === cat.nombre
                           return (
-                            <label key={cat.id} className={`flex items-center gap-2 px-3 py-1.5 cursor-pointer transition text-sm ${selected ? 'bg-primary-600/20 text-primary-400' : 'text-white hover:bg-dark-800'}`}>
+                            <label key={cat.id} className={`flex items-center gap-2 px-3 py-2.5 md:py-1.5 cursor-pointer transition text-sm ${selected ? 'bg-primary-600/20 text-primary-400' : 'text-white hover:bg-dark-800'}`}>
                               <input type="radio" name="promoCatSel" checked={selected}
                                 onChange={() => setForm({ ...form, categoria: cat.nombre, producto_ids: [], _showCats: false })}
                                 className="accent-primary-500" />
@@ -608,7 +608,7 @@ export default function PromocionesAdmin({ clienteId }) {
                       </div>
                     )}
                   </div>
-                  <div className="flex-1">
+                  <div className="md:flex-1">
                     {form.categoria ? (
                       <div className="max-h-40 overflow-y-auto bg-dark-900 border border-dark-600 rounded-lg">
                         {(() => {
@@ -619,7 +619,7 @@ export default function PromocionesAdmin({ clienteId }) {
                             <p className="text-dark-500 text-xs p-2">Sin productos</p>
                           ) : (
                             <>
-                              <label className={`flex items-center gap-2 px-3 py-1.5 cursor-pointer transition text-sm border-b border-dark-600 ${allSelected ? 'bg-primary-600/20 text-primary-400' : 'text-white hover:bg-dark-800'}`}>
+                              <label className={`flex items-center gap-2 px-3 py-2.5 md:py-1.5 cursor-pointer transition text-sm border-b border-dark-600 ${allSelected ? 'bg-primary-600/20 text-primary-400' : 'text-white hover:bg-dark-800'}`}>
                                 <input type="checkbox" checked={allSelected}
                                   onChange={() => {
                                     if (allSelected) {
@@ -635,7 +635,7 @@ export default function PromocionesAdmin({ clienteId }) {
                               {prods.map(prod => {
                                 const checked = form.producto_ids.includes(prod.id)
                                 return (
-                                  <label key={prod.id} className={`flex items-center gap-2 px-3 py-1.5 cursor-pointer transition text-sm ${checked ? 'bg-primary-600/20 text-primary-400' : 'text-white hover:bg-dark-800'}`}>
+                                  <label key={prod.id} className={`flex items-center gap-2 px-3 py-2.5 md:py-1.5 cursor-pointer transition text-sm ${checked ? 'bg-primary-600/20 text-primary-400' : 'text-white hover:bg-dark-800'}`}>
                                     <input type="checkbox" checked={checked}
                                       onChange={() => {
                                         if (checked) {
@@ -709,7 +709,7 @@ export default function PromocionesAdmin({ clienteId }) {
           />
           <button
             type="submit"
-            className="mt-4 bg-primary-600 hover:bg-primary-500 text-white px-6 py-2 rounded-lg font-bold transition"
+            className="mt-4 w-full md:w-auto bg-primary-600 hover:bg-primary-500 text-white px-6 py-2.5 md:py-2 rounded-lg font-bold transition"
           >
             Crear Promoción
           </button>
@@ -718,11 +718,11 @@ export default function PromocionesAdmin({ clienteId }) {
 
       {/* Lista de promociones */}
       {promociones.length === 0 ? (
-        <div className="bg-dark-800 rounded-xl p-12 border border-dark-700 text-center mb-6">
+        <div className="bg-dark-800 rounded-xl p-6 md:p-12 border border-dark-700 text-center mb-4 md:mb-6">
           <p className="text-dark-400">No hay promociones creadas</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4 md:mb-6">
           {promociones.map(promo => {
             const agendada = isAgendada(promo)
             const asigsPromo = asignaciones.filter(a => a.promocion_id === promo.id)
@@ -737,10 +737,10 @@ export default function PromocionesAdmin({ clienteId }) {
             return (
               <div
                 key={promo.id + tick}
-                className={`bg-dark-800 rounded-xl p-5 border transition ${ESTADOS.borde}`}
+                className={`bg-dark-800 rounded-xl p-4 md:p-5 border transition ${ESTADOS.borde}`}
               >
-                <div className="flex items-start justify-between mb-3">
-                  <div>
+                <div className="flex items-start justify-between gap-2 mb-3">
+                  <div className="min-w-0 break-words">
                     <h3 className="text-white font-bold">{promo.titulo}</h3>
                     <div className="flex flex-wrap gap-1 mt-1">
                       <span className="text-xs bg-primary-500/20 text-primary-400 px-2 py-1 rounded">
@@ -758,9 +758,9 @@ export default function PromocionesAdmin({ clienteId }) {
                   </span>
                 </div>
 
-                <p className="text-dark-400 text-sm mb-4">{promo.descripcion}</p>
+                <p className="text-dark-400 text-sm mb-4 break-words">{promo.descripcion}</p>
 
-                <div className="text-xs text-dark-500 mb-4">
+                <div className="text-xs text-dark-500 mb-4 break-words">
                   {promo.categoria && <p>Categoría: {promo.categoria}</p>}
                   {promo.producto_id && (() => {
                     let ids = []
@@ -785,13 +785,13 @@ export default function PromocionesAdmin({ clienteId }) {
                 <div className="flex gap-2">
                   <button
                     onClick={() => abrirEditor(promo)}
-                    className="flex-1 py-2 px-3 bg-primary-500/20 text-primary-300 hover:bg-primary-500/30 rounded-lg text-sm font-medium transition"
+                    className="flex-1 py-2.5 md:py-2 px-3 bg-primary-500/20 text-primary-300 hover:bg-primary-500/30 rounded-lg text-sm font-medium transition"
                   >
                     ⚙️ Límite y horario
                   </button>
                   <button
                     onClick={() => eliminarPromo(promo.id)}
-                    className="flex-1 py-2 px-3 bg-red-500/20 text-red-400 hover:bg-red-500/30 rounded-lg text-sm font-medium transition"
+                    className="flex-1 py-2.5 md:py-2 px-3 bg-red-500/20 text-red-400 hover:bg-red-500/30 rounded-lg text-sm font-medium transition"
                   >
                     🗑️ Eliminar
                   </button>
@@ -804,11 +804,11 @@ export default function PromocionesAdmin({ clienteId }) {
                       <button
                         onClick={() => guardarLimites(promo)}
                         disabled={guardandoLimites}
-                        className="flex-1 py-2 px-3 bg-primary-600 hover:bg-primary-500 disabled:opacity-50 text-white rounded-lg text-sm font-bold transition"
+                        className="flex-1 py-2.5 md:py-2 px-3 bg-primary-600 hover:bg-primary-500 disabled:opacity-50 text-white rounded-lg text-sm font-bold transition"
                       >
                         {guardandoLimites ? 'Guardando…' : '💾 Guardar'}
                       </button>
-                      <button onClick={() => setEditandoId(null)} className="py-2 px-3 bg-dark-700 text-white rounded-lg text-sm transition">Cancelar</button>
+                      <button onClick={() => setEditandoId(null)} className="py-2.5 md:py-2 px-3 bg-dark-700 text-white rounded-lg text-sm transition">Cancelar</button>
                     </div>
                   </div>
                 )}
@@ -819,7 +819,7 @@ export default function PromocionesAdmin({ clienteId }) {
       )}
 
       {/* Clientes interesados - Envío de promos por WhatsApp */}
-      <div className="bg-dark-800 rounded-xl p-6 border border-dark-700 mt-8">
+      <div className="bg-dark-800 rounded-xl p-4 md:p-6 border border-dark-700 mt-8">
         <h3 className="text-white font-bold text-lg mb-1">📣 Enviar Promos por WhatsApp</h3>
         <p className="text-dark-400 text-sm mb-4">
           Clientes que completaron el formulario desde el menú ({clientesForm.length})
@@ -860,7 +860,7 @@ export default function PromocionesAdmin({ clienteId }) {
               <button
                 onClick={enviarPromos}
                 disabled={cantidadSeleccionados === 0 || !promoSeleccionada || enviando}
-                className="bg-green-600 hover:bg-green-500 disabled:opacity-40 disabled:cursor-not-allowed text-white px-5 py-2 rounded-lg font-bold transition ml-auto"
+                className="bg-green-600 hover:bg-green-500 disabled:opacity-40 disabled:cursor-not-allowed text-white px-5 py-2.5 md:py-2 rounded-lg font-bold transition w-full md:w-auto md:ml-auto"
               >
                 {enviando ? 'Enviando...' : `📤 Enviar Promos (${cantidadSeleccionados})`}
               </button>
@@ -893,7 +893,7 @@ export default function PromocionesAdmin({ clienteId }) {
                   </div>
                   <button
                     onClick={() => eliminarSolicitud(cliente.id)}
-                    className="text-red-400 hover:text-red-300 text-sm px-2 py-1 rounded transition shrink-0"
+                    className="text-red-400 hover:text-red-300 text-sm px-3 py-2 md:px-2 md:py-1 rounded transition shrink-0"
                     title="Eliminar cliente"
                   >
                     🗑️
@@ -906,7 +906,7 @@ export default function PromocionesAdmin({ clienteId }) {
       </div>
 
       {/* Validar codigo de promo cuando el cliente vuelve al local */}
-      <div className="bg-dark-800 rounded-xl p-6 border border-dark-700 mt-8">
+      <div className="bg-dark-800 rounded-xl p-4 md:p-6 border border-dark-700 mt-8">
         <h3 className="text-white font-bold text-lg mb-1">✅ Validar código de promo</h3>
         <p className="text-dark-400 text-sm mb-4">
           Cuando el cliente vuelva y te muestre el código que le llegó por WhatsApp, escribilo acá para canjearlo. Cada código se puede usar una sola vez.
@@ -923,7 +923,7 @@ export default function PromocionesAdmin({ clienteId }) {
           <button
             onClick={validarCodigo}
             disabled={validando}
-            className="bg-primary-600 hover:bg-primary-500 disabled:opacity-40 disabled:cursor-not-allowed text-white px-5 py-2 rounded-lg font-bold transition"
+            className="bg-primary-600 hover:bg-primary-500 disabled:opacity-40 disabled:cursor-not-allowed text-white px-5 py-2.5 md:py-2 rounded-lg font-bold transition w-full md:w-auto"
           >
             {validando ? 'Validando...' : 'Validar y canjear'}
           </button>

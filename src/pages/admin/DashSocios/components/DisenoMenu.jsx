@@ -198,17 +198,17 @@ export default function DisenoMenu({ clienteId }) {
               <h2 className="text-white font-bold text-lg">🎨 Diseño del menú</h2>
               <p className="text-dark-400 text-xs mt-0.5">Portada, colores, posición de íconos y productos visuales del menú que ve el cliente.</p>
             </div>
-            <div className="flex gap-2 flex-wrap">
+            <div className="flex flex-col md:flex-row gap-2 md:flex-wrap w-full md:w-auto">
               <button
                 onClick={() => window.open(`/socio/builder?clienteId=${clienteId}`, '_blank')}
-                className="bg-dark-700 hover:bg-dark-600 text-white px-4 py-2 rounded-lg transition text-sm"
+                className="bg-dark-700 hover:bg-dark-600 text-white px-4 py-2.5 md:py-2 rounded-lg transition text-sm w-full md:w-auto"
               >
                 🎨 Builder
               </button>
               <button
                 onClick={guardarProyectoCarta}
                 disabled={savingProject}
-                className="bg-primary-500 hover:bg-primary-600 disabled:opacity-50 text-white px-4 py-2 rounded-lg transition text-sm font-medium"
+                className="bg-primary-500 hover:bg-primary-600 disabled:opacity-50 text-white px-4 py-2.5 md:py-2 rounded-lg transition text-sm font-medium w-full md:w-auto"
               >
                 {savingProject ? '⏳ Guardando...' : '🚀 Exportar menú'}
               </button>
@@ -248,17 +248,17 @@ export default function DisenoMenu({ clienteId }) {
             <p className="text-sm text-dark-300 my-2">X: izquierda/derecha. Y: arriba/abajo. Zoom: tamaño. Los movimientos se limitan al espacio de cada icono para que no se salgan ni se tapen. Se aplican a Categorías, Productos y Mi pedido.</p>
             {headerControls === null ? <p className="text-sm text-dark-300">Cargando controles…</p> : <>
               <div className="grid gap-3">
-                {[['logo','Logo'],['promo','Promoción'],['cart','Carrito'],['exit','Salir'],['bell','Campana (mesas 1+)'],['mesa','Número de mesa (mesas 1+)']].map(([key,label]) => <div key={key} className="flex flex-wrap items-center gap-3">
-                  <span className="text-white text-sm w-44">{label}</span>
-                  {['x','y','zoom'].map(field => <label key={field} className="text-sm text-dark-300 flex items-center gap-2">
+                {[['logo','Logo'],['promo','Promoción'],['cart','Carrito'],['exit','Salir'],['bell','Campana (mesas 1+)'],['mesa','Número de mesa (mesas 1+)']].map(([key,label]) => <div key={key} className="grid grid-cols-3 gap-2 md:flex md:flex-wrap md:items-center md:gap-3">
+                  <span className="text-white text-sm col-span-3 md:col-span-1 w-full md:w-44">{label}</span>
+                  {['x','y','zoom'].map(field => <label key={field} className="text-sm text-dark-300 flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-2">
                     {field === 'zoom' ? 'Zoom %' : field.toUpperCase() + ' %'}
                     <input type="number" aria-label={label + ' ' + field} min={field === 'zoom' ? 25 : 0} max={field === 'zoom' ? 200 : 100} value={headerControls[key]?.[field] ?? (field === 'zoom' ? 100 : 50)}
                       onChange={e => { const value=Math.max(field === 'zoom' ? 25 : 0,Math.min(field === 'zoom' ? 200 : 100,Number(e.target.value))); setHeaderControls(prev => ({...prev,[key]:{...prev[key],[field]:value}})) }}
-                      className="w-20 bg-dark-900 border border-dark-600 rounded px-2 py-1 text-white" />
+                      className="w-full md:w-20 bg-dark-900 border border-dark-600 rounded px-2 py-2 md:py-1 text-white" />
                   </label>)}
                   {key === 'logo' && (
-                    <label className="text-sm text-dark-300 flex items-center gap-2 cursor-pointer">
-                      <span className="px-2 py-1 bg-dark-900 border border-dark-600 rounded hover:border-primary-500 transition">
+                    <label className="col-span-3 md:col-span-1 text-sm text-dark-300 flex items-center gap-2 cursor-pointer">
+                      <span className="px-2 py-2 md:py-1 bg-dark-900 border border-dark-600 rounded hover:border-primary-500 transition">
                         {uploadingLogoBar ? 'Subiendo…' : (logoBar ? '✓ Imagen cargada (700×700)' : 'Ingresar imagen (700×700)')}
                       </span>
                       <input
@@ -271,7 +271,7 @@ export default function DisenoMenu({ clienteId }) {
                 </div>)}
                 <p className="text-xs text-dark-400 -mt-1">La imagen del Logo es independiente de la de portada: se usa solo en el botón de la barra negra en Categorías, Productos y Mi pedido. Si no se carga acá, se usa la de portada.</p>
               </div>
-              <button disabled={savingProject} onClick={guardarProyectoCarta} className="mt-4 bg-primary-500 text-white px-4 py-2 rounded-lg disabled:opacity-50">{savingProject ? 'Guardando…' : 'Guardar y aplicar iconos al menú'}</button>
+              <button disabled={savingProject} onClick={guardarProyectoCarta} className="mt-4 bg-primary-500 text-white px-4 py-2.5 md:py-2 rounded-lg disabled:opacity-50 w-full md:w-auto">{savingProject ? 'Guardando…' : 'Guardar y aplicar iconos al menú'}</button>
             </>}
           </div>
 
@@ -279,8 +279,8 @@ export default function DisenoMenu({ clienteId }) {
               tal cual: delivery / retiro / pedido por WhatsApp. */}
           {userIdParaUrl && (
             <div className="bg-accent-500/10 border border-accent-500/30 rounded-xl p-3 mt-3">
-              <div className="flex items-center justify-between gap-2 mb-1">
-                <span className="text-accent-400 text-sm font-bold">✓ Mesa 0 · Delivery / Retiro / WhatsApp</span>
+              <div className="flex items-center justify-between gap-2 mb-1 min-w-0">
+                <span className="text-accent-400 text-sm font-bold break-words min-w-0">✓ Mesa 0 · Delivery / Retiro / WhatsApp</span>
                 <button
                   onClick={() => {
                     navigator.clipboard.writeText(`${window.location.origin}/menu/${userIdParaUrl}?mesa=0`)
@@ -304,7 +304,7 @@ export default function DisenoMenu({ clienteId }) {
       )}
 
       {rol === 'superadmin' && (
-        <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-3 mb-4 flex flex-wrap gap-6">
+        <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-3 mb-4 flex flex-wrap gap-3 md:gap-6">
           <span className="text-yellow-400 text-xs font-bold uppercase self-center">Superadmin</span>
           <label className="flex items-center gap-2 text-sm text-white cursor-pointer">
             <input type="checkbox" checked={ocultarBuilder} onChange={toggleOcultarBuilder} className="accent-primary-500" />

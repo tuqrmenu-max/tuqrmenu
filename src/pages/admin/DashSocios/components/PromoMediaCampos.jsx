@@ -107,10 +107,10 @@ export default function PromoMediaCampos({ clienteId, items, onItems, config, on
                   ? <video src={m.url} muted preload="metadata" className="w-full h-full object-cover" />
                   : <img src={m.url} alt="" className="w-full h-full object-cover" />}
                 <span className="absolute bottom-0 left-0 bg-black/70 text-[10px] text-white px-1">{m.tipo === 'video' ? '🎬' : idx + 1}</span>
-                <button type="button" onClick={() => quitar(idx)} aria-label="Quitar" className="absolute top-0 right-0 bg-black/70 text-white w-5 h-5 text-xs">×</button>
+                <button type="button" onClick={() => quitar(idx)} aria-label="Quitar" className="absolute top-0 right-0 bg-black/70 text-white w-7 h-7 md:w-5 md:h-5 text-xs">×</button>
                 <div className="absolute bottom-0 right-0 flex">
-                  <button type="button" onClick={() => mover(idx, -1)} aria-label="Mover antes" className="bg-black/70 text-white w-5 h-5 text-[10px]">←</button>
-                  <button type="button" onClick={() => mover(idx, 1)} aria-label="Mover después" className="bg-black/70 text-white w-5 h-5 text-[10px]">→</button>
+                  <button type="button" onClick={() => mover(idx, -1)} aria-label="Mover antes" className="bg-black/70 text-white w-7 h-7 md:w-5 md:h-5 text-[10px]">←</button>
+                  <button type="button" onClick={() => mover(idx, 1)} aria-label="Mover después" className="bg-black/70 text-white w-7 h-7 md:w-5 md:h-5 text-[10px]">→</button>
                 </div>
               </div>
             ))}
@@ -120,28 +120,28 @@ export default function PromoMediaCampos({ clienteId, items, onItems, config, on
             <div>
               <label className="block text-dark-400 text-sm mb-1">Texto principal</label>
               <input value={c.texto1} maxLength={60} onChange={e => setC({ texto1: e.target.value })} placeholder="Ej: 2x1 en Hamburguesas"
-                className="w-full bg-dark-900 border border-dark-600 rounded-lg px-3 py-2 text-white" />
+                className="w-full bg-dark-900 border border-dark-600 rounded-lg px-3 py-2.5 md:py-2 text-white" />
             </div>
             <div>
               <label className="block text-dark-400 text-sm mb-1">Texto secundario</label>
               <input value={c.texto2} maxLength={120} onChange={e => setC({ texto2: e.target.value })} placeholder="Ej: Lunes a jueves"
-                className="w-full bg-dark-900 border border-dark-600 rounded-lg px-3 py-2 text-white" />
+                className="w-full bg-dark-900 border border-dark-600 rounded-lg px-3 py-2.5 md:py-2 text-white" />
             </div>
             <div>
               <label className="block text-dark-400 text-sm mb-1">Animación</label>
               <div className="flex flex-wrap gap-2">
                 {ANIMACIONES.map(a => (
                   <button key={a.id} type="button" aria-pressed={c.animacion === a.id} onClick={() => setC({ animacion: a.id })}
-                    className={`px-3 py-1.5 rounded-lg text-sm border ${c.animacion === a.id ? 'bg-primary-600/30 border-primary-500 text-primary-300' : 'bg-dark-900 border-dark-600 text-dark-300'}`}>{a.label}</button>
+                    className={`px-3 py-2.5 md:py-1.5 rounded-lg text-sm border ${c.animacion === a.id ? 'bg-primary-600/30 border-primary-500 text-primary-300' : 'bg-dark-900 border-dark-600 text-dark-300'}`}>{a.label}</button>
                 ))}
               </div>
             </div>
             <div>
               <label className="block text-dark-400 text-sm mb-1">Posición del texto</label>
-              <div className="flex gap-2">
+              <div className="flex gap-2 [&>button]:flex-1 md:[&>button]:flex-none">
                 {POSICIONES.map(p => (
                   <button key={p.id} type="button" aria-pressed={c.posicion === p.id} onClick={() => setC({ posicion: p.id })}
-                    className={`px-3 py-1.5 rounded-lg text-sm border ${c.posicion === p.id ? 'bg-primary-600/30 border-primary-500 text-primary-300' : 'bg-dark-900 border-dark-600 text-dark-300'}`}>{p.label}</button>
+                    className={`px-3 py-2.5 md:py-1.5 rounded-lg text-sm border ${c.posicion === p.id ? 'bg-primary-600/30 border-primary-500 text-primary-300' : 'bg-dark-900 border-dark-600 text-dark-300'}`}>{p.label}</button>
                 ))}
               </div>
               <label className="block text-dark-400 text-sm mt-3 mb-1">Duración por imagen: {c.duracion} s</label>

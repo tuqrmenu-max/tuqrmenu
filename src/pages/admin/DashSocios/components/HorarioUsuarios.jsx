@@ -178,35 +178,85 @@ export default function HorarioUsuarios({ clienteId }) {
     <div className="p-4 border-b border-dark-700">
       <h2 className="text-xl text-white font-bold">🕐 Horario</h2>
       <p className="text-dark-300 text-sm mt-2">Ingreso al iniciar sesión y salida con Cerrar sesión. El verde se mantiene hasta que cierra sesión (no se vence solo con el tiempo). El Admin y el Superadmin también pueden activar o desactivar el horario de cada usuario con el botón al lado de su nombre: queda en verde y cuenta el tiempo hasta desactivarlo o hasta que el usuario cierre sesión; entonces se suma al total.</p>
-      <div className="flex flex-wrap items-end gap-3 mt-4">
+      <div className="grid grid-cols-2 gap-3 md:flex md:flex-wrap md:items-end mt-4">
         <label className="text-xs text-dark-300 flex flex-col gap-1">
           Desde
           <input type="date" value={desde} onChange={e => { setPagina(0); setDesde(e.target.value) }}
-            className="bg-dark-700 border border-dark-600 rounded-lg text-white text-sm px-2 py-1.5" />
+            className="w-full md:w-auto min-w-0 bg-dark-700 border border-dark-600 rounded-lg text-white text-base md:text-sm px-2 py-2.5 md:py-1.5" />
         </label>
         <label className="text-xs text-dark-300 flex flex-col gap-1">
           Hasta
           <input type="date" value={hasta} onChange={e => { setPagina(0); setHasta(e.target.value) }}
-            className="bg-dark-700 border border-dark-600 rounded-lg text-white text-sm px-2 py-1.5" />
+            className="w-full md:w-auto min-w-0 bg-dark-700 border border-dark-600 rounded-lg text-white text-base md:text-sm px-2 py-2.5 md:py-1.5" />
         </label>
         {hayFiltro && (
-          <button onClick={limpiarFiltro} className="text-xs text-dark-300 hover:text-white underline mb-1.5">
+          <button onClick={limpiarFiltro} className="text-xs text-dark-300 hover:text-white underline md:mb-1.5 py-2 md:py-0 text-left col-span-2 md:col-span-1">
             Limpiar filtro
           </button>
         )}
         {hayFiltro && (
-          <span className="text-xs text-dark-400 mb-1.5">Horas totales calculadas solo con turnos ya cerrados dentro del rango.</span>
+          <span className="text-xs text-dark-400 md:mb-1.5 col-span-2 md:col-span-1">Horas totales calculadas solo con turnos ya cerrados dentro del rango.</span>
         )}
       </div>
     </div>
     {error && <p role="alert" className="p-4 text-red-400">{error}</p>}
     {loading && <p className="p-4 text-dark-300">Cargando…</p>}
     <div className="flex flex-wrap items-center gap-3 p-4 text-white text-sm">
-      <button disabled={pagina === 0} className="bg-dark-700 px-3 py-2 rounded disabled:opacity-40" onClick={() => setPagina(p => p - 1)}>Anterior</button>
-      <span>Página {pagina + 1} · Horas de todo el rango; estado actual sin filtro de fecha</span>
-      <button disabled={(pagina + 1) * PAGE_SIZE >= datos.resumen.reduce((n, r) => n + Number(r.registros), 0)} className="bg-dark-700 px-3 py-2 rounded disabled:opacity-40" onClick={() => setPagina(p => p + 1)}>Siguiente</button>
+      <button disabled={pagina === 0} className="bg-dark-700 px-4 py-2.5 md:px-3 md:py-2 rounded disabled:opacity-40" onClick={() => setPagina(p => p - 1)}>Anterior</button>
+      <span className="order-first w-full md:order-none md:w-auto">Página {pagina + 1} · Horas de todo el rango; estado actual sin filtro de fecha</span>
+      <button disabled={(pagina + 1) * PAGE_SIZE >= datos.resumen.reduce((n, r) => n + Number(r.registros), 0)} className="bg-dark-700 px-4 py-2.5 md:px-3 md:py-2 rounded disabled:opacity-40" onClick={() => setPagina(p => p + 1)}>Siguiente</button>
     </div>
-    <div className="overflow-x-auto">
+    <div className="md:hidden divide-y divide-dark-700">
+      {filas.map(({ u, conectado, manualActivo, enCursoMs, historialFiltrado, totalMs, oculto, resumen }) => {
+        if (oculto) {
+          return <label key={u.id} className="flex items-center gap-3 p-4 opacity-60 text-sm">
+            <input type="checkbox" className="w-5 h-5 shrink-0" checked={false} onChange={() => toggleOculto(u.user_id)} />
+            <span className="min-w-0 break-words"><span className="text-dark-400 italic">{u.nombre || u.usuario}</span> <span className="text-dark-500 italic">— Oculto, tildá para volver a verlo</span></span>
+          </label>
+        }
+        return <div key={u.id} className={`p-4 space-y-3 ${conectado ? 'border-l-4 border-green-500 bg-green-500/10' : ''}`}>
+          <div className="flex items-start gap-3">
+            <input type="checkbox" className="w-5 h-5 mt-0.5 shrink-0" checked={true} onChange={() => toggleOculto(u.user_id)} title="Ocultar este usuario" />
+            <div className="min-w-0 flex-1">
+              <p className={`font-bold break-words ${conectado ? 'text-green-400' : 'text-white'}`}>{u.nombre || u.usuario}</p>
+              <p className="text-dark-300 text-sm break-words">{u.usuario}</p>
+              <p className={`text-sm ${conectado ? 'text-green-400' : 'text-dark-300'}`}>{conectado ? (manualActivo ? 'Activo (manual)' : 'Logueado') : resumen?.registros_total > 0 ? 'Sesión cerrada' : 'Sin ingresos'}</p>
+            </div>
+            <div className="text-right shrink-0">
+              <p className="text-white font-semibold">{resumen?.registros > 0 ? formatDuracion(totalMs) : '—'}</p>
+              {conectado && <p className="text-green-400 text-xs">⏱ en curso: {formatDuracion(enCursoMs)}</p>}
+            </div>
+          </div>
+          {puedeGestionar && u.user_id && (
+            <button
+              type="button"
+              onClick={() => toggleManual(u, !conectado)}
+              disabled={procesando.has(u.user_id)}
+              className={`w-full text-sm font-semibold px-3 py-2.5 rounded-lg border disabled:opacity-50 ${conectado ? 'border-red-500/60 text-red-400 hover:bg-red-500/10' : 'border-green-500/60 text-green-400 hover:bg-green-500/10'}`}
+            >
+              {procesando.has(u.user_id) ? '…' : conectado ? '⏹ Desactivar' : '▶ Activar'}
+            </button>
+          )}
+          <ul className="space-y-1.5">
+            {historialFiltrado.length === 0 && <li className="text-dark-400 text-sm">—</li>}
+            {historialFiltrado.map(r => {
+              const duracionFila = r?.salida_at ? formatDuracion(new Date(r.salida_at) - new Date(r.entrada_at)) : null
+              return <li key={r.id} className="bg-dark-900/50 rounded-lg p-2.5 text-sm text-dark-300">
+                <p>Ingreso: {mostrar(r.entrada_at)}{r.manual && <span className="ml-1 text-xs text-amber-400">✋ manual</span>}</p>
+                <p>Salida: {!r.salida_at ? <span className="text-green-400">En curso (sin salida)</span> : mostrar(r.salida_at)}{duracionFila && <span className="text-dark-500"> ({duracionFila})</span>}</p>
+              </li>
+            })}
+          </ul>
+        </div>
+      })}
+      {!loading && !error && personas.size > 0 && (
+        <div className="p-4 bg-dark-700/60 flex items-center justify-between gap-3">
+          <p className="text-white font-bold text-sm">Total {hayOcultos ? '(usuarios visibles)' : ''}<span className="block text-dark-400 text-xs font-normal">(solo horarios cerrados; el tiempo en curso se suma al cerrarse)</span></p>
+          <p className="text-white font-bold shrink-0">{formatDuracion(totalGeneralMs)}</p>
+        </div>
+      )}
+    </div>
+    <div className="hidden md:block overflow-x-auto">
       <table className="w-full text-sm">
         <thead><tr className="bg-dark-700 text-white">{['Ver', 'Nombre', 'Usuario', 'Estado actual', 'Ingreso', 'Salida', 'Horas'].map(t => <th key={t} className="p-3 text-left">{t}</th>)}</tr></thead>
         {filas.map(({ u, historial, abiertos, conectado, manualActivo, enCursoMs, historialFiltrado, totalMs, oculto, resumen }) => {
@@ -275,6 +325,8 @@ export default function HorarioUsuarios({ clienteId }) {
           </tfoot>
         )}
       </table>
+    </div>
+    <div>
       {!loading && !error && !personas.size && <p className="p-4 text-dark-300">No hay usuarios registrados.</p>}
     </div>
   </div>

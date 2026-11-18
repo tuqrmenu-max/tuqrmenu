@@ -121,16 +121,16 @@ export default function SuscripcionesAdmin({ clienteId }) {
   return (
     <div>
       {/* Sub-tabs: Suscriptos / Opiniones */}
-      <div className="flex gap-2 mb-6">
+      <div className="flex gap-2 mb-4 md:mb-6">
         <button
           onClick={() => setSubTab('suscriptos')}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition ${subTab === 'suscriptos' ? 'bg-primary-500 text-white' : 'bg-dark-800 text-dark-300 hover:bg-dark-700 border border-dark-700'}`}
+          className={`flex-1 md:flex-none px-4 py-2.5 md:py-2 rounded-lg text-sm font-medium transition ${subTab === 'suscriptos' ? 'bg-primary-500 text-white' : 'bg-dark-800 text-dark-300 hover:bg-dark-700 border border-dark-700'}`}
         >
           👥 Suscriptos
         </button>
         <button
           onClick={() => setSubTab('opiniones')}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition ${subTab === 'opiniones' ? 'bg-primary-500 text-white' : 'bg-dark-800 text-dark-300 hover:bg-dark-700 border border-dark-700'}`}
+          className={`flex-1 md:flex-none px-4 py-2.5 md:py-2 rounded-lg text-sm font-medium transition ${subTab === 'opiniones' ? 'bg-primary-500 text-white' : 'bg-dark-800 text-dark-300 hover:bg-dark-700 border border-dark-700'}`}
         >
           💬 Opiniones
         </button>
@@ -142,15 +142,15 @@ export default function SuscripcionesAdmin({ clienteId }) {
       <div>
       {/* Header */}
       <div className="bg-dark-800 rounded-xl p-4 mb-6 border border-dark-700">
-        <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 md:gap-4">
           <h2 className="text-white font-bold text-lg">👥 Suscriptos ({suscripciones.length})</h2>
           
           {/* Asignación rápida */}
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col md:flex-row md:items-center gap-2 w-full md:w-auto">
             <select
               value={selectedPromo}
               onChange={e => setSelectedPromo(e.target.value)}
-              className="bg-dark-900 border border-dark-600 rounded-lg px-3 py-2 text-white text-sm"
+              className="w-full md:w-auto bg-dark-900 border border-dark-600 rounded-lg px-3 py-2.5 md:py-2 text-white text-base md:text-sm"
             >
               <option value="">Seleccionar promo</option>
               {promociones.map(p => (
@@ -160,13 +160,13 @@ export default function SuscripcionesAdmin({ clienteId }) {
             <button
               onClick={assignPromo}
               disabled={!selectedPromo || selectedClients.length === 0}
-              className="bg-green-600 hover:bg-green-500 disabled:bg-dark-600 disabled:text-dark-400 text-white px-4 py-2 rounded-lg text-sm font-bold transition"
+              className="bg-green-600 hover:bg-green-500 disabled:bg-dark-600 disabled:text-dark-400 text-white px-4 py-2.5 md:py-2 rounded-lg text-sm font-bold transition w-full md:w-auto"
             >
               Asignar a {selectedClients.length || ''}
             </button>
             <button
               onClick={selectAll}
-              className="bg-dark-700 hover:bg-dark-600 text-white px-3 py-2 rounded-lg text-sm transition"
+              className="bg-dark-700 hover:bg-dark-600 text-white px-3 py-2.5 md:py-2 rounded-lg text-sm transition w-full md:w-auto"
             >
               Todos
             </button>
@@ -187,7 +187,7 @@ export default function SuscripcionesAdmin({ clienteId }) {
 
       {/* Lista */}
       {filteredSuscripciones.length === 0 ? (
-        <div className="bg-dark-800 rounded-xl p-12 border border-dark-700 text-center">
+        <div className="bg-dark-800 rounded-xl p-6 md:p-12 border border-dark-700 text-center">
           <p className="text-dark-400">
             {search ? 'No se encontraron suscriptos' : 'No hay suscriptos aún'}
           </p>
@@ -199,43 +199,45 @@ export default function SuscripcionesAdmin({ clienteId }) {
               key={sub.id}
               className="bg-dark-800 rounded-xl border border-dark-700 p-4 hover:border-primary-500/50 transition"
             >
-              <div className="flex items-center gap-4">
+              <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
+                <div className="flex items-start md:items-center gap-3 md:gap-4 flex-1 min-w-0">
                 <input
                   type="checkbox"
                   checked={selectedClients.includes(sub.id)}
                   onChange={() => toggleSelectClient(sub.id)}
-                  className="w-4 h-4 accent-primary-500"
+                  className="w-5 h-5 md:w-4 md:h-4 mt-0.5 md:mt-0 flex-shrink-0 accent-primary-500"
                 />
                 
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-white font-semibold">{sub.nombre}</h3>
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h3 className="text-white font-semibold break-words">{sub.nombre}</h3>
                     {sub.promos_count > 0 && (
                       <span className="bg-purple-500/20 text-purple-400 px-2 py-0.5 rounded text-xs">
                         {sub.promos_count} promos
                       </span>
                     )}
                   </div>
-                  <p className="text-dark-400 text-sm">
+                  <p className="text-dark-400 text-sm break-words">
                     📱 {sub.whatsapp || 'Sin WhatsApp'}
-                    {sub.instagram && <span className="ml-3">📷 {sub.instagram}</span>}
+                    {sub.instagram && <span className="ml-3 break-all">📷 {sub.instagram}</span>}
                   </p>
                   <p className="text-dark-500 text-xs mt-1">
                     Mesa: {sub.mesa || '-'} • {new Date(sub.created_at).toLocaleDateString('es-AR')}
                   </p>
                 </div>
+                </div>
 
-                <div className="flex gap-2">
+                <div className="flex gap-2 w-full md:w-auto">
                   <button
                     onClick={() => sendWhatsApp(sub)}
-                    className="bg-green-600/20 text-green-400 hover:bg-green-600/30 px-3 py-2 rounded-lg text-sm transition"
+                    className="flex-1 md:flex-none bg-green-600/20 text-green-400 hover:bg-green-600/30 px-3 py-2.5 md:py-2 rounded-lg text-sm transition"
                     title="Enviar WhatsApp"
                   >
                     📱
                   </button>
                   <button
                     onClick={() => deleteSubscription(sub.id)}
-                    className="bg-red-500/20 text-red-400 hover:bg-red-500/30 px-3 py-2 rounded-lg text-sm transition"
+                    className="flex-1 md:flex-none bg-red-500/20 text-red-400 hover:bg-red-500/30 px-3 py-2.5 md:py-2 rounded-lg text-sm transition"
                     title="Eliminar"
                   >
                     🗑️

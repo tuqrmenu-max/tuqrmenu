@@ -1120,7 +1120,7 @@ export default function CartaAdmin({ clienteId, socio }) {
   return (
     <div>
       {rol === 'superadmin' && (
-        <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-3 mb-4 flex flex-wrap gap-6">
+        <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-xl p-3 mb-4 flex flex-wrap gap-3 md:gap-6">
           <span className="text-yellow-400 text-xs font-bold uppercase self-center">Superadmin</span>
           <label className="flex items-center gap-2 text-sm text-white cursor-pointer">
             <input type="checkbox" checked={flags.ocultar_excel_imagenes} onChange={() => toggleFlag('ocultar_excel_imagenes')} className="accent-primary-500" />
@@ -1144,7 +1144,7 @@ export default function CartaAdmin({ clienteId, socio }) {
           El horario de atención ya no se carga como texto libre acá: se
           configura como "Horario para recibir pedidos" más abajo, y ese es
           el que se muestra en el ícono ℹ️ del menú público. */}
-      <div className="bg-dark-800 rounded-xl p-4 mb-6 border border-dark-700">
+      <div className="bg-dark-800 rounded-xl p-3 md:p-4 mb-4 md:mb-6 border border-dark-700">
         <h3 className="text-white font-bold mb-3">📞 Datos de contacto y delivery</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           <div>
@@ -1153,7 +1153,7 @@ export default function CartaAdmin({ clienteId, socio }) {
               type="text" value={contacto.whatsapp}
               onChange={e => setContacto(prev => ({ ...prev, whatsapp: e.target.value }))}
               placeholder="Ej: 5493511234567"
-              className="w-full bg-dark-900 border border-dark-600 rounded-lg px-3 py-2 text-white text-sm"
+              className="w-full bg-dark-900 border border-dark-600 rounded-lg px-3 py-2.5 md:py-2 text-white text-base md:text-sm"
             />
           </div>
           <div>
@@ -1162,7 +1162,7 @@ export default function CartaAdmin({ clienteId, socio }) {
               type="text" value={contacto.instagram}
               onChange={e => setContacto(prev => ({ ...prev, instagram: e.target.value }))}
               placeholder="@usuario"
-              className="w-full bg-dark-900 border border-dark-600 rounded-lg px-3 py-2 text-white text-sm"
+              className="w-full bg-dark-900 border border-dark-600 rounded-lg px-3 py-2.5 md:py-2 text-white text-base md:text-sm"
             />
           </div>
           <div>
@@ -1171,7 +1171,7 @@ export default function CartaAdmin({ clienteId, socio }) {
               type="text" value={contacto.direccion}
               onChange={e => setContacto(prev => ({ ...prev, direccion: e.target.value }))}
               placeholder="Calle 123, Ciudad"
-              className="w-full bg-dark-900 border border-dark-600 rounded-lg px-3 py-2 text-white text-sm"
+              className="w-full bg-dark-900 border border-dark-600 rounded-lg px-3 py-2.5 md:py-2 text-white text-base md:text-sm"
             />
           </div>
           <div>
@@ -1180,7 +1180,7 @@ export default function CartaAdmin({ clienteId, socio }) {
               type="text" value={contacto.alias}
               onChange={e => setContacto(prev => ({ ...prev, alias: e.target.value }))}
               placeholder="mi.alias.mp"
-              className="w-full bg-dark-900 border border-dark-600 rounded-lg px-3 py-2 text-white text-sm"
+              className="w-full bg-dark-900 border border-dark-600 rounded-lg px-3 py-2.5 md:py-2 text-white text-base md:text-sm"
             />
           </div>
           <div>
@@ -1189,14 +1189,14 @@ export default function CartaAdmin({ clienteId, socio }) {
               type="number" value={contacto.delivery}
               onChange={e => setContacto(prev => ({ ...prev, delivery: e.target.value }))}
               placeholder="0"
-              className="w-full bg-dark-900 border border-dark-600 rounded-lg px-3 py-2 text-white text-sm"
+              className="w-full bg-dark-900 border border-dark-600 rounded-lg px-3 py-2.5 md:py-2 text-white text-base md:text-sm"
             />
           </div>
         </div>
         <button
           onClick={guardarContacto}
           disabled={savingContacto}
-          className="mt-3 bg-primary-500 hover:bg-primary-600 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
+          className="mt-3 w-full md:w-auto bg-primary-500 hover:bg-primary-600 disabled:opacity-50 text-white px-4 py-3 md:py-2 rounded-lg text-sm font-medium transition"
         >
           {savingContacto ? 'Guardando...' : '💾 Guardar datos de contacto'}
         </button>
@@ -1206,14 +1206,14 @@ export default function CartaAdmin({ clienteId, socio }) {
           este horario al tocar "Enviar Pedido". Si está fuera de horario, el
           cliente ve este mismo horario y puede dejar una opinión (que llega
           por WhatsApp y queda en Suscriptos > Opiniones para responder). */}
-      <div className="bg-dark-800 rounded-xl p-4 mb-6 border border-dark-700">
+      <div className="bg-dark-800 rounded-xl p-3 md:p-4 mb-4 md:mb-6 border border-dark-700">
         <h3 className="text-white font-bold mb-1">🕐 Horario para recibir pedidos</h3>
         <p className="text-dark-400 text-xs mb-3">
           Si lo activás, el botón "Enviar Pedido" del menú público va a chequear este horario.
           Fuera de horario, el cliente ve un aviso con estos mismos horarios y puede dejar su opinión.
           Después de guardar acá, recordá volver a "💾 Guardar proyecto" en Diseño para que el menú publicado tenga el cambio.
         </p>
-        <label className="flex items-center gap-2 text-sm text-white cursor-pointer mb-3">
+        <label className="flex items-center gap-2 text-sm text-white cursor-pointer mb-3 py-1 md:py-0">
           <input
             type="checkbox"
             checked={horarioPedidosActivo}
@@ -1229,7 +1229,7 @@ export default function CartaAdmin({ clienteId, socio }) {
               const franja = horarioPedidosDias[dia.key]?.[0]
               const abierto = !!franja
               return (
-                <div key={dia.key} className="flex flex-wrap items-center gap-3 bg-dark-900 border border-dark-700 rounded-lg px-3 py-2">
+                <div key={dia.key} className="flex flex-wrap items-center gap-2 md:gap-3 bg-dark-900 border border-dark-700 rounded-lg px-3 py-2">
                   <label className="flex items-center gap-2 text-sm text-white w-28 cursor-pointer shrink-0">
                     <input
                       type="checkbox"
@@ -1240,20 +1240,20 @@ export default function CartaAdmin({ clienteId, socio }) {
                     {dia.label}
                   </label>
                   {abierto ? (
-                    <div className="flex items-center gap-2 text-sm text-dark-300">
+                    <div className="flex flex-wrap md:flex-nowrap items-center gap-2 text-sm text-dark-300">
                       <span>Desde</span>
                       <input
                         type="time"
                         value={franja.desde}
                         onChange={e => setFranjaDia(dia.key, 'desde', e.target.value)}
-                        className="bg-dark-700 border border-dark-600 rounded-lg px-2 py-1 text-white text-sm"
+                        className="bg-dark-700 border border-dark-600 rounded-lg px-2 py-2 md:py-1 text-white text-base md:text-sm"
                       />
                       <span>Hasta</span>
                       <input
                         type="time"
                         value={franja.hasta}
                         onChange={e => setFranjaDia(dia.key, 'hasta', e.target.value)}
-                        className="bg-dark-700 border border-dark-600 rounded-lg px-2 py-1 text-white text-sm"
+                        className="bg-dark-700 border border-dark-600 rounded-lg px-2 py-2 md:py-1 text-white text-base md:text-sm"
                       />
                     </div>
                   ) : (
@@ -1264,7 +1264,7 @@ export default function CartaAdmin({ clienteId, socio }) {
             })}
             <button
               onClick={copiarATodosLosDias}
-              className="text-primary-400 hover:text-primary-300 text-xs underline"
+              className="text-primary-400 hover:text-primary-300 text-xs underline py-2 md:py-0"
               type="button"
             >
               Copiar el primer horario cargado a todos los días
@@ -1275,24 +1275,24 @@ export default function CartaAdmin({ clienteId, socio }) {
         <button
           onClick={guardarHorarioPedidos}
           disabled={savingHorarioPedidos}
-          className="mt-3 bg-primary-500 hover:bg-primary-600 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium transition block"
+          className="mt-3 w-full md:w-auto bg-primary-500 hover:bg-primary-600 disabled:opacity-50 text-white px-4 py-3 md:py-2 rounded-lg text-sm font-medium transition block"
         >
           {savingHorarioPedidos ? 'Guardando...' : '💾 Guardar horario de pedidos'}
         </button>
       </div>
 
       {/* Barra superior */}
-      <div className="bg-dark-800 rounded-xl p-4 mb-6 flex flex-wrap items-center justify-between gap-4 border border-dark-700">
+      <div className="bg-dark-800 rounded-xl p-3 md:p-4 mb-4 md:mb-6 flex flex-col items-stretch md:flex-row md:flex-wrap md:items-center justify-between gap-3 md:gap-4 border border-dark-700">
         {!imagenesExcelBloqueado && ['admin', 'superadmin'].includes(rol) && (
-          <button onClick={optimizeImages} disabled={optimizing} className="text-white bg-teal-700 rounded-lg px-4 py-2 disabled:opacity-50">
+          <button onClick={optimizeImages} disabled={optimizing} className="text-white bg-teal-700 rounded-lg px-4 py-3 md:py-2 disabled:opacity-50">
             {optimizing ? 'Optimizando imágenes…' : 'Reducir peso de imágenes'}
           </button>
         )}
         <h2 className="text-white font-bold text-lg">📋 Carta de Productos ({productos.length})</h2>
-        <div className="flex gap-2 flex-wrap items-start">
+        <div className="grid grid-cols-2 md:flex gap-2 md:flex-wrap md:items-start">
           <button
             onClick={() => setShowAddModal(true)}
-            className="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg transition"
+            className="col-span-2 md:col-span-1 bg-green-600 hover:bg-green-500 text-white px-4 py-3 md:py-2 rounded-lg transition"
           >
             ➕ Agregar producto
           </button>
@@ -1300,14 +1300,14 @@ export default function CartaAdmin({ clienteId, socio }) {
             <button
               onClick={guardarProyectoCarta}
               disabled={savingProject}
-              className="bg-primary-500 hover:bg-primary-600 disabled:opacity-50 text-white px-4 py-2 rounded-lg transition font-medium self-start"
+              className="col-span-2 md:col-span-1 bg-primary-500 hover:bg-primary-600 disabled:opacity-50 text-white px-4 py-3 md:py-2 rounded-lg transition font-medium md:self-start"
             >
               {savingProject ? '⏳ Guardando...' : '💾 Guardar proyecto'}
             </button>
           )}
           {puede('importar_excel') && (
             <div>
-              <label className="flex flex-col items-center justify-center bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg cursor-pointer transition">
+              <label className="flex flex-col items-center justify-center text-center bg-blue-600 hover:bg-blue-500 text-white px-3 md:px-4 py-3 md:py-2 rounded-lg cursor-pointer transition text-sm md:text-base">
                 <span>📥 Importar Excel</span>
                 <span className="text-[10px] text-blue-100/80">.xlsx / .csv</span>
                 <input type="file" accept=".xlsx,.xls,.csv" onChange={importarExcel} className="hidden" />
@@ -1320,20 +1320,20 @@ export default function CartaAdmin({ clienteId, socio }) {
           {puede('descargar_imagenes') && (
             <button
               onClick={descargarImagenes}
-              className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg transition self-start"
+              className="bg-blue-600 hover:bg-blue-500 text-white px-3 md:px-4 py-3 md:py-2 rounded-lg transition md:self-start text-sm md:text-base"
             >
               📦 Descargar imágenes
             </button>
           )}
           {puede('imagenes_categorias') && (
-            <label className="flex flex-col items-center justify-center bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg cursor-pointer transition">
+            <label className="flex flex-col items-center justify-center text-center bg-blue-600 hover:bg-blue-500 text-white px-3 md:px-4 py-3 md:py-2 rounded-lg cursor-pointer transition text-sm md:text-base">
               <span>🖼️ Imágenes categorías</span>
               <span className="text-[10px] text-blue-100/80">Múltiples · 500×500 px</span>
               <input type="file" accept="image/*" multiple className="hidden" onChange={e => handleBulkCategoryImages(e.target.files)} />
             </label>
           )}
           {puede('imagenes_productos') && (
-            <label className="flex flex-col items-center justify-center bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg cursor-pointer transition">
+            <label className="flex flex-col items-center justify-center text-center bg-blue-600 hover:bg-blue-500 text-white px-3 md:px-4 py-3 md:py-2 rounded-lg cursor-pointer transition text-sm md:text-base">
               <span>🖼️ Imágenes productos</span>
               <span className="text-[10px] text-blue-100/80">Múltiples imágenes</span>
               <input type="file" accept="image/*" multiple className="hidden" onChange={e => handleBulkProductImages(e.target.files)} />
@@ -1345,7 +1345,7 @@ export default function CartaAdmin({ clienteId, socio }) {
       {/* Categorías con imágenes */}
       {categorias.length > 0 && (
         <div className="mb-6">
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between gap-2 mb-3">
             <h3 className="text-white font-bold">📂 Categorías ({categorias.length})</h3>
             <span className="text-dark-400 text-sm">
               {categorias.filter(c => c.imagen).length} con imagen
@@ -1375,7 +1375,7 @@ export default function CartaAdmin({ clienteId, socio }) {
                           <span
                             role="button"
                             onClick={(e) => { e.stopPropagation(); deleteCategoryImage(cat.id) }}
-                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 text-xs opacity-0 group-hover:opacity-100 transition flex items-center justify-center"
+                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-7 h-7 md:w-5 md:h-5 text-sm md:text-xs opacity-100 md:opacity-0 md:group-hover:opacity-100 transition flex items-center justify-center"
                           >
                             ×
                           </span>
@@ -1395,7 +1395,7 @@ export default function CartaAdmin({ clienteId, socio }) {
                       title={`Eliminar categoría ${cat.nombre}`}
                       aria-label={`Eliminar categoría ${cat.nombre}`}
                       onClick={(e) => { e.stopPropagation(); eliminarCategoria(cat) }}
-                      className="shrink-0 bg-red-500/90 hover:bg-red-500 text-white rounded-full w-5 h-5 text-xs font-bold flex items-center justify-center transition cursor-pointer"
+                      className="shrink-0 bg-red-500/90 hover:bg-red-500 text-white rounded-full w-8 h-8 md:w-5 md:h-5 text-base md:text-xs font-bold flex items-center justify-center transition cursor-pointer"
                     >
                       ×
                     </span>
@@ -1415,7 +1415,7 @@ export default function CartaAdmin({ clienteId, socio }) {
                       <span
                         role="button"
                         onClick={(e) => { e.stopPropagation(); catFileRefs.current[cat.id]?.click() }}
-                        className="block w-full text-center text-xs bg-dark-700 hover:bg-dark-600 text-white py-1.5 rounded-lg transition disabled:opacity-50"
+                        className="block w-full text-center text-xs bg-dark-700 hover:bg-dark-600 text-white py-2.5 md:py-1.5 rounded-lg transition disabled:opacity-50"
                       >
                         {uploadingCatId === cat.id ? '⏳' : 'Cargar imagen'}
                       </span>
@@ -1429,7 +1429,7 @@ export default function CartaAdmin({ clienteId, socio }) {
       )}
 
       {/* Búsqueda */}
-      <div ref={productosSectionRef} className="mb-4 flex flex-wrap items-start gap-4 scroll-mt-4">
+      <div ref={productosSectionRef} className="mb-4 flex flex-wrap items-start gap-2 md:gap-4 scroll-mt-4">
         <div className="relative w-full md:w-96">
           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-dark-400 pointer-events-none">
             🔍
@@ -1439,14 +1439,14 @@ export default function CartaAdmin({ clienteId, socio }) {
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder="Buscar producto por nombre..."
-            className="w-full pl-10 pr-9 py-2 bg-dark-800 border border-dark-700 rounded-xl text-white placeholder-dark-400 focus:outline-none focus:border-primary-500"
+            className="w-full pl-10 pr-9 py-3 md:py-2 bg-dark-800 border border-dark-700 rounded-xl text-white placeholder-dark-400 focus:outline-none focus:border-primary-500"
           />
           {search && (
             <button
               type="button"
               onClick={() => setSearch('')}
               title="Limpiar búsqueda"
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-dark-400 hover:text-white text-sm"
+              className="absolute right-0 md:right-2 top-1/2 -translate-y-1/2 text-dark-400 hover:text-white text-base md:text-sm px-3 py-2 md:p-0"
             >
               ×
             </button>
@@ -1465,7 +1465,7 @@ export default function CartaAdmin({ clienteId, socio }) {
                       type="button"
                       key={p.id}
                       onClick={() => { setSelectedCat(p.categoria_id); setSearch(''); setTimeout(() => productosSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50) }}
-                      className="w-full flex items-center gap-3 px-4 py-2 text-left hover:bg-dark-700 transition border-b border-dark-700 last:border-0"
+                      className="w-full flex items-center gap-3 px-4 py-3 md:py-2 text-left hover:bg-dark-700 transition border-b border-dark-700 last:border-0"
                     >
                       {p.imagen ? (
                         <img src={p.imagen} alt="" className="w-8 h-8 rounded-lg object-cover flex-shrink-0" />
@@ -1488,7 +1488,7 @@ export default function CartaAdmin({ clienteId, socio }) {
           <button
             type="button"
             onClick={() => setSelectedCat(null)}
-            className="flex items-center gap-1 text-sm bg-primary-500/20 text-primary-400 border border-primary-500/40 rounded-xl px-3 py-2 hover:bg-primary-500/30 transition"
+            className="w-full md:w-auto justify-center md:justify-start flex items-center gap-1 text-sm bg-primary-500/20 text-primary-400 border border-primary-500/40 rounded-xl px-3 py-3 md:py-2 hover:bg-primary-500/30 transition"
           >
             ← Volver a todas las categorías
           </button>
@@ -1497,12 +1497,12 @@ export default function CartaAdmin({ clienteId, socio }) {
 
       {/* Panel de actualización masiva de precios: siempre visible (antes solo aparecía
           después de tildar algo, y no se notaba que existía) */}
-      <div className={`border rounded-xl p-4 mb-6 transition ${selectedIds.length > 0 ? 'bg-yellow-500/20 border-yellow-500/50' : 'bg-dark-800 border-dark-700'}`}>
-        <div className="flex flex-wrap items-center gap-4">
+      <div className={`border rounded-xl p-3 md:p-4 mb-4 md:mb-6 transition ${selectedIds.length > 0 ? 'bg-yellow-500/20 border-yellow-500/50' : 'bg-dark-800 border-dark-700'}`}>
+        <div className="flex flex-col md:flex-row md:flex-wrap md:items-center gap-3 md:gap-4">
           <span className={`font-bold ${selectedIds.length > 0 ? 'text-yellow-400' : 'text-dark-400'}`}>
             {selectedIds.length > 0 ? `${selectedIds.length} seleccionados` : '💲 Cambiar precios en lote: tildá productos abajo (o "Seleccionar todos")'}
           </span>
-          <label className="flex items-center gap-2 text-white text-sm cursor-pointer select-none bg-dark-900/60 border border-dark-600 rounded-xl px-3 py-2 hover:bg-dark-700 transition">
+          <label className="flex items-center gap-2 text-white text-sm cursor-pointer select-none bg-dark-900/60 border border-dark-600 rounded-xl px-3 py-3 md:py-2 hover:bg-dark-700 transition">
             <input
               type="checkbox"
               checked={allSelectedGlobal}
@@ -1514,7 +1514,7 @@ export default function CartaAdmin({ clienteId, socio }) {
           <select
             value={bulkOperation}
             onChange={e => setBulkOperation(e.target.value)}
-            className="bg-dark-800 border border-dark-700 rounded-lg px-3 py-2 text-white"
+            className="w-full md:w-auto bg-dark-800 border border-dark-700 rounded-lg px-3 py-3 md:py-2 text-white"
           >
             <option value="aumentar">Aumentar %</option>
             <option value="disminuir">Disminuir %</option>
@@ -1525,19 +1525,19 @@ export default function CartaAdmin({ clienteId, socio }) {
             value={bulkValue}
             onChange={e => setBulkValue(e.target.value)}
             placeholder={bulkOperation === 'fijo' ? '$ Precio' : '% Valor'}
-            className="w-24 bg-dark-800 border border-dark-700 rounded-lg px-3 py-2 text-white"
+            className="w-full md:w-24 bg-dark-800 border border-dark-700 rounded-lg px-3 py-3 md:py-2 text-white"
           />
           <button
             onClick={applyBulkUpdate}
             disabled={selectedIds.length === 0}
-            className="bg-green-600 hover:bg-green-500 disabled:opacity-40 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg font-bold transition"
+            className="w-full md:w-auto bg-green-600 hover:bg-green-500 disabled:opacity-40 disabled:cursor-not-allowed text-white px-4 py-3 md:py-2 rounded-lg font-bold transition"
           >
             ✅ Aplicar
           </button>
           {selectedIds.length > 0 && (
             <button
               onClick={() => setSelectedIds([])}
-              className="text-dark-400 hover:text-white"
+              className="text-dark-400 hover:text-white w-full md:w-auto py-2 md:py-0"
             >
               Cancelar
             </button>
@@ -1561,12 +1561,12 @@ export default function CartaAdmin({ clienteId, socio }) {
 
         return (
           <div key={cat.id} className="mb-6">
-            <div className="flex items-center gap-3 mb-3">
+            <div className="flex flex-wrap md:flex-nowrap items-center gap-2 md:gap-3 mb-3">
               <input
                 type="checkbox"
                 checked={allCatSelected}
                 onChange={() => selectAllInCategory(cat.id)}
-                className="w-4 h-4 accent-primary-500"
+                className="w-5 h-5 md:w-4 md:h-4 accent-primary-500"
               />
               {cat.imagen ? (
                 <img
@@ -1579,13 +1579,13 @@ export default function CartaAdmin({ clienteId, socio }) {
                   📂
                 </span>
               )}
-              <h3 className="text-white font-bold text-lg border-b-2 border-cyan-400 pb-1">
+              <h3 className="text-white font-bold text-lg border-b-2 border-cyan-400 pb-1 min-w-0 break-words">
                 {cat.nombre}
               </h3>
               <span className="text-dark-400 text-sm">({catProductos.length})</span>
               {puede('ingredientes') && (
                 <label
-                  className="ml-auto flex items-center gap-2 text-sm text-dark-300 cursor-pointer"
+                  className="w-full md:w-auto md:ml-auto flex items-center gap-2 text-sm text-dark-300 cursor-pointer py-1 md:py-0"
                   title="Si lo activás, el cliente puede destildar ingredientes de todos los productos de esta categoría"
                 >
                   <input
@@ -1599,7 +1599,115 @@ export default function CartaAdmin({ clienteId, socio }) {
               )}
             </div>
 
-            <div className="bg-dark-800 rounded-xl border border-dark-700 overflow-hidden">
+            {/* Vista móvil: tarjetas apiladas (mismos handlers que la tabla de escritorio) */}
+            <div className="md:hidden space-y-2">
+              {catProductos.map(prod => (
+                <div key={prod.id} className="bg-dark-800 rounded-xl border border-dark-700 p-3">
+                  <div className="flex items-start gap-3">
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.includes(prod.id)}
+                      onChange={() => toggleSelect(prod.id)}
+                      className="w-5 h-5 mt-1 shrink-0 accent-primary-500"
+                    />
+                    {prod.imagen ? (
+                      <div className="relative shrink-0">
+                        <img src={prod.imagen} alt="" className="w-14 h-14 rounded-lg object-cover" />
+                        {puede('imagenes_productos') && (
+                          <button
+                            onClick={() => deleteImage(prod.id)}
+                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-7 h-7 text-sm flex items-center justify-center"
+                            aria-label="Quitar imagen"
+                          >
+                            ×
+                          </button>
+                        )}
+                      </div>
+                    ) : (
+                      <span className="w-14 h-14 shrink-0 rounded-lg bg-dark-700 flex items-center justify-center text-dark-500 text-xs text-center">Sin img</span>
+                    )}
+                    <div className="min-w-0 flex-1 text-white break-words">
+                      {prod.nombre}
+                      {(prod.ingredientes?.length > 0 || prod.permitir_personalizar || cat.permitir_personalizar) && (
+                        <div className="text-xs text-dark-400 mt-0.5">
+                          {prod.ingredientes?.length > 0 && (
+                            <span>🥗 {prod.ingredientes.length} {prod.ingredientes.length === 1 ? 'ingrediente' : 'ingredientes'}</span>
+                          )}
+                          {(prod.permitir_personalizar || cat.permitir_personalizar) && (
+                            <span className="ml-2 text-cyan-400">· personalizable</span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between gap-3 mt-3">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="text-dark-400 text-xs">Precio</span>
+                      {editPrice === prod.id ? (
+                        <div className="flex gap-1">
+                          <input
+                            type="number"
+                            value={newPrice}
+                            onChange={e => setNewPrice(e.target.value)}
+                            className="w-24 bg-dark-900 border border-dark-600 rounded-lg px-2 py-2 text-white text-base"
+                            step="0.01"
+                          />
+                          <button
+                            onClick={() => updatePrice(prod.id)}
+                            className="min-w-[44px] min-h-[44px] text-green-400 hover:text-green-300"
+                          >
+                            💾
+                          </button>
+                        </div>
+                      ) : (
+                        <span
+                          className="text-white cursor-pointer hover:text-primary-400 py-2"
+                          onClick={() => { setEditPrice(prod.id); setNewPrice(prod.precio) }}
+                        >
+                          ${prod.precio}
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-green-400 text-sm shrink-0">✅ Activo</span>
+                  </div>
+                  {(puede('imagenes_productos') || puede('ingredientes') || puede('eliminar_productos')) && (
+                    <div className="flex gap-2 mt-3">
+                      {puede('imagenes_productos') && (
+                        <label className={`flex-1 min-h-[44px] flex items-center justify-center bg-dark-700 hover:bg-dark-600 text-blue-400 rounded-lg cursor-pointer ${uploadingId === prod.id ? 'opacity-50 pointer-events-none' : ''}`} title="Subir imagen">
+                          {uploadingId === prod.id ? '⏳' : '📷'}
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={e => uploadImage(prod.id, e.target.files[0])}
+                            className="hidden"
+                          />
+                        </label>
+                      )}
+                      {puede('ingredientes') && (
+                        <button
+                          onClick={() => abrirIngredientes(prod)}
+                          className="flex-1 min-h-[44px] bg-dark-700 hover:bg-dark-600 text-green-400 rounded-lg"
+                          title="Ingredientes"
+                        >
+                          🥗
+                        </button>
+                      )}
+                      {puede('eliminar_productos') && (
+                        <button
+                          onClick={() => eliminarProducto(prod.id)}
+                          className="flex-1 min-h-[44px] bg-dark-700 hover:bg-dark-600 text-red-400 rounded-lg"
+                          title="Eliminar"
+                        >
+                          🗑️
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div className="hidden md:block bg-dark-800 rounded-xl border border-dark-700 overflow-hidden">
               <table className="w-full">
                 <thead>
                   <tr className="bg-dark-700">
@@ -1736,12 +1844,12 @@ export default function CartaAdmin({ clienteId, socio }) {
       {/* Modal ingredientes */}
       {ingProd && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-          <div className="bg-dark-800 rounded-2xl p-6 max-w-lg w-full border border-dark-700">
+          <div className="bg-dark-800 rounded-2xl p-4 md:p-6 max-w-lg w-full border border-dark-700 max-h-[90vh] md:max-h-none overflow-y-auto md:overflow-visible">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-white font-bold text-xl">🥗 Ingredientes · {ingProd.nombre}</h3>
+              <h3 className="text-white font-bold text-xl min-w-0 break-words">🥗 Ingredientes · {ingProd.nombre}</h3>
               <button
                 onClick={() => setIngProd(null)}
-                className="text-dark-400 hover:text-white text-2xl"
+                className="text-dark-400 hover:text-white text-2xl shrink-0 min-w-[44px] min-h-[44px] md:min-w-0 md:min-h-0"
               >
                 ×
               </button>
@@ -1791,12 +1899,12 @@ export default function CartaAdmin({ clienteId, socio }) {
       {/* Modal agregar producto */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-          <div className="bg-dark-800 rounded-2xl p-6 max-w-lg w-full border border-dark-700">
+          <div className="bg-dark-800 rounded-2xl p-4 md:p-6 max-w-lg w-full border border-dark-700 max-h-[90vh] md:max-h-none overflow-y-auto md:overflow-visible">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-white font-bold text-xl">➕ Agregar producto</h3>
               <button
                 onClick={() => setShowAddModal(false)}
-                className="text-dark-400 hover:text-white text-2xl"
+                className="text-dark-400 hover:text-white text-2xl shrink-0 min-w-[44px] min-h-[44px] md:min-w-0 md:min-h-0"
               >
                 ×
               </button>
