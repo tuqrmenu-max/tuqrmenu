@@ -78,14 +78,14 @@ export default function TicketConfig({ clienteId }) {
   }
 
   const Toggle = ({ label, field, description }) => (
-    <div className="flex items-center justify-between py-2">
-      <div>
+    <div className="flex items-center justify-between gap-3 py-2">
+      <div className="min-w-0">
         <span className="text-white text-sm">{label}</span>
         {description && <p className="text-dark-400 text-xs">{description}</p>}
       </div>
       <button
         onClick={() => update(field, !config[field])}
-        className={`w-12 h-6 rounded-full transition-colors relative ${config[field] ? 'bg-green-500' : 'bg-dark-600'}`}
+        className={`w-12 h-6 flex-shrink-0 rounded-full transition-colors relative ${config[field] ? 'bg-green-500' : 'bg-dark-600'}`}
       >
         <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white transition-transform ${config[field] ? 'left-6' : 'left-0.5'}`} />
       </button>
@@ -99,7 +99,7 @@ export default function TicketConfig({ clienteId }) {
     const hora = ahora.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })
 
     return (
-      <div className="bg-white rounded-xl p-4 max-w-[280px] mx-auto text-black font-mono" style={{ fontSize }}>
+      <div className="bg-white rounded-xl p-4 w-full max-w-[280px] mx-auto overflow-hidden break-words text-black font-mono" style={{ fontSize }}>
         <div className="text-center border-b border-dashed border-gray-300 pb-2 mb-2">
           {config.showLogo && <div className="text-2xl mb-1">🍽️</div>}
           {config.showName && <div className="font-bold text-base">Restaurante Ejemplo</div>}
@@ -119,10 +119,10 @@ export default function TicketConfig({ clienteId }) {
               <span>Cant</span><span>Producto</span><span>$</span>
             </div>
             <div className="flex justify-between text-xs mt-1">
-              <span>2x</span><span className="flex-1 mx-2">Milanesa napolitana</span><span>$8.500</span>
+              <span>2x</span><span className="flex-1 mx-2 min-w-0">Milanesa napolitana</span><span>$8.500</span>
             </div>
             <div className="flex justify-between text-xs">
-              <span>1x</span><span className="flex-1 mx-2">Coca cola 500ml</span><span>$1.200</span>
+              <span>1x</span><span className="flex-1 mx-2 min-w-0">Coca cola 500ml</span><span>$1.200</span>
             </div>
           </div>
         )}
@@ -159,7 +159,7 @@ export default function TicketConfig({ clienteId }) {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
         {/* Configuración */}
         <div className="space-y-4">
           <h3 className="text-white font-bold text-lg mb-4">Configuración del Ticket</h3>
@@ -179,7 +179,7 @@ export default function TicketConfig({ clienteId }) {
                   value={config.horarioTexto}
                   onChange={e => update('horarioTexto', e.target.value)}
                   placeholder="Lun a Dom 11:00 a 23:00"
-                  className="w-full bg-dark-700 border border-dark-600 rounded-lg px-3 py-2 text-white text-sm mt-1"
+                  className="w-full bg-dark-700 border border-dark-600 rounded-lg px-3 py-2.5 md:py-2 text-white text-base md:text-sm mt-1"
                 />
               </div>
             )}
@@ -192,7 +192,7 @@ export default function TicketConfig({ clienteId }) {
                   value={config.cuit}
                   onChange={e => update('cuit', e.target.value)}
                   placeholder="20-12345678-9"
-                  className="w-full bg-dark-700 border border-dark-600 rounded-lg px-3 py-2 text-white text-sm mt-1"
+                  className="w-full bg-dark-700 border border-dark-600 rounded-lg px-3 py-2.5 md:py-2 text-white text-base md:text-sm mt-1"
                 />
               </div>
             )}
@@ -211,7 +211,7 @@ export default function TicketConfig({ clienteId }) {
                   min={1}
                   value={config.ticketNumberStart}
                   onChange={e => update('ticketNumberStart', parseInt(e.target.value) || 1)}
-                  className="w-full bg-dark-700 border border-dark-600 rounded-lg px-3 py-2 text-white text-sm mt-1"
+                  className="w-full bg-dark-700 border border-dark-600 rounded-lg px-3 py-2.5 md:py-2 text-white text-base md:text-sm mt-1"
                 />
               </div>
             )}
@@ -234,7 +234,7 @@ export default function TicketConfig({ clienteId }) {
                     type="text"
                     value={config.footerText}
                     onChange={e => update('footerText', e.target.value)}
-                    className="w-full bg-dark-700 border border-dark-600 rounded-lg px-3 py-2 text-white text-sm mt-1"
+                    className="w-full bg-dark-700 border border-dark-600 rounded-lg px-3 py-2.5 md:py-2 text-white text-base md:text-sm mt-1"
                   />
                 </div>
                 <div>
@@ -244,7 +244,7 @@ export default function TicketConfig({ clienteId }) {
                     value={config.footerText2}
                     onChange={e => update('footerText2', e.target.value)}
                     placeholder="Redes sociales, etc."
-                    className="w-full bg-dark-700 border border-dark-600 rounded-lg px-3 py-2 text-white text-sm mt-1"
+                    className="w-full bg-dark-700 border border-dark-600 rounded-lg px-3 py-2.5 md:py-2 text-white text-base md:text-sm mt-1"
                   />
                 </div>
               </div>
@@ -278,7 +278,7 @@ export default function TicketConfig({ clienteId }) {
               ))}
             </div>
             {config.printMethod === 'red' && (
-              <div className="grid grid-cols-2 gap-2 mt-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-3">
                 <div>
                   <label className="text-dark-400 text-xs">IP de la impresora</label>
                   <input
@@ -286,7 +286,7 @@ export default function TicketConfig({ clienteId }) {
                     value={config.printerIp}
                     onChange={e => update('printerIp', e.target.value)}
                     placeholder="192.168.1.50"
-                    className="w-full bg-dark-700 border border-dark-600 rounded-lg px-3 py-2 text-white text-sm mt-1"
+                    className="w-full bg-dark-700 border border-dark-600 rounded-lg px-3 py-2.5 md:py-2 text-white text-base md:text-sm mt-1"
                   />
                 </div>
                 <div>
@@ -296,10 +296,10 @@ export default function TicketConfig({ clienteId }) {
                     value={config.printerPort}
                     onChange={e => update('printerPort', e.target.value)}
                     placeholder="9100"
-                    className="w-full bg-dark-700 border border-dark-600 rounded-lg px-3 py-2 text-white text-sm mt-1"
+                    className="w-full bg-dark-700 border border-dark-600 rounded-lg px-3 py-2.5 md:py-2 text-white text-base md:text-sm mt-1"
                   />
                 </div>
-                <p className="col-span-2 text-dark-500 text-[11px]">Puerto 9100 es el estándar en la mayoría de las impresoras térmicas de red.</p>
+                <p className="md:col-span-2 text-dark-500 text-[11px]">Puerto 9100 es el estándar en la mayoría de las impresoras térmicas de red.</p>
               </div>
             )}
           </div>
@@ -315,7 +315,7 @@ export default function TicketConfig({ clienteId }) {
                     <button
                       key={size}
                       onClick={() => update('fontSize', size)}
-                      className={`flex-1 py-2 rounded-lg text-sm font-medium transition ${
+                      className={`flex-1 py-2.5 md:py-2 rounded-lg text-sm font-medium transition ${
                         config.fontSize === size
                           ? 'bg-primary-500 text-white'
                           : 'bg-dark-700 text-dark-300 hover:bg-dark-600'
@@ -332,7 +332,7 @@ export default function TicketConfig({ clienteId }) {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="w-full bg-green-600 hover:bg-green-500 text-white py-3 rounded-xl font-bold transition disabled:opacity-50"
+            className="w-full bg-green-600 hover:bg-green-500 text-white py-3.5 md:py-3 rounded-xl font-bold transition disabled:opacity-50"
           >
             {saving ? 'Guardando...' : '💾 Guardar configuración'}
           </button>

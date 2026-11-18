@@ -261,13 +261,13 @@ export default function CajaReportes({ clienteId }) {
         <h3 className="font-bold text-white mb-1">Caja por usuario y turno</h3>
         <p className="text-sm text-dark-300 mb-4">Elegí usuario y fecha. Si dejás vacía “Fecha hasta” se muestra solo el día de “Fecha desde” (de 00:00 a 00:00); si la completás, todo ese período. Con “Turno asignado” y “Consultar caja del turno” ves únicamente ese horario. Cada ticket muestra quién realizó el cobro; los anteriores sin ese dato indican “Sin registrar”.</p>
         {errorUsuarios && <p role="alert" className="text-red-400 mb-2">{errorUsuarios}</p>}
-        <div className="flex flex-wrap items-end gap-4">
+        <div className="flex flex-col md:flex-row md:flex-wrap md:items-end gap-3 md:gap-4">
           <div>
             <label className="block text-dark-400 text-sm mb-1">Usuario</label>
             <select
               value={usuarioCaja}
               onChange={e => { setPagina(0); setRangoCaja(null); setTurnoCaja(''); setUsuarioCaja(e.target.value) }}
-              className="bg-dark-900 border border-dark-600 rounded-lg px-3 py-2 text-white"
+              className="w-full md:w-auto bg-dark-900 border border-dark-600 rounded-lg px-3 py-2.5 md:py-2 text-white"
             >
               <option value="">Todos los usuarios</option>
               {ROLES_CAJA.map(r => {
@@ -279,27 +279,29 @@ export default function CajaReportes({ clienteId }) {
               )}
             </select>
           </div>
-          <div>
+          <div className="grid grid-cols-2 gap-3 md:contents">
+          <div className="min-w-0">
             <label className="block text-dark-400 text-sm mb-1">Fecha desde</label>
             <input
               type="date"
               value={filtros.fecha_desde}
               onChange={e => handleFiltro('fecha_desde', e.target.value)}
-              className="bg-dark-900 border border-dark-600 rounded-lg px-3 py-2 text-white"
+              className="w-full md:w-auto min-w-0 bg-dark-900 border border-dark-600 rounded-lg px-3 py-2.5 md:py-2 text-white"
             />
           </div>
-          <div>
+          <div className="min-w-0">
             <label className="block text-dark-400 text-sm mb-1">Fecha hasta <span className="text-dark-500">(opcional)</span></label>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap md:flex-nowrap">
               <input
                 type="date"
                 value={filtros.fecha_hasta}
                 min={filtros.fecha_desde}
                 onChange={e => handleFiltro('fecha_hasta', e.target.value)}
-                className="bg-dark-900 border border-dark-600 rounded-lg px-3 py-2 text-white"
+                className="w-full md:w-auto min-w-0 bg-dark-900 border border-dark-600 rounded-lg px-3 py-2.5 md:py-2 text-white"
               />
-              {filtros.fecha_hasta && <button type="button" onClick={() => handleFiltro('fecha_hasta', '')} className="text-xs text-dark-300 hover:text-white underline whitespace-nowrap">Solo ese día</button>}
+              {filtros.fecha_hasta && <button type="button" onClick={() => handleFiltro('fecha_hasta', '')} className="text-xs text-dark-300 hover:text-white underline whitespace-nowrap py-1 md:py-0">Solo ese día</button>}
             </div>
+          </div>
           </div>
           <div>
             <label className="block text-dark-400 text-sm mb-1">Mesa</label>
@@ -308,7 +310,7 @@ export default function CajaReportes({ clienteId }) {
               value={filtros.mesa_num}
               onChange={e => handleFiltro('mesa_num', e.target.value)}
               placeholder="N°"
-              className="w-20 bg-dark-900 border border-dark-600 rounded-lg px-3 py-2 text-white"
+              className="w-full md:w-20 bg-dark-900 border border-dark-600 rounded-lg px-3 py-2.5 md:py-2 text-white"
             />
           </div>
           <div>
@@ -317,13 +319,13 @@ export default function CajaReportes({ clienteId }) {
               value={turnoCaja}
               disabled={!usuarioSeleccionado}
               onChange={e => { setPagina(0); setRangoCaja(null); setTurnoCaja(e.target.value) }}
-              className="bg-dark-900 border border-dark-600 rounded-lg px-3 py-2 text-white disabled:opacity-50"
+              className="w-full md:w-auto bg-dark-900 border border-dark-600 rounded-lg px-3 py-2.5 md:py-2 text-white disabled:opacity-50"
             >
               <option value="">Todos los horarios</option>
               {horariosDisponibles.map(h => <option key={h.index} value={h.index}>{h.nombre ? h.nombre + ' · ' : ''}{h.desde}–{h.hasta}{h.desde2 ? ' / ' + h.desde2 + '–' + h.hasta2 : ''}</option>)}
             </select>
           </div>
-          <button disabled={!horariosDisponibles.some(h => String(h.index) === turnoCaja)} onClick={consultarTurno} className="bg-primary-500 text-white rounded-lg px-4 py-2 disabled:opacity-50">Consultar caja del turno</button>
+          <button disabled={!horariosDisponibles.some(h => String(h.index) === turnoCaja)} onClick={consultarTurno} className="w-full md:w-auto bg-primary-500 text-white rounded-lg px-4 py-3 md:py-2 disabled:opacity-50">Consultar caja del turno</button>
         </div>
         {hastaInvalida && <p className="text-amber-400 text-sm mt-3">“Fecha hasta” es anterior a “Fecha desde”: se muestra solo el día de “Fecha desde”.</p>}
         {usuarioSeleccionado && !horariosDisponibles.length && <p className="text-amber-400 text-sm mt-3">Este usuario no tiene turnos guardados en el período elegido (se muestran todos los horarios). Asignalos desde Usuarios.</p>}
@@ -332,26 +334,26 @@ export default function CajaReportes({ clienteId }) {
       </div>
 
       {/* Totales de los tickets cobrados (respetan todos los filtros, incluidos mozo y delivery) */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4 mb-6">
         <div className="bg-dark-800 rounded-xl p-4 border border-dark-700 text-center">
           <p className="text-dark-400 text-sm">Tickets</p>
-          <p className="text-2xl font-bold text-white">{resumen.tickets_count}</p>
+          <p className="text-xl md:text-2xl break-words font-bold text-white">{resumen.tickets_count}</p>
         </div>
         <div className="bg-cyan-500/10 rounded-xl p-4 border border-cyan-500/40 text-center">
           <p className="text-cyan-400 text-sm">Total caja</p>
-          <p className="text-2xl font-bold text-cyan-400">{money(resumen.tickets_items)}</p>
+          <p className="text-xl md:text-2xl break-words font-bold text-cyan-400">{money(resumen.tickets_items)}</p>
         </div>
         <div className="bg-orange-500/10 rounded-xl p-4 border border-orange-500/40 text-center">
           <p className="text-orange-400 text-sm">🛵 Delivery</p>
-          <p className="text-2xl font-bold text-orange-400">{money(resumen.tickets_delivery)}</p>
+          <p className="text-xl md:text-2xl break-words font-bold text-orange-400">{money(resumen.tickets_delivery)}</p>
         </div>
         <div className="bg-yellow-500/10 rounded-xl p-4 border border-yellow-500/40 text-center">
           <p className="text-yellow-400 text-sm">🧑‍🍳 Propina</p>
-          <p className="text-2xl font-bold text-yellow-400">{money(resumen.tickets_propina)}</p>
+          <p className="text-xl md:text-2xl break-words font-bold text-yellow-400">{money(resumen.tickets_propina)}</p>
         </div>
-        <div className="bg-green-500/20 rounded-xl p-4 border border-green-500/50 text-center">
+        <div className="bg-green-500/20 rounded-xl p-4 border border-green-500/50 text-center col-span-2 md:col-span-1">
           <p className="text-green-400 text-sm">Total cobrado</p>
-          <p className="text-2xl font-bold text-green-400">{money(resumen.tickets_total)}</p>
+          <p className="text-xl md:text-2xl break-words font-bold text-green-400">{money(resumen.tickets_total)}</p>
         </div>
       </div>
 
@@ -363,8 +365,55 @@ export default function CajaReportes({ clienteId }) {
         </div>
         {ticketsCaja.length === 0 ? (
           <p className="p-5 text-dark-400 text-sm text-center">{comoTxt?`No hay tickets donde ${usuarioSeleccionado.nombre||usuarioSeleccionado.usuario} figure ${comoTxt}. ${comoTxt==='como mozo'?'El mozo queda en el ticket cuando se lo asigna en la tarjeta de la mesa o se lo elige al cobrar.':'El repartidor queda en el ticket cuando se lo elige en Confirmar cobro (pedidos de Delivery).'}`:(usuarioSeleccionado||rangoCaja)?'No hay tickets cobrados para la selección actual (usuario, fecha y turno).':'Todavía no hay tickets cobrados.'}</p>
-        ) : (
-          <div className="overflow-x-auto">
+        ) : (<>
+          <div className="md:hidden divide-y divide-dark-700">
+            {ticketsCaja.map(ticket => {
+              const lista = Array.isArray(ticket.items) ? ticket.items : []
+              const usuario = ticket.cobrado_por
+              const { propina, delivery, items: itemsMonto } = desgloseTicket(ticket)
+              return (
+                <div key={ticket.id} className="p-4 space-y-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-cyan-400 font-mono font-bold">#{ticket.codigo_pedido || '—'}</p>
+                      <p className="text-white text-sm">Mesa {etiquetaMesa(ticket.mesa)}</p>
+                      <p className="text-dark-300 text-xs">{new Date(ticket.cobrado_at).toLocaleDateString('es-AR')} · {new Date(ticket.cobrado_at).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}</p>
+                    </div>
+                    <p className="text-green-400 font-bold text-lg shrink-0">${Number(ticket.total || 0).toFixed(2)}</p>
+                  </div>
+                  <div className="text-sm space-y-0.5 break-words">
+                    <p className="text-dark-300">Caja: <span className="text-white">{usuario?.nombre || usuario?.usuario || 'Sin registrar'}</span></p>
+                    <p className="text-dark-300">Mozo: <span className="text-white">{ticket.mozo_nombre || '—'}</span></p>
+                    <p className="text-dark-300">Repartidor: <span className="text-white">{ticket.delivery_nombre ? `🛵 ${ticket.delivery_nombre}` : (ticket.es_delivery ? 'Sin asignar' : '—')}</span></p>
+                  </div>
+                  <ul className="space-y-1.5 bg-dark-900/50 rounded-lg p-3">
+                    {lista.length === 0 && <li className="text-dark-400 text-sm">Sin detalle de productos</li>}
+                    {lista.map((item, index) => {
+                      const esPropina = item?.tipo === 'propina'
+                      const esDelivery = item?.tipo === 'delivery'
+                      const colorExtra = esPropina ? 'text-yellow-400' : 'text-orange-400'
+                      return (
+                        <li key={`${ticket.id}-m-${index}`} className="text-sm flex items-start justify-between gap-3">
+                          <span className={`min-w-0 break-words ${esPropina || esDelivery ? colorExtra : 'text-white'}`}>
+                            {esPropina ? '🧑‍🍳 Propina' : esDelivery ? '🛵 Delivery' : <><span className="text-cyan-300">{item.cantidad || 0}x</span> {item.nombre || 'Producto'}</>}
+                            {item.promo && !esPropina && !esDelivery && <span className="block text-purple-400 text-xs">🎁 {desgloseItem(item).etiqueta}{desgloseItem(item).descuento > 0 ? ` (paga ${item.cantidad_cobrada}) · desc. -${money(desgloseItem(item).descuento)}` : ''}</span>}
+                          </span>
+                          <span className={`shrink-0 ${esPropina || esDelivery ? colorExtra : 'text-white'}`}>{money(esPropina || esDelivery ? Number(item.subtotal ?? item.precio ?? 0) : desgloseItem(item).bruto)}</span>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                  <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                    <div className="bg-dark-700 rounded-lg p-2"><p className="text-dark-400">Items</p><p className="text-cyan-300 font-medium break-words">{money(itemsMonto)}</p></div>
+                    <div className="bg-dark-700 rounded-lg p-2"><p className="text-dark-400">Delivery</p><p className="text-orange-400 font-medium break-words">{delivery > 0 ? money(delivery) : '—'}</p></div>
+                    <div className="bg-dark-700 rounded-lg p-2"><p className="text-dark-400">Propina</p><p className="text-yellow-400 font-medium break-words">{propina > 0 ? money(propina) : '—'}</p></div>
+                  </div>
+                  <button onClick={() => reimprimirTicket(ticket)} className="w-full bg-dark-700 hover:bg-dark-600 text-white px-3 py-2.5 rounded-lg transition">{ticket.impreso ? '🖨️ Reimprimir' : '🖨️ Imprimir'}</button>
+                </div>
+              )
+            })}
+          </div>
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="bg-dark-700 text-white">
@@ -415,43 +464,43 @@ export default function CajaReportes({ clienteId }) {
               })}
             </table>
           </div>
-        )}
+        </>)}
       </div>
 
-      <div className="flex items-center gap-3 mb-6 text-white">
-        <button className="bg-dark-700 px-3 py-2 rounded disabled:opacity-40" disabled={pagina === 0} onClick={() => setPagina(p => p - 1)}>Anterior</button>
-        <span>Página {pagina + 1} · Los totales incluyen todo el período</span>
-        <button className="bg-dark-700 px-3 py-2 rounded disabled:opacity-40" disabled={(pagina + 1) * PAGE_SIZE >= resumen.tickets_count} onClick={() => setPagina(p => p + 1)}>Siguiente</button>
+      <div className="flex flex-wrap items-center gap-3 mb-6 text-white">
+        <button className="bg-dark-700 px-4 py-2.5 md:px-3 md:py-2 rounded disabled:opacity-40" disabled={pagina === 0} onClick={() => setPagina(p => p - 1)}>Anterior</button>
+        <span className="order-first w-full md:order-none md:w-auto">Página {pagina + 1} · Los totales incluyen todo el período</span>
+        <button className="bg-dark-700 px-4 py-2.5 md:px-3 md:py-2 rounded disabled:opacity-40" disabled={(pagina + 1) * PAGE_SIZE >= resumen.tickets_count} onClick={() => setPagina(p => p + 1)}>Siguiente</button>
       </div>
       {filtroPersona && (
         <p className="text-dark-400 text-sm mb-6">Con un filtro de usuario, mozo o delivery activo se muestran solo los totales de tickets de arriba. Los totales por producto y categoría no se asignan a un usuario, mozo o repartidor.</p>
       )}
       {/* Resumen */}
       {!filtroPersona && <>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4 mb-6">
         <div className="bg-dark-800 rounded-xl p-4 border border-dark-700 text-center">
           <p className="text-dark-400 text-sm">Comensales</p>
-          <p className="text-2xl font-bold text-white">{totales.comensales}</p>
+          <p className="text-xl md:text-2xl break-words font-bold text-white">{totales.comensales}</p>
         </div>
         <div className="bg-dark-800 rounded-xl p-4 border border-dark-700 text-center">
           <p className="text-dark-400 text-sm">Mesas</p>
-          <p className="text-2xl font-bold text-white">{totales.mesas_atendidas}</p>
+          <p className="text-xl md:text-2xl break-words font-bold text-white">{totales.mesas_atendidas}</p>
         </div>
         <div className="bg-dark-800 rounded-xl p-4 border border-dark-700 text-center">
           <p className="text-dark-400 text-sm">Items vendidos</p>
-          <p className="text-2xl font-bold text-white">{totales.items_vendidos}</p>
+          <p className="text-xl md:text-2xl break-words font-bold text-white">{totales.items_vendidos}</p>
         </div>
         <div className="bg-green-500/20 rounded-xl p-4 border border-green-500/50 text-center">
           <p className="text-green-400 text-sm">Total facturado</p>
-          <p className="text-2xl font-bold text-green-400">${totales.total_facturado.toFixed(2)}</p>
+          <p className="text-xl md:text-2xl break-words font-bold text-green-400">${totales.total_facturado.toFixed(2)}</p>
         </div>
         <div className="bg-purple-500/20 rounded-xl p-4 border border-purple-500/50 text-center">
           <p className="text-purple-400 text-sm">Items promo</p>
-          <p className="text-2xl font-bold text-purple-400">{totales.items_promo}</p>
+          <p className="text-xl md:text-2xl break-words font-bold text-purple-400">{totales.items_promo}</p>
         </div>
         <div className="bg-yellow-500/20 rounded-xl p-4 border border-yellow-500/50 text-center">
           <p className="text-yellow-400 text-sm">Descuento promo</p>
-          <p className="text-2xl font-bold text-yellow-400">${totales.descuento_promo.toFixed(2)}</p>
+          <p className="text-xl md:text-2xl break-words font-bold text-yellow-400">${totales.descuento_promo.toFixed(2)}</p>
         </div>
       </div>
 
@@ -462,7 +511,7 @@ export default function CajaReportes({ clienteId }) {
           {Object.entries(agruparPorCategoria()).map(([cat, data]) => (
             <div key={cat} className="bg-dark-700 rounded-lg p-3">
               <p className="text-white font-medium truncate">{cat}</p>
-              <p className="text-dark-400 text-sm">{data.cantidad} items • ${data.total.toFixed(2)}</p>
+              <p className="text-dark-400 text-sm break-words">{data.cantidad} items • ${data.total.toFixed(2)}</p>
             </div>
           ))}
         </div>

@@ -497,7 +497,7 @@ export default function UsuariosStaff({ clienteId }) {
           <div className="mt-4 pl-1">
             <p className="text-dark-400 text-sm mb-3">Tildá para habilitar cada botón puntual dentro de la pantalla Mesas. Admin y Superadmin siempre los ven todos.</p>
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+              <table className="w-full min-w-[440px] md:min-w-0 text-sm">
                 <thead>
                   <tr className="text-left text-dark-400">
                     <th className="py-2 pr-4">Acción</th>
@@ -514,7 +514,7 @@ export default function UsuariosStaff({ clienteId }) {
                             type="checkbox"
                             checked={(permisosMesas[r.id] || []).includes(acc.id)}
                             onChange={() => toggleAccionMesa(r.id, acc.id)}
-                            className="accent-primary-500 w-4 h-4"
+                            className="accent-primary-500 w-5 h-5 md:w-4 md:h-4"
                           />
                         </td>
                       ))}
@@ -526,7 +526,7 @@ export default function UsuariosStaff({ clienteId }) {
             <button
               onClick={guardarPermisos}
               disabled={savingPermisos}
-              className="mt-4 px-4 py-2 bg-primary-500 hover:bg-primary-600 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition"
+              className="w-full md:w-auto mt-4 px-4 py-2.5 md:py-2 bg-primary-500 hover:bg-primary-600 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition"
             >
               {savingPermisos ? 'Guardando...' : '💾 Guardar permisos'}
             </button>
@@ -564,7 +564,7 @@ export default function UsuariosStaff({ clienteId }) {
                               type="checkbox"
                               checked={!!permisosCarta[acc.id]}
                               onChange={() => toggleAccionCarta(acc.id)}
-                              className="accent-primary-500 w-4 h-4"
+                              className="accent-primary-500 w-5 h-5 md:w-4 md:h-4"
                             />
                           </td>
                         </tr>
@@ -575,7 +575,7 @@ export default function UsuariosStaff({ clienteId }) {
                 <button
                   onClick={guardarPermisosCarta}
                   disabled={savingCarta}
-                  className="mt-4 px-4 py-2 bg-primary-500 hover:bg-primary-600 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition"
+                  className="w-full md:w-auto mt-4 px-4 py-2.5 md:py-2 bg-primary-500 hover:bg-primary-600 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition"
                 >
                   {savingCarta ? 'Guardando...' : '💾 Guardar permisos'}
                 </button>
@@ -599,7 +599,7 @@ export default function UsuariosStaff({ clienteId }) {
           <div className="mt-4 pl-1">
             <p className="text-dark-400 text-sm mb-3">Tildá para que ese rol vea la pestaña Caja y pueda consultar movimientos (tickets cobrados, propinas y delivery) filtrando por mozo o por delivery. Admin y Superadmin siempre la ven.</p>
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+              <table className="w-full min-w-[440px] md:min-w-0 text-sm">
                 <thead>
                   <tr className="text-left text-dark-400">
                     <th className="py-2 pr-4">Sección</th>
@@ -615,7 +615,7 @@ export default function UsuariosStaff({ clienteId }) {
                           type="checkbox"
                           checked={(permisos[r.id] || []).includes('caja')}
                           onChange={() => toggleSeccion(r.id, 'caja')}
-                          className="accent-primary-500 w-4 h-4"
+                          className="accent-primary-500 w-5 h-5 md:w-4 md:h-4"
                         />
                       </td>
                     ))}
@@ -626,7 +626,7 @@ export default function UsuariosStaff({ clienteId }) {
             <button
               onClick={guardarPermisos}
               disabled={savingPermisos}
-              className="mt-4 px-4 py-2 bg-primary-500 hover:bg-primary-600 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition"
+              className="w-full md:w-auto mt-4 px-4 py-2.5 md:py-2 bg-primary-500 hover:bg-primary-600 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition"
             >
               {savingPermisos ? 'Guardando...' : '💾 Guardar permisos'}
             </button>
@@ -649,7 +649,7 @@ export default function UsuariosStaff({ clienteId }) {
           <div className="mt-4 pl-1">
             <p className="text-dark-400 text-sm mb-3">Tildá para que ese rol vea la pestaña Promos. Es solo de consulta: no pueden crear ni eliminar promociones (los botones "Nueva Promo" y "Eliminar" quedan ocultos). Admin y Superadmin siempre las ven y las gestionan.</p>
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+              <table className="w-full min-w-[440px] md:min-w-0 text-sm">
                 <thead>
                   <tr className="text-left text-dark-400">
                     <th className="py-2 pr-4">Sección</th>
@@ -665,7 +665,7 @@ export default function UsuariosStaff({ clienteId }) {
                           type="checkbox"
                           checked={(permisos[r.id] || []).includes('promociones')}
                           onChange={() => toggleSeccion(r.id, 'promociones')}
-                          className="accent-primary-500 w-4 h-4"
+                          className="accent-primary-500 w-5 h-5 md:w-4 md:h-4"
                         />
                       </td>
                     ))}
@@ -676,7 +676,7 @@ export default function UsuariosStaff({ clienteId }) {
             <button
               onClick={guardarPermisos}
               disabled={savingPermisos}
-              className="mt-4 px-4 py-2 bg-primary-500 hover:bg-primary-600 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition"
+              className="w-full md:w-auto mt-4 px-4 py-2.5 md:py-2 bg-primary-500 hover:bg-primary-600 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition"
             >
               {savingPermisos ? 'Guardando...' : '💾 Guardar permisos'}
             </button>
@@ -698,7 +698,7 @@ export default function UsuariosStaff({ clienteId }) {
           <div className="mt-4 pl-1">
             <p className="text-dark-400 text-sm mb-3">Tildá para que ese rol vea en la pestaña Horario a TODO el equipo (quién está activo, ingresos, salidas y horas). Sin tildar, cada rol ve solo sus propios registros. Es solo de consulta: activar o desactivar el horario de un usuario lo hacen únicamente Admin y Superadmin. Requiere haber ejecutado supabase/horario_manual_y_permiso.sql.</p>
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+              <table className="w-full min-w-[440px] md:min-w-0 text-sm">
                 <thead>
                   <tr className="text-left text-dark-400">
                     <th className="py-2 pr-4">Sección</th>
@@ -714,7 +714,7 @@ export default function UsuariosStaff({ clienteId }) {
                           type="checkbox"
                           checked={(permisos[r.id] || []).includes('horario_equipo')}
                           onChange={() => toggleSeccion(r.id, 'horario_equipo')}
-                          className="accent-primary-500 w-4 h-4"
+                          className="accent-primary-500 w-5 h-5 md:w-4 md:h-4"
                         />
                       </td>
                     ))}
@@ -725,7 +725,7 @@ export default function UsuariosStaff({ clienteId }) {
             <button
               onClick={guardarPermisos}
               disabled={savingPermisos}
-              className="mt-4 px-4 py-2 bg-primary-500 hover:bg-primary-600 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition"
+              className="w-full md:w-auto mt-4 px-4 py-2.5 md:py-2 bg-primary-500 hover:bg-primary-600 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition"
             >
               {savingPermisos ? 'Guardando...' : '💾 Guardar permisos'}
             </button>
@@ -747,7 +747,7 @@ export default function UsuariosStaff({ clienteId }) {
           <div className="mt-4 pl-1">
             <p className="text-dark-400 text-sm mb-3">Tildá para que ese rol vea la pestaña Turnos: solo el calendario del mes en curso con la leyenda de empleados y sus colores. Es solo de consulta. Admin y Superadmin lo gestionan desde Usuarios.</p>
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+              <table className="w-full min-w-[440px] md:min-w-0 text-sm">
                 <thead>
                   <tr className="text-left text-dark-400">
                     <th className="py-2 pr-4">Sección</th>
@@ -763,7 +763,7 @@ export default function UsuariosStaff({ clienteId }) {
                           type="checkbox"
                           checked={(permisos[r.id] || []).includes('turnos')}
                           onChange={() => toggleSeccion(r.id, 'turnos')}
-                          className="accent-primary-500 w-4 h-4"
+                          className="accent-primary-500 w-5 h-5 md:w-4 md:h-4"
                         />
                       </td>
                     ))}
@@ -774,7 +774,7 @@ export default function UsuariosStaff({ clienteId }) {
             <button
               onClick={guardarPermisos}
               disabled={savingPermisos}
-              className="mt-4 px-4 py-2 bg-primary-500 hover:bg-primary-600 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition"
+              className="w-full md:w-auto mt-4 px-4 py-2.5 md:py-2 bg-primary-500 hover:bg-primary-600 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition"
             >
               {savingPermisos ? 'Guardando...' : '💾 Guardar permisos'}
             </button>
@@ -784,17 +784,49 @@ export default function UsuariosStaff({ clienteId }) {
 
       {/* Lista de usuarios */}
       <div>
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 md:gap-0 mb-4">
           <h2 className="text-xl font-bold text-white">👥 Usuarios del restaurante</h2>
           <button
             onClick={() => setShowModal(true)}
-            className="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-xl transition text-sm font-medium"
+            className="w-full md:w-auto px-4 py-2.5 md:py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-xl transition text-sm font-medium"
           >
             + Nuevo usuario
           </button>
         </div>
 
-        <div className="bg-dark-800 rounded-2xl border border-dark-700 overflow-hidden">
+        {/* Móvil: tarjetas (mismos datos y handlers que la tabla) */}
+        <div className="md:hidden space-y-3">
+          {usuarios.map(u => (
+            <div key={u.id} className="bg-dark-800 rounded-2xl border border-dark-700 p-4">
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <p className="text-white font-medium break-words">{u.nombre}</p>
+                  <p className="text-dark-300 font-mono text-sm break-all">{loginDe(u)}</p>
+                </div>
+                <button
+                  onClick={() => toggleActivo(u)}
+                  className={`shrink-0 px-3 py-2 rounded-full text-xs font-medium ${u.activo !== false ? 'bg-accent-500/20 text-accent-400' : 'bg-dark-600 text-dark-400'}`}
+                >
+                  {u.activo !== false ? 'Activo' : 'Inactivo'}
+                </button>
+              </div>
+              <div className="flex items-center justify-between gap-2 mt-2 text-sm">
+                <span className="text-dark-300">{rolInfo(u.rol).emoji} {rolInfo(u.rol).label}</span>
+                <span className="text-dark-400 text-xs">
+                  {(u.horarios || []).length > 0 ? `${u.horarios.length} turno(s)` : 'Sin asignar'}
+                </span>
+              </div>
+              <button onClick={() => handleDelete(u)} className="w-full mt-3 py-2.5 rounded-xl bg-red-600/10 border border-red-600/30 text-red-400 hover:text-red-300 text-sm">
+                🗑️ Eliminar
+              </button>
+            </div>
+          ))}
+          {usuarios.length === 0 && (
+            <div className="bg-dark-800 rounded-2xl border border-dark-700 px-4 py-8 text-center text-dark-500 text-sm">Todavía no creaste usuarios</div>
+          )}
+        </div>
+
+        <div className="hidden md:block bg-dark-800 rounded-2xl border border-dark-700 overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-dark-700 text-left text-dark-400">
@@ -856,9 +888,9 @@ export default function UsuariosStaff({ clienteId }) {
           <div className="bg-dark-800 rounded-2xl border border-dark-700 p-4">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-white font-semibold text-sm">1. Definir turnos</h3>
-              <button onClick={addTurno} className="text-xs px-2 py-1 bg-dark-700 text-dark-300 rounded-lg hover:bg-dark-600">+ Turno</button>
+              <button onClick={addTurno} className="text-xs px-3 py-2 md:px-2 md:py-1 bg-dark-700 text-dark-300 rounded-lg hover:bg-dark-600">+ Turno</button>
             </div>
-            <div className="flex flex-col gap-3 max-h-80 overflow-y-auto pr-1">
+            <div className="flex flex-col gap-3 md:max-h-80 md:overflow-y-auto pr-1">
                {turnos.map((t, i) => (
                   <div key={t.id} className={`bg-dark-700/50 rounded-xl p-3 border ${t.guardado ? 'border-green-600/50' : 'border-dark-600'}`}>
                    <div className="flex items-center justify-between mb-2 gap-2">
@@ -870,7 +902,7 @@ export default function UsuariosStaff({ clienteId }) {
                          disabled={t.guardado}
                          onChange={e => updateTurno(t.id, { nombre: e.target.value })}
                          placeholder={`Turno ${i + 1}`}
-                         className="bg-dark-800 border border-dark-600 rounded px-2 py-1 text-white text-sm w-full min-w-0 disabled:opacity-70 disabled:border-transparent disabled:bg-transparent disabled:px-0"
+                         className="bg-dark-800 border border-dark-600 rounded px-2 py-2 md:py-1 text-white text-base md:text-sm w-full min-w-0 disabled:opacity-70 disabled:border-transparent disabled:bg-transparent disabled:px-0"
                        />
                      </label>
                      {t.guardado && <span className="text-green-400 text-[10px] font-semibold shrink-0">✅ Guardado</span>}
@@ -878,33 +910,33 @@ export default function UsuariosStaff({ clienteId }) {
 
                    {/* Bloque horario 1 (siempre) e independiente del bloque 2 */}
                    <p className="text-dark-500 text-[10px] uppercase font-semibold mb-1">Horario</p>
-                   <div className="flex items-center gap-2 mb-2 text-xs">
+                   <div className="flex flex-wrap items-center gap-2 mb-2 text-xs">
                      <span className="text-dark-400">Desde</span>
-                     <input type="time" value={t.desde} disabled={t.guardado} onChange={e => updateTurno(t.id, { desde: e.target.value })} className="bg-dark-800 border border-dark-600 rounded px-2 py-1 text-white disabled:opacity-60" />
+                     <input type="time" value={t.desde} disabled={t.guardado} onChange={e => updateTurno(t.id, { desde: e.target.value })} className="bg-dark-800 border border-dark-600 rounded px-2 py-2 md:py-1 text-base md:text-xs text-white disabled:opacity-60" />
                      <span className="text-dark-400">Hasta</span>
-                     <input type="time" value={t.hasta} disabled={t.guardado} onChange={e => updateTurno(t.id, { hasta: e.target.value })} className="bg-dark-800 border border-dark-600 rounded px-2 py-1 text-white disabled:opacity-60" />
+                     <input type="time" value={t.hasta} disabled={t.guardado} onChange={e => updateTurno(t.id, { hasta: e.target.value })} className="bg-dark-800 border border-dark-600 rounded px-2 py-2 md:py-1 text-base md:text-xs text-white disabled:opacity-60" />
                    </div>
 
                    {/* Bloque horario 2, totalmente independiente del bloque 1 — para
                        turnos partidos (ej: mañana y noche). Es opcional. */}
                    <p className="text-dark-500 text-[10px] uppercase font-semibold mb-1">Corte / 2do bloque (opcional)</p>
-                   <div className="flex items-center gap-2 text-xs mb-3">
+                   <div className="flex flex-wrap items-center gap-2 text-xs mb-3">
                      <span className="text-dark-400">Desde</span>
-                     <input type="time" value={t.desde2} disabled={t.guardado} onChange={e => updateTurno(t.id, { desde2: e.target.value })} className="bg-dark-800 border border-dark-600 rounded px-2 py-1 text-white disabled:opacity-60" />
+                     <input type="time" value={t.desde2} disabled={t.guardado} onChange={e => updateTurno(t.id, { desde2: e.target.value })} className="bg-dark-800 border border-dark-600 rounded px-2 py-2 md:py-1 text-base md:text-xs text-white disabled:opacity-60" />
                      <span className="text-dark-400">Hasta</span>
-                     <input type="time" value={t.hasta2} disabled={t.guardado} onChange={e => updateTurno(t.id, { hasta2: e.target.value })} className="bg-dark-800 border border-dark-600 rounded px-2 py-1 text-white disabled:opacity-60" />
+                     <input type="time" value={t.hasta2} disabled={t.guardado} onChange={e => updateTurno(t.id, { hasta2: e.target.value })} className="bg-dark-800 border border-dark-600 rounded px-2 py-2 md:py-1 text-base md:text-xs text-white disabled:opacity-60" />
                     </div>
 
                    {/* Guardar bloquea la edición del turno; Modificar la reabre;
                        Eliminar lo borra del borrador (no toca lo ya aplicado a empleados). */}
-                   <div className="flex items-center gap-2">
+                   <div className="flex items-center gap-2 [&>button]:flex-1 md:[&>button]:flex-none">
                      {!t.guardado ? (
-                       <button onClick={() => guardarTurno(t.id)} className="text-xs px-2 py-1 bg-green-600/20 text-green-400 border border-green-600/40 rounded-lg hover:bg-green-600/30">💾 Guardar</button>
+                       <button onClick={() => guardarTurno(t.id)} className="text-xs px-2 py-2.5 md:py-1 bg-green-600/20 text-green-400 border border-green-600/40 rounded-lg hover:bg-green-600/30">💾 Guardar</button>
                      ) : (
-                       <button onClick={() => modificarTurno(t.id)} className="text-xs px-2 py-1 bg-dark-700 text-dark-200 border border-dark-600 rounded-lg hover:bg-dark-600">✏️ Modificar</button>
+                       <button onClick={() => modificarTurno(t.id)} className="text-xs px-2 py-2.5 md:py-1 bg-dark-700 text-dark-200 border border-dark-600 rounded-lg hover:bg-dark-600">✏️ Modificar</button>
                      )}
                      {turnos.length > 1 && (
-                       <button onClick={() => removeTurno(t.id)} className="text-xs px-2 py-1 bg-red-600/20 text-red-400 border border-red-600/40 rounded-lg hover:bg-red-600/30">🗑️ Eliminar</button>
+                       <button onClick={() => removeTurno(t.id)} className="text-xs px-2 py-2.5 md:py-1 bg-red-600/20 text-red-400 border border-red-600/40 rounded-lg hover:bg-red-600/30">🗑️ Eliminar</button>
                      )}
                    </div>
                  </div>
@@ -915,7 +947,7 @@ export default function UsuariosStaff({ clienteId }) {
           {/* 2. Asignar a empleados */}
           <div className="bg-dark-800 rounded-2xl border border-dark-700 p-4">
             <h3 className="text-white font-semibold text-sm mb-3">2. Asignar a empleados</h3>
-            <div className="space-y-4 max-h-80 overflow-auto">
+            <div className="space-y-4 md:max-h-80 md:overflow-auto">
               {ROLES.map(r => {
                 const list = usuarios.filter(u => u.rol === r.id)
                 if (list.length === 0) return null
@@ -923,11 +955,11 @@ export default function UsuariosStaff({ clienteId }) {
                   <div key={r.id}>
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-xs font-semibold text-dark-300">{r.emoji} {r.label.toUpperCase()}S</span>
-                      <button onClick={() => selectAllRol(r.id)} className="text-[10px] text-primary-400 hover:underline">SELECCIONAR TODOS</button>
+                      <button onClick={() => selectAllRol(r.id)} className="text-[10px] text-primary-400 hover:underline py-2 md:py-0">SELECCIONAR TODOS</button>
                     </div>
                     {list.map(u => (
-                      <label key={u.id} className="flex items-center gap-2 text-sm text-white py-1">
-                        <input type="checkbox" checked={selected.includes(u.id)} onChange={() => toggleSelected(u.id)} className="accent-primary-500" />
+                      <label key={u.id} className="flex items-center gap-2 text-sm text-white py-2 md:py-1 min-w-0 break-words">
+                        <input type="checkbox" checked={selected.includes(u.id)} onChange={() => toggleSelected(u.id)} className="accent-primary-500 w-5 h-5 md:w-auto md:h-auto shrink-0" />
                         {u.nombre} <span className="text-dark-500 text-xs">({u.usuario})</span>
                       </label>
                     ))}
@@ -978,7 +1010,7 @@ export default function UsuariosStaff({ clienteId }) {
             onClick={borrarTurnosDefinidos}
             disabled={savingHorarios}
             title="Borra los turnos definidos en el paso 1 (no toca lo ya guardado)"
-            className="py-3 px-4 bg-dark-700 hover:bg-dark-600 disabled:opacity-50 text-white font-medium rounded-xl transition text-sm"
+            className="py-3 px-4 bg-dark-700 hover:bg-dark-600 disabled:opacity-50 text-white font-medium rounded-xl transition text-sm w-full sm:w-auto"
           >
             🗑️ Borrar turnos
           </button>
@@ -986,7 +1018,7 @@ export default function UsuariosStaff({ clienteId }) {
             onClick={borrarHorariosEmpleados}
             disabled={savingHorarios}
             title="Borra el horario ya guardado de los empleados tildados en el paso 2"
-            className="py-3 px-4 bg-red-600/20 hover:bg-red-600/30 border border-red-600/40 disabled:opacity-50 text-red-400 font-medium rounded-xl transition text-sm"
+            className="py-3 px-4 bg-red-600/20 hover:bg-red-600/30 border border-red-600/40 disabled:opacity-50 text-red-400 font-medium rounded-xl transition text-sm w-full sm:w-auto"
           >
             🗑️ Borrar horario de empleados
           </button>
@@ -995,18 +1027,18 @@ export default function UsuariosStaff({ clienteId }) {
 
       {/* Mes abierto: calendario grande de días, con los usuarios de colores e impresión */}
       {expandedMonth !== null && (
-        <div className="bg-dark-800 rounded-2xl border border-dark-700 p-4 mt-6 print-calendar-area">
+        <div className="bg-dark-800 rounded-2xl border border-dark-700 p-3 md:p-4 mt-6 print-calendar-area">
           <div className="flex items-center justify-between mb-4 gap-2 flex-wrap">
             <h2 className="text-xl font-bold text-white">📅 {MONTHS_FULL[expandedMonth]} {calendarYear}</h2>
             {viewingEmpId && (
-              <span className="no-print flex items-center gap-2 text-sm bg-primary-500/20 text-primary-400 border border-primary-500/40 rounded-xl px-3 py-1.5">
+              <span className="no-print flex flex-wrap items-center gap-2 text-sm bg-primary-500/20 text-primary-400 border border-primary-500/40 rounded-xl px-3 py-1.5">
                 Viendo horario de: <b>{usuarios.find(u => u.id === viewingEmpId)?.nombre}</b>
                 <button onClick={() => setViewingEmpId(null)} className="hover:text-white">✕ Ver todos</button>
               </span>
             )}
             <button
               onClick={() => window.print()}
-              className="no-print flex items-center gap-1 px-3 py-1.5 bg-dark-700 hover:bg-dark-600 text-white rounded-lg text-sm transition"
+              className="no-print flex items-center gap-1 px-3 py-2.5 md:py-1.5 bg-dark-700 hover:bg-dark-600 text-white rounded-lg text-sm transition"
             >
               🖨️ Imprimir
             </button>
@@ -1020,7 +1052,8 @@ export default function UsuariosStaff({ clienteId }) {
             const mi = expandedMonth
             const weeks = getWeeksInMonth(year, mi)
             return (
-              <div className="bg-dark-700/50 rounded-xl p-3 border border-dark-600">
+              <div className="bg-dark-700/50 rounded-xl p-3 border border-dark-600 overflow-x-auto md:overflow-visible">
+                <div className="min-w-[860px] md:min-w-0">
                 <div className="flex items-center gap-1 mb-1">
                   <div className="w-8 flex-shrink-0"></div>
                   {DIAS.map((d, idx) => (
@@ -1076,6 +1109,7 @@ export default function UsuariosStaff({ clienteId }) {
                     )
                   })}
                 </div>
+                </div>
               </div>
             )
           })()}
@@ -1089,7 +1123,7 @@ export default function UsuariosStaff({ clienteId }) {
                 <button onClick={() => setViewingEmpId(null)} className="no-print text-xs text-primary-400 hover:underline">Ver todos</button>
               )}
             </div>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4">
               {ROLES.map(r => {
                 const emps = usuarios.filter(u => u.rol === r.id)
                 if (emps.length === 0) return null
@@ -1100,11 +1134,11 @@ export default function UsuariosStaff({ clienteId }) {
                       <button
                         key={e.id}
                         onClick={() => setViewingEmpId(prev => prev === e.id ? null : e.id)}
-                        className={`no-print flex items-center gap-2 text-left rounded-lg px-1.5 py-0.5 transition ${viewingEmpId === e.id ? 'bg-primary-500/20 ring-1 ring-primary-500' : 'hover:bg-dark-700'}`}
+                        className={`no-print flex items-center gap-2 text-left rounded-lg px-1.5 py-2 md:py-0.5 min-w-0 transition ${viewingEmpId === e.id ? 'bg-primary-500/20 ring-1 ring-primary-500' : 'hover:bg-dark-700'}`}
                         title={`Ver el horario guardado de ${e.nombre}`}
                       >
                         <span style={{ backgroundColor: coloresEmp[e.id] || '#6b7280' }} className="w-2.5 h-2.5 rounded-full flex-shrink-0"></span>
-                        <span className="text-dark-300 text-xs">{e.nombre}</span>
+                        <span className="text-dark-300 text-xs break-words min-w-0">{e.nombre}</span>
                       </button>
                     ))}
                   </div>
@@ -1118,7 +1152,7 @@ export default function UsuariosStaff({ clienteId }) {
       {/* Modal crear usuario */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-dark-800 rounded-2xl p-6 w-full max-w-md border border-dark-700">
+          <div className="bg-dark-800 rounded-2xl p-4 md:p-6 w-full max-w-md max-h-[90vh] overflow-y-auto border border-dark-700">
             <h3 className="text-xl font-semibold text-white mb-4">Nuevo usuario</h3>
             <form onSubmit={handleCreate} className="space-y-3">
               <select
@@ -1131,8 +1165,8 @@ export default function UsuariosStaff({ clienteId }) {
               <input type="text" placeholder="Nombre completo" value={form.nombre} onChange={e => setForm({ ...form, nombre: e.target.value })} className="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-xl text-white" required />
               <input type="text" placeholder="Usuario (para loguearse, sin espacios)" value={form.usuario} onChange={e => setForm({ ...form, usuario: e.target.value.toLowerCase().replace(/[^a-z0-9._-]/g, '') })} className="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-xl text-white" required />
               <input type="password" placeholder="Contraseña (mínimo 8 caracteres)" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} className="w-full px-4 py-3 bg-dark-700 border border-dark-600 rounded-xl text-white" required minLength={6} />
-              <p className="text-dark-400 text-xs">Se va a loguear en /login con <span className="font-mono text-dark-200">{(form.usuario || 'usuario')}@{localSlug || 'local'}</span> y esta contraseña.</p>
-              <div className="flex gap-3 pt-2">
+              <p className="text-dark-400 text-xs break-all">Se va a loguear en /login con <span className="font-mono text-dark-200">{(form.usuario || 'usuario')}@{localSlug || 'local'}</span> y esta contraseña.</p>
+              <div className="flex flex-col-reverse md:flex-row gap-3 pt-2">
                 <button type="button" onClick={() => setShowModal(false)} className="flex-1 py-3 bg-dark-700 text-white rounded-xl">Cancelar</button>
                 <button type="submit" disabled={creating} className="flex-1 py-3 bg-primary-500 disabled:opacity-50 text-white rounded-xl">{creating ? 'Creando...' : 'Crear'}</button>
               </div>
