@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { aplicarModoMesa00 } from '@/lib/mesa00Menu'
+import { aplicarConfirmacionPedido } from '@/lib/menuPedidoConfirm'
 import { unirPortadaCategorias } from '@/lib/menuUnificar'
 import { mejorarPantallaProductos } from '@/lib/menuProductos'
 import { personalizarIngredientes } from '@/lib/menuIngredientes'
@@ -244,6 +245,8 @@ export default function MenuView() {
       }
 
       if (esMesa00) html = aplicarModoMesa00(html)
+      // Mesa 0 (delivery / retiro): confirmación en pantalla y WhatsApp como botón opcional.
+      else if (mesaNumero === '0') html = aplicarConfirmacionPedido(html)
 
       // Portada + categorías en una sola pantalla, y botón "atrás" que recorre las pantallas
       html = unirPortadaCategorias(html)
