@@ -4,6 +4,7 @@ import { armarCuerpoTicket, desgloseItem, TICKET_W } from '@/lib/ticketFormat'
 import { hoyLocal, diasEntre, rangosDeTurno, turnoAplica } from '@/lib/cajaRango'
 import { startVisiblePolling } from '@/lib/visiblePolling'
 import { etiquetaMesa, mesaDesdeTexto } from '@/lib/mesa00'
+import PedidosEliminados from './PedidosEliminados'
 import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
@@ -472,6 +473,8 @@ export default function CajaReportes({ clienteId }) {
         <span className="order-first w-full md:order-none md:w-auto">Página {pagina + 1} · Los totales incluyen todo el período</span>
         <button className="bg-dark-700 px-4 py-2.5 md:px-3 md:py-2 rounded disabled:opacity-40" disabled={(pagina + 1) * PAGE_SIZE >= resumen.tickets_count} onClick={() => setPagina(p => p + 1)}>Siguiente</button>
       </div>
+      {/* Pedidos eliminados desde Mesas: solo para control, no entran en ningún total */}
+      <PedidosEliminados clienteId={clienteId} filtrosFecha={{ fecha_desde: filtros.fecha_desde, fecha_hasta: hastaEf }} mesaNum={filtros.mesa_num} rangoCaja={rangoCaja} />
       {filtroPersona && (
         <p className="text-dark-400 text-sm mb-6">Con un filtro de usuario, mozo o delivery activo se muestran solo los totales de tickets de arriba. Los totales por producto y categoría no se asignan a un usuario, mozo o repartidor.</p>
       )}
