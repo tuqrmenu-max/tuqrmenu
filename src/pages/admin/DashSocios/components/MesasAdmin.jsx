@@ -602,6 +602,61 @@ export default function MesasAdmin({ clienteId }) {
     fetchMesas().catch(e => setErrorLectura(e.message))
   }
 
+  // Elimina un pedido de Mesa 0 / Mesa 00 (por ejemplo, el cliente lo mandó dos veces).
+  // Primero guarda una copia en pedidos_eliminados (se ve en Caja > Pedidos eliminados, solo para
+  // control) y recién después lo borra de la lista activa. NO crea ticket ni suma a la caja diaria.
+  // Si no se puede guardar la copia, no se borra nada.
+  const eliminarPedido = async (p) => {
+    if (!['superadmin', 'admin', 'cajero'].includes(rol)) {
+      toast.error('No tenés permiso para eliminar pedidos')
+      return
+    }
+    const etiqueta = `#${p.codigo_pedido || '—'} (${p.nombre || 'Sin nombre'})`
+    if (!confirm(`¿Eliminar el pedido ${etiqueta}?\n\nSe quita de Mesas y queda guardado en Caja > Pedidos eliminados, sin sumar a la caja.`)) return
+    const { data: authData, error: authError } = await supabase.auth.getUser()
+    if (authError || !authData?.user) {
+      toast.error('No se pudo verificar el usuario. Volvé a iniciar sesión.')
+      return
+    }
+    const u = authData.user
+    const perfil = profile?.user_id === u.id ? profile : null
+    const { error: copiaError } = await supabase.from('pedidos_eliminados').insert({
+      cliente_id: clienteId,
+      mesa: p.mesa,
+      codigo_pedido: p.codigo_pedido || null,
+      comensal_nombre: p.nombre || null,
+      telefono: p.telefono || null,
+      metodo_entrega: p.metodo_entrega || null,
+      estado_pedido: p.estado_pedido || null,
+      items: (p.items || []).map(i => ({
+        nombre: i.nombre,
+        cantidad: i.cantidad,
+        precio: i.precio,
+        subtotal: monto(i),
+        ...(i.sin?.length ? { sin: i.sin } : {}),
+        ...(i.comentario ? { comentario: i.comentario } : {})
+      })),
+      total: Math.round((p.total || 0) * 100) / 100,
+      eliminado_por: {
+        user_id: u.id,
+        nombre: perfil?.nombre || perfil?.usuario || u.email || u.id,
+        usuario: perfil?.usuario || u.email || ''
+      }
+    })
+    if (copiaError) {
+      toast.error('No se pudo guardar el pedido eliminado, no se borró nada: ' + copiaError.message)
+      return
+    }
+    // Los pedidos_qr del comensal se borran en cascada.
+    const { error: delError } = await supabase.from('comensales').delete().eq('id', p.id)
+    if (delError) {
+      toast.error('Se guardó la copia pero no se pudo eliminar el pedido: ' + delError.message)
+      return
+    }
+    toast.success('Pedido eliminado (queda en Caja > Pedidos eliminados)')
+    fetchPedidosDelivery().catch(e => setErrorLectura(e.message))
+  }
+
   const fetchDetalleMesa = async (numero) => {
     const comensales = clientesPorMesa[numero] || []
     const propina = getPropinaMesa(numero)
@@ -1314,6 +1369,7 @@ export default function MesasAdmin({ clienteId }) {
               <div key={p.id} className={`bg-dark-800 border-2 ${esMesa00(p.mesa) ? 'border-teal-500/40' : 'border-orange-500/40'} rounded-xl p-4`}>
                 <div className="flex items-center justify-between mb-2">
                   <span className={`${esMesa00(p.mesa) ? 'text-teal-300' : 'text-orange-400'} font-mono font-bold text-sm`}>#{p.codigo_pedido || '—'}</span>
+                  <div className="flex items-center gap-2">
                   <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
                     p.estado_pedido === 'nuevo' ? 'bg-yellow-500/20 text-yellow-400' :
                     p.estado_pedido === 'en_preparacion' ? 'bg-yellow-500/20 text-yellow-400' :
@@ -1327,6 +1383,18 @@ export default function MesasAdmin({ clienteId }) {
                      p.estado_pedido === 'en_delivery' ? 'Delivery' :
                      'Entregado'}
                   </span>
+                  {['superadmin', 'admin', 'cajero'].includes(rol) && (
+                    <button
+                      type="button"
+                      onClick={() => eliminarPedido(p)}
+                      title="Eliminar pedido (queda guardado en Caja como eliminado)"
+                      aria-label="Eliminar pedido"
+                      className="w-6 h-6 flex items-center justify-center rounded-full bg-red-500/20 text-red-400 hover:bg-red-500/40 text-sm font-bold leading-none transition"
+                    >
+                      ✕
+                    </button>
+                  )}
+                  </div>
                 </div>
                 <p className="text-white text-sm font-medium">{p.nombre || 'Sin nombre'}</p>
                 {!esVistaOperativa && (
