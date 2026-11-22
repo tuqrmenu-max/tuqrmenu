@@ -125,27 +125,27 @@ export default function Vendedores() {
       </div>
       
       {/* Lista de vendedores */}
-      <div className="bg-dark-800 rounded-2xl border border-dark-700 overflow-hidden">
-        <table className="w-full">
+      <div className="bg-dark-800 rounded-2xl border border-dark-700 overflow-x-auto">
+        <table className="w-full min-w-[560px]">
           <thead>
             <tr className="border-b border-dark-700">
-              <th className="text-left px-6 py-4 text-dark-400 font-medium">Nombre</th>
-              <th className="text-left px-6 py-4 text-dark-400 font-medium">Email</th>
-              <th className="text-left px-6 py-4 text-dark-400 font-medium">Estado</th>
-              <th className="text-left px-6 py-4 text-dark-400 font-medium">Acciones</th>
+              <th className="text-left px-3 py-3 md:px-6 md:py-4 text-dark-400 font-medium">Nombre</th>
+              <th className="text-left px-3 py-3 md:px-6 md:py-4 text-dark-400 font-medium">Email</th>
+              <th className="text-left px-3 py-3 md:px-6 md:py-4 text-dark-400 font-medium">Estado</th>
+              <th className="text-left px-3 py-3 md:px-6 md:py-4 text-dark-400 font-medium">Acciones</th>
             </tr>
           </thead>
           <tbody>
             {vendedores.map((v) => (
               <tr key={v.id} className="border-b border-dark-700 last:border-0">
-                <td className="px-6 py-4 text-white">{v.nombre}</td>
-                <td className="px-6 py-4 text-dark-300">{v.email}</td>
-                <td className="px-6 py-4">
+                <td className="px-3 py-3 md:px-6 md:py-4 text-white">{v.nombre}</td>
+                <td className="px-3 py-3 md:px-6 md:py-4 text-dark-300">{v.email}</td>
+                <td className="px-3 py-3 md:px-6 md:py-4">
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${v.activo === false ? 'bg-dark-600 text-dark-400' : 'bg-accent-500/20 text-accent-400'}`}>
                     {v.activo === false ? 'Desactivado' : 'Activo'}
                   </span>
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-3 py-3 md:px-6 md:py-4">
                   <div className="flex gap-2">
                     <button
                       onClick={() => toggleActivo(v.id, v.activo !== false)}

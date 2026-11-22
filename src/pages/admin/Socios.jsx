@@ -219,7 +219,7 @@ export default function Socios() {
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
+              <div className="grid grid-cols-2 gap-3 mb-4 text-sm [&_p]:break-words">
                 <div>
                   <p className="text-dark-500">Dirección</p>
                   <p className="text-dark-300">{socio.direccion || '-'}</p>

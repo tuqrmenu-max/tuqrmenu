@@ -193,7 +193,7 @@ export default function FormularioCliente() {
           <h2 className="text-base font-semibold text-white mb-1">Fotos del Local</h2>
           <p className="text-xs text-dark-400 mb-4">Tomá o subí fotos del restaurante</p>
 
-          <div className="grid grid-cols-3 gap-3 mb-4">
+          <div className="grid grid-cols-2 gap-3 mb-4">
             {imagenes.map((img, index) => (
               <div key={index} className="flex flex-col gap-1">
                 <div className="relative aspect-square rounded-xl overflow-hidden bg-dark-700">

@@ -22,14 +22,14 @@ export default function Header() {
 
   return (
     <header className="h-16 bg-dark-800 border-b border-dark-700 flex items-center justify-between pl-16 pr-4 md:px-6">
-      <div>
-        <h2 className="text-lg font-semibold text-white">
+      <div className="min-w-0">
+        <h2 className="text-lg font-semibold text-white truncate">
           {profile?.nombre || profile?.nombre_restaurante || 'QR Menu'}
         </h2>
         <p className="text-sm text-dark-400">{getRolLabel()}</p>
       </div>
       
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 md:gap-4 shrink-0 ml-2">
         {/* Selector de idioma: solo los idiomas habilitados para este socio */}
         <LanguageSelector permitidos={idiomasPermitidos} />
         
