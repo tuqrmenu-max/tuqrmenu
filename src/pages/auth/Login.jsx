@@ -40,12 +40,12 @@ export default function Login() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <img src="/logo.webp" alt="QR Menu" className="w-56 h-56 object-contain mx-auto mb-4" />
+          <img src="/logo.webp" alt="QR Menu" className="w-40 h-40 sm:w-56 sm:h-56 object-contain mx-auto mb-4" />
           <p className="text-dark-400 mt-2">Menú Digital para Restaurantes</p>
         </div>
         
         {/* Form */}
-        <form onSubmit={handleSubmit} className="bg-dark-800 rounded-2xl p-8 shadow-xl border border-dark-700">
+        <form onSubmit={handleSubmit} className="bg-dark-800 rounded-2xl p-5 sm:p-8 shadow-xl border border-dark-700">
           <h2 className="text-xl font-semibold text-white mb-6">{t('login')}</h2>
           
           <div className="space-y-4">
