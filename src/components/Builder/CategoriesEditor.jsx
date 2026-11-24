@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useBuilderState } from './useBuilderState'
 import { useI18n } from '@/lib/i18n'
 import * as XLSX from 'xlsx'
@@ -79,39 +78,12 @@ function BgColorControl({ field }) {
 export default function CategoriesEditor() {
   const state = useBuilderState()
   const { t } = useI18n()
-  const [copiedIdx, setCopiedIdx] = useState(null)
-  const [loadingImages, setLoadingImages] = useState(false)
 
   let categories = []
-  let missing = []
   try {
     categories = state.categories() || []
-    missing = state.missingProductImages() || []
   } catch (err) {
-    console.error('Error computing categories/missing:', err)
-  }
-
-  const handleLoadGeneratedImages = async () => {
-    setLoadingImages(true)
-    try {
-      const resp = await fetch('/images-map.json')
-      if (!resp.ok) throw new Error('No se encontró images-map.json. Ejecutá primero el script generar-imagenes.js')
-      const mapping = await resp.json()
-      let loaded = 0
-      state.rows.forEach((r, i) => {
-        const imgPath = mapping[r.producto]
-        if (imgPath) {
-          // Convert file path to fetchable URL - use the image data
-          state.setProductImage('__row_' + i, imgPath)
-          loaded++
-        }
-      })
-      alert(`${loaded} imágenes cargadas desde images-map.json`)
-    } catch (err) {
-      alert('Error: ' + err.message)
-    } finally {
-      setLoadingImages(false)
-    }
+    console.error('Error computing categories:', err)
   }
 
   const handleExcelUpload = (file) => {
@@ -170,28 +142,6 @@ export default function CategoriesEditor() {
         state.setCategoryImage('__cat_' + key, dataUrl)
       }
     }
-  }
-
-  const copyPrompt = async (text, idx) => {
-    try {
-      await navigator.clipboard.writeText(text)
-      setCopiedIdx(idx)
-      setTimeout(() => setCopiedIdx(null), 1500)
-    } catch {
-      const ta = document.createElement('textarea')
-      ta.value = text
-      document.body.appendChild(ta)
-      ta.select()
-      document.execCommand('copy')
-      ta.remove()
-      setCopiedIdx(idx)
-      setTimeout(() => setCopiedIdx(null), 1500)
-    }
-  }
-
-  const copyAllPrompts = async () => {
-    const text = missing.map(({ r }, n) => `${n + 1}. ${r.producto || 'Producto'}\n${state.productAiPrompt(r)}`).join('\n\n--------------------\n\n')
-    await copyPrompt(text, 'all')
   }
 
   return (
@@ -331,117 +281,6 @@ export default function CategoriesEditor() {
           <input type="file" accept="image/*" multiple className="hidden" onChange={e => handleBulkCategoryImages(e.target.files)} />
         </label>
         <p className="text-[10px] text-dark-500 mt-1">El nombre de cada archivo tiene que parecerse al nombre de la categoría (ej: "bebidas.jpg" para "Bebidas").</p>
-      </div>
-
-      {/* Asistente IA */}
-      <div className="bg-dark-700/50 rounded-xl p-3 border border-dark-600">
-        <div className="flex items-center justify-between mb-2">
-          <div>
-            <h4 className="text-sm font-semibold text-white">✨ {t('asistenteIa')}</h4>
-            <p className="text-[10px] text-dark-400">
-              {missing.length > 0
-                ? `${missing.length} ${t('productosSinImagen')}`
-                : t('todosConImagen')}
-            </p>
-          </div>
-          <div className="flex gap-1">
-            <button
-              onClick={() => window.open('https://qwen.ai/', '_blank')}
-              className="text-[10px] px-2 py-1 bg-accent-500/20 text-accent-400 rounded-lg hover:bg-accent-500/30"
-            >
-              🌐 Abrir Qwen
-            </button>
-            <button
-              onClick={copyAllPrompts}
-              disabled={missing.length === 0}
-              className="text-[10px] px-2 py-1 bg-primary-500/20 text-primary-400 rounded-lg hover:bg-primary-500/30 disabled:opacity-50"
-            >
-              📋 {t('copiarPrompts')}
-            </button>
-          </div>
-        </div>
-
-        {/* Barra de progreso */}
-        {state.rows.length > 0 && (
-          <div className="mb-3">
-            <div className="flex justify-between text-[10px] text-dark-400 mb-1">
-              <span>Imágenes generadas</span>
-              <span>{state.rows.length - missing.length} / {state.rows.length}</span>
-            </div>
-            <div className="w-full h-2 bg-dark-900 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-accent-500 to-primary-500 transition-all duration-500"
-                style={{ width: `${state.rows.length > 0 ? ((state.rows.length - missing.length) / state.rows.length * 100) : 0}%` }}
-              />
-            </div>
-          </div>
-        )}
-
-        {/* Instrucciones */}
-        {missing.length > 0 && (
-          <div className="bg-dark-900/50 rounded-lg p-2 mb-3 text-[10px] text-dark-300 space-y-1">
-            <p><b>Automático:</b> Ejecutá `node scripts/generar-imagenes.js` y después hacé clic en "Cargar imágenes generadas"</p>
-            <p><b>Manual:</b></p>
-            <p><b>1.</b> Hacé clic en "Copiar prompt" del producto</p>
-            <p><b>2.</b> Abrí Qwen con el botón de arriba y pegá el prompt</p>
-            <p><b>3.</b> Descargá la imagen generada</p>
-            <p><b>4.</b> Volvé acá y hacé clic en "Cargar imagen"</p>
-          </div>
-        )}
-
-        <button
-          onClick={handleLoadGeneratedImages}
-          disabled={loadingImages || missing.length === 0}
-          className="w-full mb-3 py-2 bg-accent-500/20 text-accent-400 rounded-lg text-xs font-medium hover:bg-accent-500/30 disabled:opacity-50"
-        >
-          {loadingImages ? '⏳ Cargando...' : '📥 Cargar imágenes generadas (del script)'}
-        </button>
-
-        <div className="space-y-2 max-h-60 overflow-auto">
-          {missing.map(({ r, i }) => {
-            const prompt = state.productAiPrompt(r)
-            return (
-              <div key={i} className="bg-dark-800 rounded-lg p-2">
-                <div className="flex items-center justify-between mb-1">
-                  <div>
-                    <span className="text-xs font-bold text-white">{r.producto || 'Producto'}</span>
-                    <span className="text-[10px] text-dark-400 ml-2">{r.categoria}</span>
-                  </div>
-                  <span className="text-[9px] px-1.5 py-0.5 bg-red-500/20 text-red-400 rounded">{t('sinImagen')}</span>
-                </div>
-                <textarea
-                  readOnly
-                  value={prompt}
-                  className="w-full bg-dark-900 text-[9px] text-dark-300 rounded p-1.5 h-16 resize-none mb-1"
-                />
-                <div className="flex gap-1">
-                  <button
-                    onClick={async () => {
-                      await copyPrompt(prompt, i)
-                      window.open('https://qwen.ai/', '_blank')
-                    }}
-                    className="flex-1 text-[10px] px-2 py-1 bg-accent-500/20 text-accent-400 rounded hover:bg-accent-500/30"
-                  >
-                    📋🌐 Copiar + Abrir Qwen
-                  </button>
-                  <label className="flex-1 text-[10px] px-2 py-1 bg-primary-500/20 text-primary-400 rounded cursor-pointer hover:bg-primary-500/30 text-center">
-                    🖼️ {t('cargarGenerada')}
-                    <input
-                      type="file" accept="image/*" className="hidden"
-                      onChange={async (e) => {
-                        const file = e.target.files[0]
-                        if (!file) return
-                        const dataUrl = await state.normalizeSquareImage(file, 300)
-                        state.setProductImage('__row_' + i, dataUrl)
-                        state.syncProductImageToDB(r.producto, dataUrl)
-                      }}
-                    />
-                  </label>
-                </div>
-              </div>
-            )
-          })}
-        </div>
       </div>
 
       {/* Gestor de categorías */}

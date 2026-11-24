@@ -20,11 +20,19 @@ export default function ProductsEditor({ showDelivery = true }) {
       const dataUrl = await state.normalizeSquareImage(file, 300)
       const key = file.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '')
       state.setProductImage(key, dataUrl)
-      // Also try to match by product index
-      const idx = state.rows.findIndex(r => {
-        const pName = (r.producto || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '')
-        return pName === key || key.includes(pName) || pName.includes(key)
-      })
+      // Also try to match by product index. Primero el nombre exacto (archivo
+      // guardado con el nombre completo del producto, sin la extensión) para
+      // que "Pizza" y "Pizza Muzzarella" no se pisen entre sí; si no hay,
+      // se usa el criterio tolerante de siempre.
+      const norm = (x) => (x || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '')
+      const keySinExt = norm(file.name.replace(/\.[^.]+$/, ''))
+      let idx = keySinExt ? state.rows.findIndex(r => norm(r.producto) === keySinExt) : -1
+      if (idx < 0) {
+        idx = state.rows.findIndex(r => {
+          const pName = norm(r.producto)
+          return pName === key || key.includes(pName) || pName.includes(key)
+        })
+      }
       if (idx >= 0) {
         state.setProductImage('__row_' + idx, dataUrl)
         state.syncProductImageToDB(state.rows[idx].producto, dataUrl)
