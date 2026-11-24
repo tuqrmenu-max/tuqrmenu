@@ -15,31 +15,6 @@ export default function ProductsEditor({ showDelivery = true }) {
   const cartTotal = cartItems.reduce((s, i) => s + price(i.precio) * i.qty, 0)
   const deliveryCost = state.deliveryEnabled ? price(state.delivery) : 0
 
-  const handleBulkProductImages = async (files) => {
-    for (const file of files) {
-      const dataUrl = await state.normalizeSquareImage(file, 300)
-      const key = file.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '')
-      state.setProductImage(key, dataUrl)
-      // Also try to match by product index. Primero el nombre exacto (archivo
-      // guardado con el nombre completo del producto, sin la extensión) para
-      // que "Pizza" y "Pizza Muzzarella" no se pisen entre sí; si no hay,
-      // se usa el criterio tolerante de siempre.
-      const norm = (x) => (x || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '')
-      const keySinExt = norm(file.name.replace(/\.[^.]+$/, ''))
-      let idx = keySinExt ? state.rows.findIndex(r => norm(r.producto) === keySinExt) : -1
-      if (idx < 0) {
-        idx = state.rows.findIndex(r => {
-          const pName = norm(r.producto)
-          return pName === key || key.includes(pName) || pName.includes(key)
-        })
-      }
-      if (idx >= 0) {
-        state.setProductImage('__row_' + idx, dataUrl)
-        state.syncProductImageToDB(state.rows[idx].producto, dataUrl)
-      }
-    }
-  }
-
   const addToCart = (idx) => {
     const newCart = { ...state.cart }
     if (newCart[idx]) {
@@ -341,15 +316,6 @@ export default function ProductsEditor({ showDelivery = true }) {
             />
           </div>
         )}
-      </div>
-
-      {/* Imágenes de productos masivas */}
-      <div>
-        <label className="text-sm text-dark-400 mb-1 block">{t('subirImagenes')} productos</label>
-        <label className="flex flex-col items-center justify-center w-full h-16 bg-dark-700 border border-dashed border-dark-500 rounded-xl cursor-pointer hover:border-primary-500 transition">
-          <span className="text-xs text-dark-400">Múltiples imágenes</span>
-          <input type="file" accept="image/*" multiple className="hidden" onChange={e => handleBulkProductImages(e.target.files)} />
-        </label>
       </div>
 
       {/* Lista de productos */}
