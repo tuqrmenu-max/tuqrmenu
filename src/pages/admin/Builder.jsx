@@ -539,7 +539,7 @@ export default function Builder() {
         </div>
       </div>
 
-      {showAsistente && <AsistenteImagenesIA onClose={() => setShowAsistente(false)} />}
+      {showAsistente && <AsistenteImagenesIA onClose={() => setShowAsistente(false)} onSave={handleSave} saving={saving} />}
     </div>
   )
 }

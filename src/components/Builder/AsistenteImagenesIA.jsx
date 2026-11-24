@@ -29,7 +29,7 @@ async function copiarTexto(text) {
 
 // Asistente de imágenes con IA: pantalla completa para ver bien todas las
 // imágenes que faltan. Antes vivía dentro de la solapa Categorías.
-export default function AsistenteImagenesIA({ onClose }) {
+export default function AsistenteImagenesIA({ onClose, onSave, saving = false }) {
   const state = useBuilderState()
   const { t } = useI18n()
   const [copiedKey, setCopiedKey] = useState(null)
@@ -211,6 +211,15 @@ export default function AsistenteImagenesIA({ onClose }) {
           >
             {loadingImages ? '⏳ Cargando...' : '📥 Cargar imágenes generadas (del script)'}
           </button>
+          {onSave && (
+            <button
+              onClick={onSave}
+              disabled={saving}
+              className="text-xs px-3 py-2 bg-accent-500 text-white font-bold rounded-lg hover:bg-accent-600 disabled:opacity-50"
+            >
+              {saving ? '⏳ Guardando...' : '💾 ' + t('guardarProyecto')}
+            </button>
+          )}
           <button
             onClick={onClose}
             className="text-sm px-3 py-2 bg-dark-700 text-white rounded-lg hover:bg-dark-600"
