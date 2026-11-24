@@ -102,35 +102,6 @@ export default function CategoriesEditor() {
     reader.readAsArrayBuffer(file)
   }
 
-  // Carga masiva de imágenes de categorías: intenta matchear cada archivo
-  // con el nombre real de una categoría (mismo criterio "tolerante" que ya
-  // usa el bulk de productos en ProductsEditor: coincidencia exacta o que
-  // una key contenga a la otra, así no importa si el nombre de archivo
-  // trae la extensión pegada o alguna palabra de más) y sincroniza esa
-  // imagen a la base de datos (tabla `categorias`) para que se vea igual
-  // en Carta y en el Builder.
-  const handleBulkCategoryImages = async (files) => {
-    const cats = state.categories()
-    let matched = 0
-    for (const file of files) {
-      const dataUrl = await state.normalizeSquareImage(file, 400)
-      const key = file.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '')
-      const match = cats.find(([cat]) => {
-        const catKey = state.categoryKey(cat)
-        return catKey === key || key.includes(catKey) || catKey.includes(key)
-      })
-      if (match) {
-        const [catName] = match
-        state.setCategoryImage('__cat_' + state.categoryKey(catName), dataUrl)
-        state.syncCategoryImageToDB(catName, dataUrl)
-        matched++
-      }
-    }
-    if (matched < files.length) {
-      alert(`Se cargaron ${matched} de ${files.length} imágenes. Las que no coincidieron necesitan que el nombre del archivo se parezca al nombre de la categoría (ej: "bebidas.jpg" para la categoría "Bebidas").`)
-    }
-  }
-
   const handleBulkImages = async (files, type) => {
     for (const file of files) {
       const size = type === 'products' ? 300 : 400
@@ -269,18 +240,6 @@ export default function CategoriesEditor() {
         {state.rows.length > 0 && (
           <p className="text-xs text-accent-400 mt-1">✓ {state.rows.length} filas cargadas</p>
         )}
-      </div>
-
-      {/* Imágenes masivas de categorías (el de productos en lote se movió
-          a la solapa Productos, donde ya vive y funciona bien, para no
-          duplicarlo acá) */}
-      <div>
-        <label className="text-sm text-dark-400 mb-1 block">{t('imagenesCategorias')}</label>
-        <label className="flex flex-col items-center justify-center w-full h-16 bg-dark-700 border border-dashed border-dark-500 rounded-xl cursor-pointer hover:border-primary-500 transition">
-          <span className="text-xs text-dark-400">Múltiples imágenes · 500×500 px</span>
-          <input type="file" accept="image/*" multiple className="hidden" onChange={e => handleBulkCategoryImages(e.target.files)} />
-        </label>
-        <p className="text-[10px] text-dark-500 mt-1">El nombre de cada archivo tiene que parecerse al nombre de la categoría (ej: "bebidas.jpg" para "Bebidas").</p>
       </div>
 
       {/* Gestor de categorías */}

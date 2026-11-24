@@ -95,6 +95,34 @@ export default function AsistenteImagenesIA({ onClose }) {
     }
   }
 
+  // Carga masiva de imágenes de categorías: intenta matchear cada archivo
+  // con el nombre real de una categoría (coincidencia exacta o que una key
+  // contenga a la otra, así no importa si el nombre de archivo trae la
+  // extensión pegada o alguna palabra de más) y sincroniza esa imagen a la
+  // base de datos (tabla `categorias`) para que se vea igual en Carta y en
+  // el Builder.
+  const handleBulkCategoryImages = async (files) => {
+    const cats = state.categories()
+    let matched = 0
+    for (const file of files) {
+      const dataUrl = await state.normalizeSquareImage(file, 400)
+      const key = file.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '')
+      const match = cats.find(([cat]) => {
+        const catKey = state.categoryKey(cat)
+        return catKey === key || key.includes(catKey) || catKey.includes(key)
+      })
+      if (match) {
+        const [catName] = match
+        state.setCategoryImage('__cat_' + state.categoryKey(catName), dataUrl)
+        state.syncCategoryImageToDB(catName, dataUrl)
+        matched++
+      }
+    }
+    if (matched < files.length) {
+      alert(`Se cargaron ${matched} de ${files.length} imágenes. Las que no coincidieron necesitan que el nombre del archivo se parezca al nombre de la categoría (ej: "bebidas.jpg" para la categoría "Bebidas").`)
+    }
+  }
+
   const total = state.rows.length
   const hechas = total - missing.length
 
@@ -130,6 +158,16 @@ export default function AsistenteImagenesIA({ onClose }) {
           >
             {copiedKey === 'all' ? '✓ Copiado' : `📋 ${t('copiarPrompts')}`}
           </button>
+          <label
+            className="text-xs px-3 py-2 bg-primary-500/20 text-primary-400 rounded-lg cursor-pointer hover:bg-primary-500/30"
+            title='El nombre de cada archivo tiene que parecerse al nombre de la categoría (ej: "bebidas.jpg" para "Bebidas")'
+          >
+            🖼️ {t('imagenesCategorias')} · múltiples 500×500 px
+            <input
+              type="file" accept="image/*" multiple className="hidden"
+              onChange={async e => { const files = Array.from(e.target.files || []); e.target.value = ''; if (files.length) await handleBulkCategoryImages(files) }}
+            />
+          </label>
           <button
             onClick={handleLoadGeneratedImages}
             disabled={loadingImages || missing.length === 0}
