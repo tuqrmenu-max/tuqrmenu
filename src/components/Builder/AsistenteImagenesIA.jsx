@@ -95,6 +95,60 @@ export default function AsistenteImagenesIA({ onClose }) {
     }
   }
 
+  // Carga masiva de imágenes de categorías: intenta matchear cada archivo
+  // con el nombre real de una categoría (coincidencia exacta o que una key
+  // contenga a la otra, así no importa si el nombre de archivo trae la
+  // extensión pegada o alguna palabra de más) y sincroniza esa imagen a la
+  // base de datos (tabla `categorias`) para que se vea igual en Carta y en
+  // el Builder.
+  const handleBulkCategoryImages = async (files) => {
+    const cats = state.categories()
+    let matched = 0
+    for (const file of files) {
+      const dataUrl = await state.normalizeSquareImage(file, 400)
+      const key = file.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '')
+      const match = cats.find(([cat]) => {
+        const catKey = state.categoryKey(cat)
+        return catKey === key || key.includes(catKey) || catKey.includes(key)
+      })
+      if (match) {
+        const [catName] = match
+        state.setCategoryImage('__cat_' + state.categoryKey(catName), dataUrl)
+        state.syncCategoryImageToDB(catName, dataUrl)
+        matched++
+      }
+    }
+    if (matched < files.length) {
+      alert(`Se cargaron ${matched} de ${files.length} imágenes. Las que no coincidieron necesitan que el nombre del archivo se parezca al nombre de la categoría (ej: "bebidas.jpg" para la categoría "Bebidas").`)
+    }
+  }
+
+  // Carga múltiple de imágenes de productos (antes en Builder > Productos)
+  const handleBulkProductImages = async (files) => {
+    for (const file of files) {
+      const dataUrl = await state.normalizeSquareImage(file, 300)
+      const key = file.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '')
+      state.setProductImage(key, dataUrl)
+      // Also try to match by product index. Primero el nombre exacto (archivo
+      // guardado con el nombre completo del producto, sin la extensión) para
+      // que "Pizza" y "Pizza Muzzarella" no se pisen entre sí; si no hay,
+      // se usa el criterio tolerante de siempre.
+      const norm = (x) => (x || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '')
+      const keySinExt = norm(file.name.replace(/\.[^.]+$/, ''))
+      let idx = keySinExt ? state.rows.findIndex(r => norm(r.producto) === keySinExt) : -1
+      if (idx < 0) {
+        idx = state.rows.findIndex(r => {
+          const pName = norm(r.producto)
+          return pName === key || key.includes(pName) || pName.includes(key)
+        })
+      }
+      if (idx >= 0) {
+        state.setProductImage('__row_' + idx, dataUrl)
+        state.syncProductImageToDB(state.rows[idx].producto, dataUrl)
+      }
+    }
+  }
+
   const total = state.rows.length
   const hechas = total - missing.length
 
@@ -130,6 +184,26 @@ export default function AsistenteImagenesIA({ onClose }) {
           >
             {copiedKey === 'all' ? '✓ Copiado' : `📋 ${t('copiarPrompts')}`}
           </button>
+          <label
+            className="text-xs px-3 py-2 bg-primary-500/20 text-primary-400 rounded-lg cursor-pointer hover:bg-primary-500/30"
+            title="Guardá cada archivo con el nombre del producto (botón Copiar nombre) y se asigna solo"
+          >
+            🖼️ {t('subirImagenes')} productos · múltiples
+            <input
+              type="file" accept="image/*" multiple className="hidden"
+              onChange={async e => { const files = Array.from(e.target.files || []); e.target.value = ''; if (files.length) await handleBulkProductImages(files) }}
+            />
+          </label>
+          <label
+            className="text-xs px-3 py-2 bg-primary-500/20 text-primary-400 rounded-lg cursor-pointer hover:bg-primary-500/30"
+            title='El nombre de cada archivo tiene que parecerse al nombre de la categoría (ej: "bebidas.jpg" para "Bebidas")'
+          >
+            🖼️ {t('imagenesCategorias')} · múltiples 500×500 px
+            <input
+              type="file" accept="image/*" multiple className="hidden"
+              onChange={async e => { const files = Array.from(e.target.files || []); e.target.value = ''; if (files.length) await handleBulkCategoryImages(files) }}
+            />
+          </label>
           <button
             onClick={handleLoadGeneratedImages}
             disabled={loadingImages || missing.length === 0}
@@ -166,8 +240,8 @@ export default function AsistenteImagenesIA({ onClose }) {
 
         {missing.length > 0 && (
           <div className="bg-dark-800 border border-dark-700 rounded-xl p-3 text-xs text-dark-300 space-y-1">
-            <p><b>Para que se carguen solas:</b> descargá cada imagen con el <b>mismo nombre</b> del producto (botón "📋 Copiar nombre"), pegalo como nombre del archivo y después subí todas juntas desde Productos → carga múltiple.</p>
-            <p><b>Pasos:</b> 1) "Copiar prompt" del producto · 2) pegalo en Qwen · 3) descargá la imagen y guardala con el nombre copiado · 4) subila acá con "Cargar imagen" o en lote desde Productos.</p>
+            <p><b>Para que se carguen solas:</b> descargá cada imagen con el <b>mismo nombre</b> del producto (botón "📋 Copiar nombre"), pegalo como nombre del archivo y después subí todas juntas con el botón "Subir imágenes productos" de arriba.</p>
+            <p><b>Pasos:</b> 1) "Copiar prompt" del producto · 2) pegalo en Qwen · 3) descargá la imagen y guardala con el nombre copiado · 4) subila acá con "Cargar imagen" o en lote con el botón de arriba.</p>
             <p><b>Automático:</b> ejecutá <code>node scripts/generar-imagenes.js</code> y hacé clic en "Cargar imágenes generadas".</p>
           </div>
         )}
