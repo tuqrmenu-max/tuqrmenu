@@ -149,6 +149,34 @@ export default function AsistenteImagenesIA({ onClose, onSave, saving = false })
     }
   }
 
+  // Prompt para la imagen de una categoría (misma línea que la de productos)
+  const categoryAiPrompt = (cat) =>
+    `Ilustración gastronómica publicitaria ultra realista que represente la categoría "${cat}" de una carta de restaurante. Composición limpia y atractiva con los platos o productos más típicos de esa categoría, iluminación suave de estudio, detalles nítidos, texturas realistas, sombras naturales muy sutiles. Sin personas, sin manos, sin texto, sin logotipos, sin marcas de agua, sin marco. Imagen cuadrada de 400 x 400 px, objeto aislado, fondo completamente transparente real con canal alfa, bordes limpios, formato final WEBP.`
+
+  // La imagen propia de la categoría (no la del primer producto, que es el
+  // fallback que usa findCategoryImage y taparía la falta).
+  const categoriaTieneImagen = (cat) => {
+    const k = state.categoryKey(cat)
+    if (state.categoryImages?.['__cat_' + k]) return true
+    return Object.keys(state.categoryImages || {}).some(x => !x.startsWith('__') && state.categoryKey(String(x).replace(/\.[a-z0-9]+$/i, '')) === k)
+  }
+
+  // Agrupa lo que falta por categoría para que no se mezclen
+  const grupos = []
+  try {
+    const porCat = new Map()
+    ;(state.categories() || []).forEach(([cat, count]) => porCat.set(cat, { cat, count, productos: [], sinImagenCat: !categoriaTieneImagen(cat) }))
+    missing.forEach(m => {
+      const cat = m.r.categoria || 'Sin categoría'
+      if (!porCat.has(cat)) porCat.set(cat, { cat, count: 1, productos: [], sinImagenCat: !categoriaTieneImagen(cat) })
+      porCat.get(cat).productos.push(m)
+    })
+    porCat.forEach(g => { if (g.productos.length > 0 || g.sinImagenCat) grupos.push(g) })
+  } catch (err) {
+    console.error('Error agrupando por categoría:', err)
+  }
+  const categoriasSinImagen = grupos.filter(g => g.sinImagenCat).length
+
   const total = state.rows.length
   const hechas = total - missing.length
 
@@ -160,7 +188,7 @@ export default function AsistenteImagenesIA({ onClose, onSave, saving = false })
           <h2 className="text-lg font-bold text-white">✨ {t('asistenteIa')}</h2>
           <p className="text-xs text-dark-400">
             {state.clientName ? `${state.clientName} · ` : ''}
-            {missing.length > 0 ? `${missing.length} ${t('productosSinImagen')}` : t('todosConImagen')}
+            {missing.length > 0 || categoriasSinImagen > 0 ? `${missing.length} ${t('productosSinImagen')}${categoriasSinImagen > 0 ? ` · ${categoriasSinImagen} categorías sin imagen` : ''}` : t('todosConImagen')}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -255,62 +283,127 @@ export default function AsistenteImagenesIA({ onClose, onSave, saving = false })
           </div>
         )}
 
-        {missing.length === 0 ? (
+        {grupos.length === 0 ? (
           <div className="text-center text-accent-400 py-16 text-lg">✓ {t('todosConImagen')}</div>
         ) : (
-          <div className="grid gap-3 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-            {missing.map(({ r, i }) => {
-              const prompt = state.productAiPrompt(r)
-              const nombre = nombreArchivoProducto(r.producto)
+          <div className="space-y-6">
+            {grupos.map((g, gi) => {
+              const catKey = state.categoryKey(g.cat)
+              const catPrompt = categoryAiPrompt(g.cat)
+              const catNombre = nombreArchivoProducto(g.cat)
               return (
-                <div key={i} className="bg-dark-800 border border-dark-700 rounded-xl p-3 flex flex-col gap-2">
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="min-w-0">
-                      <div className="text-sm font-bold text-white break-words">{r.producto || 'Producto'}</div>
-                      <div className="text-[11px] text-dark-400">{r.categoria}</div>
+                <section key={g.cat} className="bg-dark-800/40 border border-dark-700 rounded-2xl p-3 sm:p-4">
+                  {/* Encabezado de la categoría: nombre + prompt si le falta la imagen */}
+                  <div className="flex flex-col lg:flex-row lg:items-start gap-3 mb-3">
+                    <div className="lg:w-64 flex-shrink-0">
+                      <h3 className="text-base font-bold text-white break-words">📂 {g.cat}</h3>
+                      <p className="text-[11px] text-dark-400">
+                        {g.productos.length > 0 ? `${g.productos.length} de ${g.count} ${t('productosSinImagen')}` : t('todosConImagen')}
+                      </p>
+                      <span className={`inline-block mt-1 text-[10px] px-1.5 py-0.5 rounded ${g.sinImagenCat ? 'bg-red-500/20 text-red-400' : 'bg-accent-500/20 text-accent-400'}`}>
+                        {g.sinImagenCat ? 'Categoría ' + t('sinImagen').toLowerCase() : '✓ Categoría con imagen'}
+                      </span>
                     </div>
-                    <span className="text-[10px] px-1.5 py-0.5 bg-red-500/20 text-red-400 rounded flex-shrink-0">{t('sinImagen')}</span>
+
+                    {g.sinImagenCat && (
+                      <div className="flex-1 flex flex-col sm:flex-row gap-2">
+                        <textarea
+                          readOnly
+                          value={catPrompt}
+                          className="flex-1 bg-dark-900 text-[11px] text-dark-300 rounded p-2 h-20 resize-none"
+                        />
+                        <div className="flex sm:flex-col gap-1 sm:w-52">
+                          <button
+                            onClick={() => copiar(catNombre, 'cn' + gi)}
+                            title="Copia el nombre de la categoría para guardar la imagen con el mismo nombre"
+                            className="flex-1 text-[11px] px-2 py-1.5 bg-accent-500/20 text-accent-400 rounded hover:bg-accent-500/30"
+                          >
+                            {copiedKey === 'cn' + gi ? '✓ Nombre copiado' : '📋 Copiar nombre'}
+                          </button>
+                          <button
+                            onClick={async () => {
+                              await copiar(catPrompt, 'cp' + gi)
+                              window.open('https://qwen.ai/', '_blank', 'noopener,noreferrer')
+                            }}
+                            className="flex-1 text-[11px] px-2 py-1.5 bg-accent-500/20 text-accent-400 rounded hover:bg-accent-500/30"
+                          >
+                            {copiedKey === 'cp' + gi ? '✓ Copiado' : '📋🌐 Prompt + Qwen'}
+                          </button>
+                          <label className="flex-1 text-[11px] px-2 py-1.5 bg-primary-500/20 text-primary-400 rounded cursor-pointer hover:bg-primary-500/30 text-center">
+                            🖼️ {t('cargarGenerada')}
+                            <input
+                              type="file" accept="image/*" className="hidden"
+                              onChange={async (e) => {
+                                const file = e.target.files[0]
+                                if (!file) return
+                                const dataUrl = await state.normalizeSquareImage(file, 400)
+                                state.setCategoryImage('__cat_' + catKey, dataUrl)
+                                state.syncCategoryImageToDB(g.cat, dataUrl)
+                              }}
+                            />
+                          </label>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
-                  <button
-                    onClick={() => copiar(nombre, 'n' + i)}
-                    disabled={!nombre}
-                    title="Copia el nombre completo para guardar la imagen con el mismo nombre"
-                    className="text-xs px-2 py-1.5 bg-accent-500/20 text-accent-400 rounded-lg hover:bg-accent-500/30 disabled:opacity-50"
-                  >
-                    {copiedKey === 'n' + i ? '✓ Nombre copiado' : '📋 Copiar nombre'}
-                  </button>
+                  {/* Productos de esta categoría a los que les falta la imagen */}
+                  {g.productos.length > 0 && (
+                    <div className="grid gap-3 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+                      {g.productos.map(({ r, i }) => {
+                        const prompt = state.productAiPrompt(r)
+                        const nombre = nombreArchivoProducto(r.producto)
+                        return (
+                          <div key={i} className="bg-dark-800 border border-dark-700 rounded-xl p-3 flex flex-col gap-2">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="min-w-0 text-sm font-bold text-white break-words">{r.producto || 'Producto'}</div>
+                              <span className="text-[10px] px-1.5 py-0.5 bg-red-500/20 text-red-400 rounded flex-shrink-0">{t('sinImagen')}</span>
+                            </div>
 
-                  <textarea
-                    readOnly
-                    value={prompt}
-                    className="w-full bg-dark-900 text-[11px] text-dark-300 rounded p-2 h-24 resize-none"
-                  />
-                  <div className="flex gap-1">
-                    <button
-                      onClick={async () => {
-                        await copiar(prompt, 'p' + i)
-                        window.open('https://qwen.ai/', '_blank', 'noopener,noreferrer')
-                      }}
-                      className="flex-1 text-[11px] px-2 py-1.5 bg-accent-500/20 text-accent-400 rounded hover:bg-accent-500/30"
-                    >
-                      {copiedKey === 'p' + i ? '✓ Copiado' : '📋🌐 Copiar prompt + Abrir Qwen'}
-                    </button>
-                    <label className="flex-1 text-[11px] px-2 py-1.5 bg-primary-500/20 text-primary-400 rounded cursor-pointer hover:bg-primary-500/30 text-center">
-                      🖼️ {t('cargarGenerada')}
-                      <input
-                        type="file" accept="image/*" className="hidden"
-                        onChange={async (e) => {
-                          const file = e.target.files[0]
-                          if (!file) return
-                          const dataUrl = await state.normalizeSquareImage(file, 300)
-                          state.setProductImage('__row_' + i, dataUrl)
-                          state.syncProductImageToDB(r.producto, dataUrl)
-                        }}
-                      />
-                    </label>
-                  </div>
-                </div>
+                            <button
+                              onClick={() => copiar(nombre, 'n' + i)}
+                              disabled={!nombre}
+                              title="Copia el nombre completo para guardar la imagen con el mismo nombre"
+                              className="text-xs px-2 py-1.5 bg-accent-500/20 text-accent-400 rounded-lg hover:bg-accent-500/30 disabled:opacity-50"
+                            >
+                              {copiedKey === 'n' + i ? '✓ Nombre copiado' : '📋 Copiar nombre'}
+                            </button>
+
+                            <textarea
+                              readOnly
+                              value={prompt}
+                              className="w-full bg-dark-900 text-[11px] text-dark-300 rounded p-2 h-24 resize-none"
+                            />
+                            <div className="flex gap-1">
+                              <button
+                                onClick={async () => {
+                                  await copiar(prompt, 'p' + i)
+                                  window.open('https://qwen.ai/', '_blank', 'noopener,noreferrer')
+                                }}
+                                className="flex-1 text-[11px] px-2 py-1.5 bg-accent-500/20 text-accent-400 rounded hover:bg-accent-500/30"
+                              >
+                                {copiedKey === 'p' + i ? '✓ Copiado' : '📋🌐 Copiar prompt + Abrir Qwen'}
+                              </button>
+                              <label className="flex-1 text-[11px] px-2 py-1.5 bg-primary-500/20 text-primary-400 rounded cursor-pointer hover:bg-primary-500/30 text-center">
+                                🖼️ {t('cargarGenerada')}
+                                <input
+                                  type="file" accept="image/*" className="hidden"
+                                  onChange={async (e) => {
+                                    const file = e.target.files[0]
+                                    if (!file) return
+                                    const dataUrl = await state.normalizeSquareImage(file, 300)
+                                    state.setProductImage('__row_' + i, dataUrl)
+                                    state.syncProductImageToDB(r.producto, dataUrl)
+                                  }}
+                                />
+                              </label>
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )}
+                </section>
               )
             })}
           </div>
