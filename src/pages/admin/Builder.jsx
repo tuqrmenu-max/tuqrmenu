@@ -11,6 +11,7 @@ import CoverEditor from '@/components/Builder/CoverEditor'
 import CategoriesEditor from '@/components/Builder/CategoriesEditor'
 import ProductsEditor from '@/components/Builder/ProductsEditor'
 import PhonePreview from '@/components/Builder/PhonePreview'
+import AsistenteImagenesIA from '@/components/Builder/AsistenteImagenesIA'
 
 // Builder unico (reemplaza el Admin Builder y el Socio Builder que existian antes).
 // Al guardar/exportar genera UN SOLO menu (HTML) que se adapta en tiempo real
@@ -30,6 +31,7 @@ export default function Builder() {
   const [saving, setSaving] = useState(false)
   const [socioId, setSocioId] = useState(routeSocioId || null)
   const [cameFromQuery, setCameFromQuery] = useState(false)
+  const [showAsistente, setShowAsistente] = useState(false)
   const autoSaveTimer = useRef(null)
   const loadedRef = useRef(false)
 
@@ -384,6 +386,18 @@ export default function Builder() {
             <h1 className="text-2xl font-bold text-white">{t('builder')}</h1>
             <p className="text-sm text-dark-400">{state.clientName || 'Sin nombre'}</p>
           </div>
+          {/* Solapas al lado del nombre: Builder (esta pantalla) y Asistente de imágenes con IA (pantalla completa) */}
+          <div className="flex gap-1 bg-dark-800 rounded-xl p-1 border border-dark-700 ml-2">
+            <span className="py-1.5 px-3 rounded-lg text-sm font-medium bg-primary-500/20 text-primary-400">
+              🛠️ {t('builder')}
+            </span>
+            <button
+              onClick={() => setShowAsistente(true)}
+              className="py-1.5 px-3 rounded-lg text-sm font-medium text-dark-400 hover:bg-dark-700 transition"
+            >
+              ✨ {t('asistenteIa')}
+            </button>
+          </div>
         </div>
         <div className="flex gap-2">
           <button
@@ -524,6 +538,8 @@ export default function Builder() {
           </div>
         </div>
       </div>
+
+      {showAsistente && <AsistenteImagenesIA onClose={() => setShowAsistente(false)} />}
     </div>
   )
 }
